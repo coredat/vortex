@@ -1,7 +1,11 @@
 #include <core/context/context.hpp>
 #include <core/world/world.hpp>
-
-#include <graphics_api/clear.hpp>
+#include <core/world/world_setup.hpp>
+#include <core/camera/camera.hpp>
+#include <core/entity/entity.hpp>
+#include <core/color/color.hpp>
+#include <core/color/color_predefined.hpp>
+#include <core/renderer/mesh_renderer.hpp>
 
 
 int
@@ -9,14 +13,20 @@ main()
 {
   Core::Context context(800, 480, false, "Vortex");
   
-  Core::World_setup setup;
-  Core::World world(setup);
+  Core::World world(Core::World_setup{});
+  Core::Mesh_renderer mesh_renderer;
   
-  Graphics_api::clear_color_set(1, 1, 0);
+  Core::Entity test_entity = world.create_entity();
+  
+  Core::Camera main_camera;
+  main_camera.set_attached_entity(test_entity);
+  main_camera.set_clear_flags(Core::Camera_clear::color | Core::Camera_clear::depth);
+  main_camera.set_clear_color(Core::Color_utils::magenta());
+  
   
   while(context)
   {
-    Graphics_api::clear(Graphics_api::Clear_flag::color | Graphics_api::Clear_flag::depth);  
+    mesh_renderer.render();
   }
 
   return 0;

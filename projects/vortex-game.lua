@@ -51,6 +51,7 @@ solution "Vortex Application"
         "enet",
         "OpenGL.framework",
         "CoreFoundation.framework",
+        "Foundation.framework",
         "Core Engine",
       }
 
