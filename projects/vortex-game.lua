@@ -33,18 +33,12 @@ solution "Vortex Application"
       libdirs {
         "../../wired/code/",
         "/usr/local/lib/",
-        "../3rdparty/bullet/lib/osx/",
-        "../3rdparty/enet/lib/osx/",
       }
 
       linkoptions {
         "-lsdl2",
         "-lsdl2_mixer",
         "-lSOIL",
-        "-lsimple_renderer",
-        "-lbulletdynamics",
-        "-lbulletcollision",
-        "-llinearmath",
       }
 
       links {
