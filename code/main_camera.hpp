@@ -6,12 +6,14 @@
 #include <core/world/world_fwd.hpp>
 #include <core/context/context_fwd.hpp>
 #include <core/camera/camera.hpp>
+#include <math/vec/vec3.hpp>
 
 
 struct Game_camera
 {
-  Core::Entity attached_entity;
+  Core::Entity entity;
   Core::Camera camera;
+  math::vec3 target_point;
 };
 
 

@@ -20,7 +20,7 @@
 #include <data/resource_data/resource_data.hpp>
 #include <utilities/logging.hpp>
 #include <vector>
-
+#include <game_objects/bullet.hpp>
 #include <player.hpp>
 #include <main_camera.hpp>
 #include <utilities/timer.hpp>
@@ -45,7 +45,7 @@ main()
   
   Core::Entity cube_entity = world.create_entity();
   {
-    cube_entity.set_name("Cube");
+    cube_entity.set_name("Origin Marker");
     cube_entity.set_model(model);
     cube_entity.set_material_id(1);
   }
@@ -58,6 +58,8 @@ main()
   players.emplace_back(Player());
   Player_utils::init_players(world, players.data(), players.size());
   
+  std::vector<Bullet> bullets;
+  
   util::timer delta_time_ms;
   delta_time_ms.start();
   
@@ -66,9 +68,11 @@ main()
     const util::milliseconds frame_time = delta_time_ms.split();
     
     const float dt = static_cast<float>(frame_time) / 1000.f;
-  
+
     Player_utils::move_players(context, dt, players.data(), players.size());
     Camera_utils::move_main_camera(game_camera.front(), dt, players.data(), players.size());
+    Bullet_utils::move_bullets();
+    Bullet_utils::create_bullets();
   
     mesh_renderer.render();
   }

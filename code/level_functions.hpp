@@ -2,7 +2,7 @@
 #define LEVEL_FUNCTIONS_INCLUDED_D0B01A8A_FC00_4F3C_858A_18ED3C51D6D8
 
 
-#include <math/vec/vec2.hpp>
+#include <math/vec/vec_fwd.hpp>
 
 
 namespace Level {
