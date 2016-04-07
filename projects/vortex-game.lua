@@ -9,14 +9,14 @@ function get_proj_root_dir()
   end
 end
 
-solution "Vortex Application"
+solution "VortexApplication"
 
    configurations {
      "Debug",
      "Release"
    }
 
-   project "Vortex GameCode"
+   project "VortexGameCode"
 
       kind "WindowedApp"
       language "C++"
@@ -28,10 +28,10 @@ solution "Vortex Application"
         "../code/**.h",
         "../code/**.c",
         "../code/**.m",
+        "../code/**.md",
       }
 
       libdirs {
-        "../../wired/code/",
         "/usr/local/lib/",
       }
 
@@ -46,18 +46,18 @@ solution "Vortex Application"
         "OpenGL.framework",
         "CoreFoundation.framework",
         "Foundation.framework",
-        "Core Engine",
+        "CoreEngine",
       }
 
       includedirs {
-        "../../wired/3rdparty/sdl_mixer/include/",
-        "../../wired/3rdparty/bullet/include/",
-        "../../wired/3rdparty/enet/include",
+        "../../core/3rdparty/sdl_mixer/include/",
+        "../../core/3rdparty/bullet/include/",
+        "../../core/3rdparty/enet/include",
         "/usr/local/include",
-        "../../wired/code/",
-        "../../wired/code/external/math",
-        "../../wired/code/external/graphics_api",
-        "../../wired/code/external/utilities",
+        "../../core/code/",
+        "../../core/code/external/math",
+        "../../core/code/external/graphics_api",
+        "../../core/code/external/utilities",
         get_proj_root_dir() .. "code/",
       }
 
@@ -75,5 +75,4 @@ solution "Vortex Application"
          flags { "Optimize" }
 
 
-   dofile("../../wired/projects/wired.lua")
-   --dofile("../projects/test.lua")
+   dofile("../../core/projects/core.lua")
