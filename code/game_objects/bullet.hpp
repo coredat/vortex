@@ -2,6 +2,7 @@
 #define BULLET_INCLUDED_992A35A6_21D1_4D51_BF4E_06917B3704D3
 
 
+#include <game_objects/game_objects_fwd.hpp>
 #include <core/entity/entity.hpp>
 #include <stdint.h>
 
@@ -22,7 +23,7 @@ init_bullets();
 
 
 void
-create_bullets();
+create_bullets(World_objects &obj);
 
 
 void

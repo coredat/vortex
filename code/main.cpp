@@ -24,6 +24,8 @@
 #include <player.hpp>
 #include <main_camera.hpp>
 #include <utilities/timer.hpp>
+#include <game_objects/world_objects.hpp>
+
 
 Resource_data::Resources resources;
 
@@ -34,46 +36,27 @@ main()
   
   Core::Context context(800, 480, false, "Vortex");
   
-  Core::Model model("/Users/PhilCK/Developer/wired/assets/models/unit_cube.obj");
+  Core::Model model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
   assert(model.get_id());
   
-  Core::Texture texture("/Users/PhilCK/Developer/wired/assets/textures/dev_grid_green_512.png");
+  Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_green_512.png");
   assert(texture.get_id());
   
   Core::World world(Core::World_setup{});
   Core::Mesh_renderer mesh_renderer;
   
-  Core::Entity cube_entity = world.create_entity();
-  {
-    cube_entity.set_name("Origin Marker");
-    cube_entity.set_model(model);
-    cube_entity.set_material_id(1);
-  }
-  
-  std::vector<Game_camera> game_camera;
-  game_camera.emplace_back(Game_camera());
-  Camera_utils::init_main_camera(world, game_camera.front());
-  
-  std::vector<Player> players;
-  players.emplace_back(Player());
-  Player_utils::init_players(world, players.data(), players.size());
-  
-  std::vector<Bullet> bullets;
-  
   util::timer delta_time_ms;
   delta_time_ms.start();
+  
+  Core::Entity cam_entity();
+  Core::Camera cam;
   
   while(context.is_open())
   {
     const util::milliseconds frame_time = delta_time_ms.split();
-    
     const float dt = static_cast<float>(frame_time) / 1000.f;
-
-    Player_utils::move_players(context, dt, players.data(), players.size());
-    Camera_utils::move_main_camera(game_camera.front(), dt, players.data(), players.size());
-    Bullet_utils::move_bullets();
-    Bullet_utils::create_bullets();
-  
+    
+    
     mesh_renderer.render();
   }
 

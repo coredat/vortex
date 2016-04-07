@@ -5,6 +5,7 @@
 #include <core/entity/entity.hpp>
 #include <core/world/world_fwd.hpp>
 #include <core/context/context_fwd.hpp>
+#include <game_objects/game_objects_fwd.hpp>
 #include <stdint.h>
 
 
@@ -27,6 +28,7 @@ init_players(Core::World &world,
 
 void
 move_players(Core::Context &ctx,
+             World_objects &world_objs,
              const float delta_time,
              Player players[],
              const uint32_t number_of_players);

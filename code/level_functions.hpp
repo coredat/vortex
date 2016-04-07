@@ -35,5 +35,4 @@ get_near_death_zones() { return 10.f; }
 } // ns
 
 
-
 #endif // inc guard

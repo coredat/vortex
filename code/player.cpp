@@ -8,7 +8,9 @@
 #include <core/model/model.hpp>
 #include <core/material/texture.hpp>
 #include <math/vec/vec2.hpp>
+#include <game_objects/bullet.hpp>
 #include "level_functions.hpp"
+#include <utilities/logging.hpp>
 
 
 namespace Player_utils {
@@ -35,6 +37,7 @@ init_players(Core::World &world,
 
 void
 move_players(Core::Context &ctx,
+             World_objects &world_objs,
              const float dt,
              Player players[],
              const uint32_t number_of_players)
@@ -43,10 +46,10 @@ move_players(Core::Context &ctx,
   {
     Player &curr_player = players[i];
     
+    Core::Input::Controller controller = Core::Input::Controller(ctx, curr_player.controller_id);
+    
     // Movement
     {
-      Core::Input::Controller controller = Core::Input::Controller(ctx, curr_player.controller_id);
-      
       const float move_speed = (controller.get_axis(0).x * 10.f) * dt;
       curr_player.point_on_circle += move_speed;
       
@@ -61,6 +64,14 @@ move_players(Core::Context &ctx,
       trans.set_position(new_pos);
       
       players[0].entity.set_transform(trans);
+    }
+    
+    // Should fire a bullet
+    {
+      if(controller.is_button_down(Core::Input::Button::button_0))
+      {
+        Bullet_utils::create_bullets(world_objs);
+      }
     }
   }
 }
