@@ -9,7 +9,7 @@
 #include <core/material/texture.hpp>
 #include <math/vec/vec2.hpp>
 #include <game_objects/bullet.hpp>
-#include "level_functions.hpp"
+#include <common/level_functions.hpp>
 #include <utilities/logging.hpp>
 
 
@@ -62,7 +62,7 @@ move_players(Core::Context &ctx,
                                            math::vec3_get_z(position));
       trans.set_position(new_pos);
       
-      players[0].entity.set_transform(trans);
+      curr_player.entity.set_transform(trans);
     }
   }
 }

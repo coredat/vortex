@@ -1,0 +1,35 @@
+#ifndef ENEMY_INCLUDED_C60D1C26_65C3_4BF9_AAA6_23A27358D168
+#define ENEMY_INCLUDED_C60D1C26_65C3_4BF9_AAA6_23A27358D168
+
+
+#include <core/world/world_fwd.hpp>
+#include <core/entity/entity.hpp>
+#include <stdint.h>
+
+
+struct Enemy
+{
+  float         point_on_circle = 0;
+  Core::Entity  entity;
+};
+
+
+namespace Enemy_utils {
+
+
+void
+init_enemies(Core::World &world,
+             Enemy *enemy_arr,
+             const uint32_t number_of_entities);
+
+
+void
+update_enemies(const float dt,
+               Enemy *enemy_arr,
+               const uint32_t number_of_entities);
+
+
+}; // ns
+
+
+#endif // inc guard

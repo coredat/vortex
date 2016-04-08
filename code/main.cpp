@@ -22,6 +22,7 @@
 #include <vector>
 #include <game_objects/bullet.hpp>
 #include <game_objects/player.hpp>
+#include <game_objects/enemy.hpp>
 #include <game_objects/main_camera.hpp>
 #include <utilities/timer.hpp>
 
@@ -53,6 +54,9 @@ main()
   Player players[1];
   Player_utils::init_players(world, players, 1);
   
+  Enemy enemies[1];
+  Enemy_utils::init_enemies(world, enemies, 1);
+  
   while(context.is_open())
   {
     const util::milliseconds frame_time = delta_time_ms.split();
@@ -60,6 +64,8 @@ main()
 
     Camera_utils::move_main_camera(cam, dt, players, 1);
     Player_utils::move_players(context, dt, players, 1);
+    Enemy_utils::update_enemies(dt, enemies, 1);
+
     
     mesh_renderer.render();
   }
