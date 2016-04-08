@@ -28,7 +28,6 @@ init_players(Core::World &world,
 
 void
 move_players(Core::Context &ctx,
-             World_objects &world_objs,
              const float delta_time,
              Player players[],
              const uint32_t number_of_players);

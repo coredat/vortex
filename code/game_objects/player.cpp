@@ -23,10 +23,10 @@ init_players(Core::World &world,
 {
   for(uint32_t i = 0; i < number_of_players; ++i)
   {
-    players[i].entity = world.create_entity();
+    players[i].entity = Core::Entity(world);
     
-    Core::Model   model("/Users/PhilCK/Developer/wired/assets/models/unit_cube.obj");
-    Core::Texture texture("/Users/PhilCK/Developer/wired/assets/textures/dev_grid_green_512.png");
+    Core::Model   model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
+    Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_green_512.png");
     
     players[i].entity.set_name("Player");
     players[i].entity.set_model(model);
@@ -37,7 +37,6 @@ init_players(Core::World &world,
 
 void
 move_players(Core::Context &ctx,
-             World_objects &world_objs,
              const float dt,
              Player players[],
              const uint32_t number_of_players)
@@ -64,14 +63,6 @@ move_players(Core::Context &ctx,
       trans.set_position(new_pos);
       
       players[0].entity.set_transform(trans);
-    }
-    
-    // Should fire a bullet
-    {
-      if(controller.is_button_down(Core::Input::Button::button_0))
-      {
-        Bullet_utils::create_bullets(world_objs);
-      }
     }
   }
 }

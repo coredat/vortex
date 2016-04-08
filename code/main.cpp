@@ -21,10 +21,9 @@
 #include <utilities/logging.hpp>
 #include <vector>
 #include <game_objects/bullet.hpp>
-#include <player.hpp>
-#include <main_camera.hpp>
+#include <game_objects/player.hpp>
+#include <game_objects/main_camera.hpp>
 #include <utilities/timer.hpp>
-#include <game_objects/world_objects.hpp>
 
 
 Resource_data::Resources resources;
@@ -48,14 +47,19 @@ main()
   util::timer delta_time_ms;
   delta_time_ms.start();
   
-  Core::Entity cam_entity();
-  Core::Camera cam;
+  Game_camera cam;
+  Camera_utils::init_main_camera(context, world, cam);
+  
+  Player players[1];
+  Player_utils::init_players(world, players, 1);
   
   while(context.is_open())
   {
     const util::milliseconds frame_time = delta_time_ms.split();
     const float dt = static_cast<float>(frame_time) / 1000.f;
-    
+
+    Camera_utils::move_main_camera(cam, dt, players, 1);
+    Player_utils::move_players(context, dt, players, 1);
     
     mesh_renderer.render();
   }

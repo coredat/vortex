@@ -6,7 +6,8 @@
 #include <core/world/world_fwd.hpp>
 #include <core/context/context_fwd.hpp>
 #include <core/camera/camera.hpp>
-#include <math/vec/vec3.hpp>
+#include <math/vec/vec_types.hpp>
+#include <game_objects/game_objects_fwd.hpp>
 
 
 struct Game_camera
@@ -17,14 +18,11 @@ struct Game_camera
 };
 
 
-struct Player;
-
-
 namespace Camera_utils {
 
 
 void
-init_main_camera(Core::World &world, Game_camera &cam);
+init_main_camera(Core::Context &ctx, Core::World &world, Game_camera &cam);
 
 
 void

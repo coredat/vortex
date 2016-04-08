@@ -22,8 +22,6 @@ void
 init_bullets();
 
 
-void
-create_bullets(World_objects &obj);
 
 
 void
