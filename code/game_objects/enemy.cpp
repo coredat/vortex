@@ -25,6 +25,7 @@ init_enemies(Core::World &world,
     Enemy &enemy = enemy_arr[i];
   
     enemy.entity = Core::Entity(world);
+    enemy.entity.add_tag(16);
     enemy.entity.set_model(model);
     enemy.entity.set_material_id(texture.get_id());
     
@@ -65,5 +66,21 @@ update_enemies(const float dt,
   }
 }
 
+
+void
+hit_enemy(const Core::Entity_id id,
+          Enemy *enemy_arr,
+          const uint32_t number_of_entities)
+{
+  for(uint32_t i = 0; i < number_of_entities; ++i)
+  {
+    Enemy &enemy = enemy_arr[i];
+    
+    if(enemy.entity.get_id() == id)
+    {
+      enemy.entity.destroy();
+    }
+  }
+}
 
 } // ns

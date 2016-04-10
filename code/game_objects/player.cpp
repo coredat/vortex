@@ -31,6 +31,7 @@ init_players(Core::World &world,
   for(uint32_t i = 0; i < number_of_players; ++i)
   {
     players[i].entity = Core::Entity(world);
+    players[i].entity.add_tag(8);
     
     Core::Model   model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
     Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_green_512.png");

@@ -29,6 +29,12 @@ update_enemies(const float dt,
                const uint32_t number_of_entities);
 
 
+void
+hit_enemy(const Core::Entity_id id,
+          Enemy *enemy_arr,
+          const uint32_t number_of_entities);
+
+
 }; // ns
 
 

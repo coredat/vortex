@@ -32,7 +32,7 @@ Resource_data::Resources resources;
 int
 main()
 {
-  Resource_data::resources_init(&resources);
+//  Resource_data::resources_init(&resources);
   
   Core::Context context(800, 480, false, "Vortex");
   
@@ -52,7 +52,7 @@ main()
   Camera_utils::init_main_camera(context, world, cam);
   
   Bullet bullets[128];
-  Bullet_utils::init_bullets(world, bullets, 16);
+  Bullet_utils::init_bullets(world, bullets, 128);
   
   Player players[1];
   Player_utils::init_players(world, players, 1);
@@ -65,12 +65,23 @@ main()
     const util::milliseconds frame_time = delta_time_ms.split();
     const float dt = static_cast<float>(frame_time) / 1000.f;
 
+    world.think(dt);
+    
+    world.get_overlapping_aabbs([&](const Core::Entity_ref ref_a,
+                                    const Core::Entity_ref ref_b)
+    {
+      // Enemy collided with a bullet
+      if(ref_a.has_tag(16) && ref_b.has_tag(4))
+      {
+        Enemy_utils::hit_enemy(ref_a.get_id(), enemies, 1);
+      }
+    });
+
     Camera_utils::move_main_camera(cam, dt, players, 1);
     Player_utils::move_players(context, world, dt, players, 1, bullets, 16);
     Enemy_utils::update_enemies(dt, enemies, 1);
     Bullet_utils::move_bullets(world, dt, bullets, 16);
 
-    
     mesh_renderer.render();
   }
 

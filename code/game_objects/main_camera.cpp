@@ -20,6 +20,7 @@ init_main_camera(Core::Context &ctx, Core::World &world, Game_camera &cam)
   Core::Camera main_camera;
 
   camera_entity.set_name("Main Camera");
+  camera_entity.add_tag(2);
   Core::Transform curr_trans = camera_entity.get_transform();
   curr_trans.set_position(math::vec3_init(0.f, 0.f, 12.f));
   camera_entity.set_transform(curr_trans);

@@ -9,6 +9,13 @@
 #include <iostream>
 
 
+namespace
+{
+  Core::Model   model;//("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj"); // It would be nice to support this in core
+  Core::Texture texture;//("/Users/PhilCK/Developer/core/assets/textures/dev_grid_blue_512.png");
+}
+
+
 namespace Bullet_utils {
 
 
@@ -17,7 +24,8 @@ init_bullets(Core::World &world,
              Bullet bullets[],
              const uint32_t number_of_bullets)
 {
-  
+  model = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
+  texture = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_blue_512.png");
 }
 
 
@@ -82,10 +90,8 @@ create_bullet(Core::World &world,
     if(!bullet.entity)
     {
       bullet.entity = Core::Entity(world);
+      bullet.entity.add_tag(4);
       
-      Core::Model   model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
-      Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_blue_512.png");
-     
       bullet.entity.set_model(model);
       bullet.entity.set_material_id(texture.get_id());
       
