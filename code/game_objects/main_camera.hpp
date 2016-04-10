@@ -22,11 +22,16 @@ namespace Camera_utils {
 
 
 void
-init_main_camera(Core::Context &ctx, Core::World &world, Game_camera &cam);
+init_main_camera(Core::Context &ctx,
+                 Core::World &world,
+                 Game_camera &cam);
 
 
 void
-move_main_camera(Game_camera &cam, const float dt, const Player players[], const uint32_t number_of_players);
+move_main_camera(Game_camera &cam,
+                 const float dt,
+                 const Player players[],
+                 const uint32_t number_of_players);
 
 
 } // ns

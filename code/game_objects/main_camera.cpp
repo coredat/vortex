@@ -30,7 +30,7 @@ init_main_camera(Core::Context &ctx, Core::World &world, Game_camera &cam)
   main_camera.set_attached_entity(camera_entity);
   main_camera.set_type(Core::Camera_type::perspective);
   main_camera.set_clear_flags(Core::Camera_clear::color | Core::Camera_clear::depth);
-  main_camera.set_clear_color(Core::Color_utils::pink());
+  main_camera.set_clear_color(Core::Color_utils::purple());
   
   cam.entity = std::move(camera_entity);
   cam.camera = std::move(main_camera);

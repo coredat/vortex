@@ -7,10 +7,17 @@
 #include <math/vec/vec3.hpp>
 #include <core/model/model.hpp>
 #include <core/material/texture.hpp>
+#include <game_objects/bullet.hpp>
 #include <math/vec/vec2.hpp>
 #include <game_objects/bullet.hpp>
 #include <common/level_functions.hpp>
 #include <utilities/logging.hpp>
+
+
+namespace
+{
+  constexpr float gun_cooldown_timer = 0.1f;
+}
 
 
 namespace Player_utils {
@@ -30,20 +37,25 @@ init_players(Core::World &world,
     
     players[i].entity.set_name("Player");
     players[i].entity.set_model(model);
-    players[i].entity.set_material_id(2);
+    players[i].entity.set_material_id(texture.get_id());
   }
 }
 
 
 void
 move_players(Core::Context &ctx,
+             Core::World &world,
              const float dt,
              Player players[],
-             const uint32_t number_of_players)
+             const uint32_t number_of_players,
+             Bullet bullets[],
+             const uint32_t number_of_bullets)
 {
   for(uint32_t i = 0; i < number_of_players; ++i)
   {
     Player &curr_player = players[i];
+    
+    curr_player.gun_cooldown -= dt;
     
     Core::Input::Controller controller = Core::Input::Controller(ctx, curr_player.controller_id);
     
@@ -63,6 +75,13 @@ move_players(Core::Context &ctx,
       trans.set_position(new_pos);
       
       curr_player.entity.set_transform(trans);
+    }
+    
+    // Fire
+    if(curr_player.gun_cooldown < 0.f && controller.is_button_down(Core::Input::Button::button_0))
+    {
+      Bullet_utils::create_bullet(world, curr_player.point_on_circle, -1, bullets, number_of_bullets);
+      curr_player.gun_cooldown = gun_cooldown_timer;
     }
   }
 }

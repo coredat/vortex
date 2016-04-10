@@ -51,6 +51,9 @@ main()
   Game_camera cam;
   Camera_utils::init_main_camera(context, world, cam);
   
+  Bullet bullets[128];
+  Bullet_utils::init_bullets(world, bullets, 16);
+  
   Player players[1];
   Player_utils::init_players(world, players, 1);
   
@@ -63,8 +66,9 @@ main()
     const float dt = static_cast<float>(frame_time) / 1000.f;
 
     Camera_utils::move_main_camera(cam, dt, players, 1);
-    Player_utils::move_players(context, dt, players, 1);
+    Player_utils::move_players(context, world, dt, players, 1, bullets, 16);
     Enemy_utils::update_enemies(dt, enemies, 1);
+    Bullet_utils::move_bullets(world, dt, bullets, 16);
 
     
     mesh_renderer.render();

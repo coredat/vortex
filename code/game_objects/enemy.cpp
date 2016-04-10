@@ -20,14 +20,13 @@ init_enemies(Core::World &world,
     Core::Model   model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
     Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_orange_512.png");
 
-
   for(uint32_t i = 0; i < number_of_entities; ++i)
   {
     Enemy &enemy = enemy_arr[i];
   
     enemy.entity = Core::Entity(world);
     enemy.entity.set_model(model);
-    enemy.entity.set_material_id(3);
+    enemy.entity.set_material_id(texture.get_id());
     
     const Core::Transform trans(
       math::vec3_init(0, 0, Level::get_bottom_of_level()),

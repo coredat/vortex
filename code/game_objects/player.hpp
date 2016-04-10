@@ -14,6 +14,7 @@ struct Player
   float         point_on_circle = 0;
   uint32_t      controller_id = 0;
   Core::Entity  entity;
+  float         gun_cooldown = 0;
 };
 
 
@@ -28,9 +29,12 @@ init_players(Core::World &world,
 
 void
 move_players(Core::Context &ctx,
+             Core::World &world,
              const float delta_time,
              Player players[],
-             const uint32_t number_of_players);
+             const uint32_t number_of_players,
+             Bullet bullets[],
+             const uint32_t number_of_bullets);
 
 
 } // ns
