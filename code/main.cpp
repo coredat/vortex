@@ -19,21 +19,17 @@
 #include <core/material/texture.hpp>
 #include <data/resource_data/resource_data.hpp>
 #include <utilities/logging.hpp>
-#include <vector>
 #include <game_objects/bullet.hpp>
 #include <game_objects/player.hpp>
 #include <game_objects/enemy.hpp>
 #include <game_objects/main_camera.hpp>
 #include <utilities/timer.hpp>
+#include <common/object_tags.hpp>
 
-
-Resource_data::Resources resources;
 
 int
 main()
 {
-//  Resource_data::resources_init(&resources);
-  
   Core::Context context(800, 480, false, "Vortex");
   
   Core::Model model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
@@ -57,8 +53,8 @@ main()
   Player players[1];
   Player_utils::init_players(world, players, 1);
   
-  Enemy enemies[1];
-  Enemy_utils::init_enemies(world, enemies, 1);
+  Enemy enemies[128];
+  Enemy_utils::init_enemies(world, enemies, 128);
   
   while(context.is_open())
   {
@@ -71,15 +67,15 @@ main()
                                     const Core::Entity_ref ref_b)
     {
       // Enemy collided with a bullet
-      if(ref_a.has_tag(16) && ref_b.has_tag(4))
+      if(ref_a.has_tag(Object_tags::enemy) && ref_b.has_tag(Object_tags::bullet))
       {
-        Enemy_utils::hit_enemy(ref_a.get_id(), enemies, 1);
+        Enemy_utils::hit_enemy(ref_a.get_id(), enemies, 128);
       }
     });
 
     Camera_utils::move_main_camera(cam, dt, players, 1);
-    Player_utils::move_players(context, world, dt, players, 1, bullets, 16);
-    Enemy_utils::update_enemies(dt, enemies, 1);
+    Player_utils::move_players(context, world, dt, players, 1, bullets, 128);
+    Enemy_utils::update_enemies(dt, enemies, 128);
     Bullet_utils::move_bullets(world, dt, bullets, 16);
 
     mesh_renderer.render();

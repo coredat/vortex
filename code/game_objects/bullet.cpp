@@ -4,15 +4,17 @@
 #include <core/material/texture.hpp>
 #include <core/transform/transform.hpp>
 #include <common/level_functions.hpp>
+#include <common/object_tags.hpp>
 #include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
+#include <math/quat/quat.hpp>
 #include <iostream>
 
 
 namespace
 {
-  Core::Model   model;//("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj"); // It would be nice to support this in core
-  Core::Texture texture;//("/Users/PhilCK/Developer/core/assets/textures/dev_grid_blue_512.png");
+  Core::Model   model; // Nice to be able to load this at global init.
+  Core::Texture texture;
 }
 
 
@@ -90,13 +92,22 @@ create_bullet(Core::World &world,
     if(!bullet.entity)
     {
       bullet.entity = Core::Entity(world);
-      bullet.entity.add_tag(4);
+      bullet.entity.set_name("Bullet");
+      bullet.entity.add_tag(Object_tags::bullet);
       
       bullet.entity.set_model(model);
       bullet.entity.set_material_id(texture.get_id());
       
       bullet.point_on_circle = position;
       bullet.direction = direction;
+      
+      const Core::Transform transform(
+        math::vec3_zero(),
+        math::vec3_init(0.5, 0.5, 1),
+        math::quat_init()
+      );
+      
+      bullet.entity.set_transform(transform);
       
       break;
     }

@@ -8,6 +8,7 @@
 #include <core/transform/transform.hpp>
 #include <core/color/color_predefined.hpp>
 #include <math/vec/vec3.hpp>
+#include <common/object_tags.hpp>
 
 
 namespace Camera_utils {
@@ -20,7 +21,7 @@ init_main_camera(Core::Context &ctx, Core::World &world, Game_camera &cam)
   Core::Camera main_camera;
 
   camera_entity.set_name("Main Camera");
-  camera_entity.add_tag(2);
+  camera_entity.add_tag(Object_tags::camera);
   Core::Transform curr_trans = camera_entity.get_transform();
   curr_trans.set_position(math::vec3_init(0.f, 0.f, 12.f));
   camera_entity.set_transform(curr_trans);

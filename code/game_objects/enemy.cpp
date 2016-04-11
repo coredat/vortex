@@ -7,6 +7,7 @@
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
 #include <common/level_functions.hpp>
+#include <common/object_tags.hpp>
 
 
 namespace Enemy_utils {
@@ -17,15 +18,18 @@ init_enemies(Core::World &world,
              Enemy *enemy_arr,
              const uint32_t number_of_entities)
 {
-    Core::Model   model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
-    Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_orange_512.png");
+  Core::Model   model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
+  Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_orange_512.png");
 
   for(uint32_t i = 0; i < number_of_entities; ++i)
   {
     Enemy &enemy = enemy_arr[i];
+    
+    enemy.point_on_circle = static_cast<float>(rand() % 1000) / 10;
   
     enemy.entity = Core::Entity(world);
-    enemy.entity.add_tag(16);
+    enemy.entity.set_name("Enemy");
+    enemy.entity.add_tag(Object_tags::enemy);
     enemy.entity.set_model(model);
     enemy.entity.set_material_id(texture.get_id());
     
@@ -49,7 +53,7 @@ update_enemies(const float dt,
   {
     Enemy &enemy = enemy_arr[i];
     
-    enemy.point_on_circle += dt;
+    //enemy.point_on_circle += dt;
   
     math::vec2 new_point = Level::get_point_on_cirlce(enemy.point_on_circle);
     
@@ -62,7 +66,6 @@ update_enemies(const float dt,
     trans.set_position(new_pos);
     
     enemy.entity.set_transform(trans);
-    
   }
 }
 

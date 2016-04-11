@@ -11,6 +11,7 @@
 #include <math/vec/vec2.hpp>
 #include <game_objects/bullet.hpp>
 #include <common/level_functions.hpp>
+#include <common/object_tags.hpp>
 #include <utilities/logging.hpp>
 
 
@@ -30,13 +31,12 @@ init_players(Core::World &world,
 {
   for(uint32_t i = 0; i < number_of_players; ++i)
   {
-    players[i].entity = Core::Entity(world);
-    players[i].entity.add_tag(8);
-    
     Core::Model   model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
     Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_green_512.png");
-    
+
+    players[i].entity = Core::Entity(world);    
     players[i].entity.set_name("Player");
+    players[i].entity.add_tag(Object_tags::player);
     players[i].entity.set_model(model);
     players[i].entity.set_material_id(texture.get_id());
   }
@@ -62,7 +62,7 @@ move_players(Core::Context &ctx,
     
     // Movement
     {
-      const float move_speed = (controller.get_axis(0).x * 10.f) * dt;
+      const float move_speed = (controller.get_axis(0).x * 7.f) * dt;
       curr_player.point_on_circle += move_speed;
       
       math::vec2 new_point = Level::get_point_on_cirlce(curr_player.point_on_circle);

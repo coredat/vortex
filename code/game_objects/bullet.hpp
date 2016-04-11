@@ -11,7 +11,7 @@
 struct Bullet
 {
   int32_t           direction = -1;
-  float             speed     = 10.5f;
+  float             speed     = 100.5f;
   float             point_on_circle  = 1;
   Core::Entity      entity;
   Core::Entity_ref  owner;
