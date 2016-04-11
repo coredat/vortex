@@ -26,7 +26,8 @@ init_enemies(Core::World &world,
 
 
 void
-update_enemies(const float dt,
+update_enemies(Core::World &world,
+               const float dt,
                Enemy *enemy_arr,
                const uint32_t number_of_entities);
 

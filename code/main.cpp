@@ -79,7 +79,7 @@ main()
 
     Camera_utils::move_main_camera(cam, dt, players, 1);
     Player_utils::move_players(context, world, dt, players, 1, bullets, 128);
-    Enemy_utils::update_enemies(dt, enemies, 128);
+    Enemy_utils::update_enemies(world, dt, enemies, 128);
     Bullet_utils::move_bullets(world, dt, bullets, 16);
 
     mesh_renderer.render();

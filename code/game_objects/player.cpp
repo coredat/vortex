@@ -8,16 +8,17 @@
 #include <core/model/model.hpp>
 #include <core/material/texture.hpp>
 #include <game_objects/bullet.hpp>
-#include <math/vec/vec2.hpp>
 #include <game_objects/bullet.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
 #include <utilities/logging.hpp>
+#include <math/vec/vec2.hpp>
 
 
 namespace
 {
   constexpr float gun_cooldown_timer = 0.1f;
+  constexpr float move_speed_base = 5.f;
 }
 
 
@@ -34,7 +35,7 @@ init_players(Core::World &world,
     Core::Model   model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
     Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_green_512.png");
 
-    players[i].entity = Core::Entity(world);    
+    players[i].entity = Core::Entity(world);
     players[i].entity.set_name("Player");
     players[i].entity.add_tag(Object_tags::player);
     players[i].entity.set_model(model);
@@ -62,17 +63,17 @@ move_players(Core::Context &ctx,
     
     // Movement
     {
-      const float move_speed = (controller.get_axis(0).x * 7.f) * dt;
+      const float move_speed = (controller.get_axis(0).x * move_speed_base) * dt;
       curr_player.point_on_circle += move_speed;
       
-      math::vec2 new_point = Level::get_point_on_cirlce(curr_player.point_on_circle);
+      const math::vec2 new_point = Level::get_point_on_cirlce(curr_player.point_on_circle);
 
       Core::Transform trans = curr_player.entity.get_transform();
       const math::vec3 position = trans.get_position();
       
-      math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
-                                           math::vec2_get_y(new_point),
-                                           math::vec3_get_z(position));
+      const math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                                 math::vec2_get_y(new_point),
+                                                 math::vec3_get_z(position));
       trans.set_position(new_pos);
       
       curr_player.entity.set_transform(trans);

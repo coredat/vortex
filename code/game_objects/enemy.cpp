@@ -10,6 +10,17 @@
 #include <common/object_tags.hpp>
 
 
+namespace
+{
+  constexpr float spawn_rate = 0.2f;
+  float spawn_timer = 0.f;
+  
+  Core::Model   model;
+  Core::Texture texture;
+  
+}
+
+
 namespace Enemy_utils {
 
 
@@ -18,41 +29,50 @@ init_enemies(Core::World &world,
              Enemy *enemy_arr,
              const uint32_t number_of_entities)
 {
-  Core::Model   model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
-  Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_orange_512.png");
+  model = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
+  texture = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_orange_512.png");
 
   for(uint32_t i = 0; i < number_of_entities; ++i)
   {
     Enemy &enemy = enemy_arr[i];
-    
-    enemy.point_on_circle = static_cast<float>(rand() % 1000) / 10;
-    enemy.depth = Level::get_bottom_of_level();
-  
-    enemy.entity = Core::Entity(world);
-    enemy.entity.set_name("Enemy");
-    enemy.entity.add_tag(Object_tags::enemy);
-    enemy.entity.set_model(model);
-    enemy.entity.set_material_id(texture.get_id());
-    
-    const Core::Transform trans(
-      math::vec3_init(0, 0, Level::get_bottom_of_level()),
-      math::vec3_one(),
-      math::quat_init()
-    );
-    
-    enemy.entity.set_transform(trans);
   }
 }
 
 
 void
-update_enemies(const float dt,
+update_enemies(Core::World &world,
+               const float dt,
                Enemy *enemy_arr,
                const uint32_t number_of_entities)
 {
+  spawn_timer += dt;
+
   for(uint32_t i = 0; i < number_of_entities; ++i)
   {
     Enemy &enemy = enemy_arr[i];
+    
+    if(spawn_timer > spawn_rate && !enemy.entity)
+    {
+      spawn_timer = 0.f;
+      
+      enemy.point_on_circle = static_cast<float>(rand() % 1000) / 10;
+      enemy.depth = Level::get_bottom_of_level();
+    
+      enemy.entity = Core::Entity(world);
+      enemy.entity.set_name("Enemy");
+      enemy.entity.add_tag(Object_tags::enemy);
+      enemy.entity.set_model(model);
+      enemy.entity.set_material_id(texture.get_id());
+      
+      const Core::Transform trans(
+        math::vec3_init(0, 0, Level::get_bottom_of_level()),
+        math::vec3_one(),
+        math::quat_init()
+      );
+      
+      enemy.entity.set_transform(trans);
+    }
+    
     Core::Transform trans = enemy.entity.get_transform();
     
     // Point on circle
@@ -73,6 +93,7 @@ update_enemies(const float dt,
       
       if(!math::is_between(enemy.depth, Level::get_bottom_of_level(), Level::get_top_of_level()))
       {
+        enemy.depth = math::clamp(enemy.depth, Level::get_bottom_of_level(), Level::get_top_of_level());
         enemy.direction *= -1;
       }
       

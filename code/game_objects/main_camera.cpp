@@ -13,7 +13,7 @@
 
 namespace
 {
-  constexpr float camera_distance_base = 25.f;
+  constexpr float camera_distance_base = 20.f;
 }
 
 
