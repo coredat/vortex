@@ -23,6 +23,7 @@
 #include <game_objects/player.hpp>
 #include <game_objects/enemy.hpp>
 #include <game_objects/main_camera.hpp>
+#include <game_objects/level.hpp>
 #include <utilities/timer.hpp>
 #include <common/object_tags.hpp>
 
@@ -55,6 +56,9 @@ main()
   
   Enemy enemies[128];
   Enemy_utils::init_enemies(world, enemies, 128);
+  
+  Level_data level[1];
+  Level_utils::init_level(world, level, 1);
   
   while(context.is_open())
   {

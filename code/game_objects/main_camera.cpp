@@ -11,6 +11,12 @@
 #include <common/object_tags.hpp>
 
 
+namespace
+{
+  constexpr float camera_distance_base = 25.f;
+}
+
+
 namespace Camera_utils {
 
 
@@ -47,7 +53,7 @@ move_main_camera(Game_camera &cam,
 {
 
   // We set the camera origin as the first point.
-  math::vec3 accum_target = math::vec3_init(0,0,20.f);
+  math::vec3 accum_target = math::vec3_init(0,0,0);
   
   Core::Transform this_trans = cam.entity.get_transform();
   
@@ -63,12 +69,13 @@ move_main_camera(Game_camera &cam,
     accum_target = math::vec3_add(accum_target, scaled_dir);
   }
   
-  cam.target_point = accum_target;
+  const math::vec3 cam_distance_from_players = math::vec3_init(0,0,camera_distance_base);
   
-  const math::vec3 this_pos = this_trans.get_position();
-
+  cam.target_point = math::vec3_add(accum_target, cam_distance_from_players);
+  
+  const math::vec3 this_pos   = this_trans.get_position();
   const math::vec3 move_dir   = math::vec3_subtract(cam.target_point, this_pos);
-  const math::vec3 scaled_dir = math::vec3_scale(move_dir, dt * 2);
+  const math::vec3 scaled_dir = math::vec3_scale(move_dir, dt * 2.f);
   const math::vec3 new_pos    = math::vec3_add(this_pos, scaled_dir);
 
   this_trans.set_position(new_pos);

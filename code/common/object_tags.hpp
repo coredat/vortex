@@ -2,6 +2,12 @@
 #define OBJECT_TAGS_INCLUDED_1570E972_0088_4423_B0B5_A532A6D97B50
 
 
+/*
+  We use this to help identify objects for things like
+  aabb overlap etc.
+*/
+
+
 namespace Object_tags {
 enum ENUM {
 

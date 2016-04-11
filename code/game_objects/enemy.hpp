@@ -10,6 +10,8 @@
 struct Enemy
 {
   float         point_on_circle = 0;
+  float         depth = 0;
+  int32_t      direction = 1;
   Core::Entity  entity;
 };
 

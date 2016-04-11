@@ -26,6 +26,7 @@ init_enemies(Core::World &world,
     Enemy &enemy = enemy_arr[i];
     
     enemy.point_on_circle = static_cast<float>(rand() % 1000) / 10;
+    enemy.depth = Level::get_bottom_of_level();
   
     enemy.entity = Core::Entity(world);
     enemy.entity.set_name("Enemy");
@@ -52,18 +53,36 @@ update_enemies(const float dt,
   for(uint32_t i = 0; i < number_of_entities; ++i)
   {
     Enemy &enemy = enemy_arr[i];
-    
-    //enemy.point_on_circle += dt;
-  
-    math::vec2 new_point = Level::get_point_on_cirlce(enemy.point_on_circle);
-    
     Core::Transform trans = enemy.entity.get_transform();
-    const math::vec3 position = trans.get_position();
     
-    math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
-                                         math::vec2_get_y(new_point),
-                                         math::vec3_get_z(position));
-    trans.set_position(new_pos);
+    // Point on circle
+    {
+      math::vec2 new_point = Level::get_point_on_cirlce(enemy.point_on_circle);
+      
+      const math::vec3 position = trans.get_position();
+      
+      math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                           math::vec2_get_y(new_point),
+                                           math::vec3_get_z(position));
+      trans.set_position(new_pos);
+    }
+    
+    // Depth
+    {
+      enemy.depth += (10 * dt * static_cast<float>(enemy.direction));
+      
+      if(!math::is_between(enemy.depth, Level::get_bottom_of_level(), Level::get_top_of_level()))
+      {
+        enemy.direction *= -1;
+      }
+      
+      const math::vec3 pos = trans.get_position();
+      const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos),
+                                                 math::vec3_get_y(pos),
+                                                 enemy.depth);
+      
+      trans.set_position(new_pos);
+    }
     
     enemy.entity.set_transform(trans);
   }

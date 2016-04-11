@@ -2,6 +2,11 @@
 #define LEVEL_FUNCTIONS_INCLUDED_D0B01A8A_FC00_4F3C_858A_18ED3C51D6D8
 
 
+/*
+  General functions that describe the level.
+*/
+
+
 #include <math/vec/vec_fwd.hpp>
 
 
@@ -13,7 +18,7 @@ get_point_on_cirlce(const float a);
 
 
 constexpr float
-get_radius() { return 5.f; }
+get_radius() { return 7.f; }
 
 
 constexpr float
