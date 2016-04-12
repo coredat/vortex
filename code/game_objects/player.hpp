@@ -11,10 +11,12 @@
 
 struct Player
 {
-  float         point_on_circle = 0;
-  uint32_t      controller_id = 0;
   Core::Entity  entity;
-  float         gun_cooldown = 0;
+  uint32_t      controller_id = 0;
+  float         point_on_circle = 0.f;
+  float         gun_cooldown = 0.f;
+  float         jump_speed = 0;
+  float         jump_time = 0;
 };
 
 

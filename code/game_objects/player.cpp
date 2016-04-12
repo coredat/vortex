@@ -58,11 +58,16 @@ move_players(Core::Context &ctx,
   {
     Player &curr_player = players[i];
     
+    if(!curr_player.entity)
+    {
+      continue;
+    }
+    
     curr_player.gun_cooldown -= dt;
     
     Core::Input::Controller controller = Core::Input::Controller(ctx, curr_player.controller_id);
     
-    // Movement
+    // Lateral Movement
     {
       const float move_speed = (controller.get_axis(0).x * move_speed_base) * dt;
       curr_player.point_on_circle += move_speed;
@@ -75,6 +80,37 @@ move_players(Core::Context &ctx,
       const math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
                                                  math::vec2_get_y(new_point),
                                                  math::vec3_get_z(position));
+      trans.set_position(new_pos);
+      
+      curr_player.entity.set_transform(trans);
+    }
+    
+    // Jump
+    if(controller.is_button_down(Core::Input::Button::button_2) && curr_player.jump_speed == 0.f)
+    {
+      curr_player.jump_speed = 0.5f;
+      curr_player.jump_time = 0.f;
+    }
+    
+    // Jump movement
+    if(curr_player.jump_speed)
+    {
+      curr_player.jump_time += dt;
+      float offset = (curr_player.jump_speed * curr_player.jump_time) + (-0.9f * curr_player.jump_time * curr_player.jump_time);
+
+      Core::Transform trans = curr_player.entity.get_transform();
+      const math::vec3 pos = trans.get_position();
+      
+      float new_depth = math::vec3_get_z(pos) + offset;
+      
+      if(new_depth < Level::get_top_of_level())
+      {
+        new_depth = Level::get_top_of_level();
+        curr_player.jump_speed = 0.f;
+        curr_player.jump_time = 0.f;
+      }
+      
+      const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos), math::vec3_get_y(pos), new_depth);
       trans.set_position(new_pos);
       
       curr_player.entity.set_transform(trans);
