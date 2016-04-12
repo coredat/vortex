@@ -24,6 +24,7 @@
 #include <game_objects/enemy.hpp>
 #include <game_objects/main_camera.hpp>
 #include <game_objects/level.hpp>
+#include <game_objects/explosion.hpp>
 #include <utilities/timer.hpp>
 #include <common/object_tags.hpp>
 
@@ -57,6 +58,9 @@ main()
   Enemy enemies[128];
   Enemy_utils::init_enemies(world, enemies, 128);
   
+  Explosion explosions[128];
+  Explosion_utils::init_explosions(world, explosions, 128);
+  
   Level_data level[1];
   Level_utils::init_level(world, level, 1);
   
@@ -73,7 +77,12 @@ main()
       // Enemy collided with a bullet
       if(ref_a.has_tag(Object_tags::enemy) && ref_b.has_tag(Object_tags::bullet))
       {
-        Enemy_utils::hit_enemy(ref_a.get_id(), enemies, 128);
+        Enemy_utils::hit_enemy(world,
+                               ref_a.get_id(),
+                               enemies,
+                               128,
+                               explosions,
+                               128);
       }
     });
 
@@ -81,6 +90,7 @@ main()
     Player_utils::move_players(context, world, dt, players, 1, bullets, 128);
     Enemy_utils::update_enemies(world, dt, enemies, 128);
     Bullet_utils::move_bullets(world, dt, bullets, 16);
+    Explosion_utils::update_explosions(world, dt, explosions, 128);
 
     mesh_renderer.render();
   }

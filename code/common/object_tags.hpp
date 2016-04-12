@@ -16,6 +16,7 @@ enum ENUM {
   enemy     = 1 << 1,
   player    = 1 << 2,
   camera    = 1 << 3,
+  explosion = 1 << 4,
 
 
 }; // enum

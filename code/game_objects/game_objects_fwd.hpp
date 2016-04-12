@@ -5,6 +5,7 @@
 struct Bullet;
 struct Player;
 struct Enemy;
+struct Explosion;
 
 
 #endif // inc guard

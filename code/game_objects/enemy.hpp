@@ -4,6 +4,7 @@
 
 #include <core/world/world_fwd.hpp>
 #include <core/entity/entity.hpp>
+#include <game_objects/game_objects_fwd.hpp>
 #include <stdint.h>
 
 
@@ -11,7 +12,7 @@ struct Enemy
 {
   float         point_on_circle = 0;
   float         depth = 0;
-  int32_t      direction = 1;
+  int32_t       direction = 1;
   Core::Entity  entity;
 };
 
@@ -33,9 +34,12 @@ update_enemies(Core::World &world,
 
 
 void
-hit_enemy(const Core::Entity_id id,
-          Enemy *enemy_arr,
-          const uint32_t number_of_entities);
+hit_enemy(Core::World &world,
+          const Core::Entity_id id,
+          Enemy enemy_arr[],
+          const uint32_t number_of_entities,
+          Explosion explosions_arr[],
+          const uint32_t number_of_explosions);
 
 
 }; // ns

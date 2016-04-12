@@ -1,4 +1,5 @@
 #include <game_objects/enemy.hpp>
+#include <game_objects/explosion.hpp>
 #include <core/model/model.hpp>
 #include <core/material/texture.hpp>
 #include <core/world/world.hpp>
@@ -111,9 +112,12 @@ update_enemies(Core::World &world,
 
 
 void
-hit_enemy(const Core::Entity_id id,
-          Enemy *enemy_arr,
-          const uint32_t number_of_entities)
+hit_enemy(Core::World &world,
+          const Core::Entity_id id,
+          Enemy enemy_arr[],
+          const uint32_t number_of_entities,
+          Explosion explosions_arr[],
+          const uint32_t number_of_explosions)
 {
   for(uint32_t i = 0; i < number_of_entities; ++i)
   {
@@ -121,6 +125,11 @@ hit_enemy(const Core::Entity_id id,
     
     if(enemy.entity.get_id() == id)
     {
+      Explosion_utils::create_explosion(world,
+                                        enemy.entity.get_transform().get_position(),
+                                        explosions_arr,
+                                        number_of_explosions);
+      
       enemy.entity.destroy();
     }
   }
