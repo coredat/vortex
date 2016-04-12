@@ -30,8 +30,7 @@ init_main_camera(Core::Context &ctx,
 void
 move_main_camera(Game_camera &cam,
                  const float dt,
-                 const Player players[],
-                 const uint32_t number_of_players);
+                 const Players_container &players_container);
 
 
 } // ns

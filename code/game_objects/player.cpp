@@ -28,19 +28,20 @@ namespace Player_utils {
 
 void
 init_players(Core::World &world,
-             Player players[],
-             const uint32_t number_of_players)
+             Players_container &players_container)
 {
-  for(uint32_t i = 0; i < number_of_players; ++i)
+  for(uint32_t i = 0; i < players_container.size; ++i)
   {
     Core::Model   model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
     Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_green_512.png");
-
-    players[i].entity = Core::Entity(world);
-    players[i].entity.set_name("Player");
-    players[i].entity.add_tag(Object_tags::player);
-    players[i].entity.set_model(model);
-    players[i].entity.set_material_id(texture.get_id());
+    
+    auto &player = players_container.player[i];
+    
+    player.entity = Core::Entity(world);
+    player.entity.set_name("Player");
+    player.entity.add_tag(Object_tags::player);
+    player.entity.set_model(model);
+    player.entity.set_material_id(texture.get_id());
   }
 }
 
@@ -49,32 +50,31 @@ void
 move_players(Core::Context &ctx,
              Core::World &world,
              const float dt,
-             Player players[],
-             const uint32_t number_of_players,
+             Players_container &players_container,
              Bullet bullets[],
              const uint32_t number_of_bullets)
 {
-  for(uint32_t i = 0; i < number_of_players; ++i)
+  for(uint32_t i = 0; i < players_container.size; ++i)
   {
-    Player &curr_player = players[i];
+    auto &player = players_container.player[i];
     
-    if(!curr_player.entity)
+    if(!player.entity)
     {
       continue;
     }
     
-    curr_player.gun_cooldown -= dt;
+    player.gun_cooldown -= dt;
     
-    Core::Input::Controller controller = Core::Input::Controller(ctx, curr_player.controller_id);
+    Core::Input::Controller controller = Core::Input::Controller(ctx, player.controller_id);
     
     // Lateral Movement
     {
       const float move_speed = (controller.get_axis(0).x * move_speed_base) * dt;
-      curr_player.point_on_circle += move_speed;
+      player.point_on_circle += move_speed;
       
-      const math::vec2 new_point = Level::get_point_on_cirlce(curr_player.point_on_circle);
+      const math::vec2 new_point = Level::get_point_on_cirlce(player.point_on_circle);
 
-      Core::Transform trans = curr_player.entity.get_transform();
+      Core::Transform trans = player.entity.get_transform();
       const math::vec3 position = trans.get_position();
       
       const math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
@@ -82,23 +82,23 @@ move_players(Core::Context &ctx,
                                                  math::vec3_get_z(position));
       trans.set_position(new_pos);
       
-      curr_player.entity.set_transform(trans);
+      player.entity.set_transform(trans);
     }
     
     // Jump
-    if(controller.is_button_down(Core::Input::Button::button_2) && curr_player.jump_speed == 0.f)
+    if(controller.is_button_down(Core::Input::Button::button_2) && player.jump_speed == 0.f)
     {
-      curr_player.jump_speed = 0.5f;
-      curr_player.jump_time = 0.f;
+      player.jump_speed = 0.5f;
+      player.jump_time = 0.f;
     }
     
     // Jump movement
-    if(curr_player.jump_speed)
+    if(player.jump_speed)
     {
-      curr_player.jump_time += dt;
-      float offset = (curr_player.jump_speed * curr_player.jump_time) + (-0.9f * curr_player.jump_time * curr_player.jump_time);
+      player.jump_time += dt;
+      float offset = (player.jump_speed * player.jump_time) + (-0.9f * player.jump_time * player.jump_time);
 
-      Core::Transform trans = curr_player.entity.get_transform();
+      Core::Transform trans = player.entity.get_transform();
       const math::vec3 pos = trans.get_position();
       
       float new_depth = math::vec3_get_z(pos) + offset;
@@ -106,21 +106,21 @@ move_players(Core::Context &ctx,
       if(new_depth < Level::get_top_of_level())
       {
         new_depth = Level::get_top_of_level();
-        curr_player.jump_speed = 0.f;
-        curr_player.jump_time = 0.f;
+        player.jump_speed = 0.f;
+        player.jump_time = 0.f;
       }
       
       const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos), math::vec3_get_y(pos), new_depth);
       trans.set_position(new_pos);
       
-      curr_player.entity.set_transform(trans);
+      player.entity.set_transform(trans);
     }
     
     // Fire
-    if(curr_player.gun_cooldown < 0.f && controller.is_button_down(Core::Input::Button::button_0))
+    if(player.gun_cooldown < 0.f && controller.is_button_down(Core::Input::Button::button_0))
     {
-      Bullet_utils::create_bullet(world, curr_player.point_on_circle, -1, bullets, number_of_bullets);
-      curr_player.gun_cooldown = gun_cooldown_timer;
+      Bullet_utils::create_bullet(world, player.point_on_circle, -1, bullets, number_of_bullets);
+      player.gun_cooldown = gun_cooldown_timer;
     }
   }
 }
@@ -129,15 +129,14 @@ move_players(Core::Context &ctx,
 void
 hit_player(Core::World &world,
            const Core::Entity_id id,
-           Player players[],
-           const uint32_t number_of_players,
+           Players_container &players_container,
            Explosion explosions[],
            const uint32_t number_of_explosions)
 {
   // Search for entity and hit it.
-  for(uint32_t i = 0; i < number_of_players; ++i)
+  for(uint32_t i = 0; i < players_container.size; ++i)
   {
-    Player &player = players[i];
+    auto &player = players_container.player[i];
     
     if(player.entity.get_id() != id)
     {
@@ -155,14 +154,15 @@ hit_player(Core::World &world,
 
 
 bool
-all_dead(const Player players[],
-         const uint32_t number_of_players)
+all_dead(Players_container &players_container)
 {
   constexpr bool are_all_dead = true;
 
-  for(uint32_t i = 0; i < number_of_players; ++i)
+  for(uint32_t i = 0; i < players_container.size; ++i)
   {
-    if(players[i].entity)
+    auto &player = players_container.player[i];
+  
+    if(player.entity)
     {
       return false;
     }

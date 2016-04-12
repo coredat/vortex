@@ -70,8 +70,8 @@ main()
   Bullet bullets[128];
   Bullet_utils::init_bullets(world, bullets, 128);
   
-  Player players[1];
-  Player_utils::init_players(world, players, 1);
+  Players_container players_container;
+  Player_utils::init_players(world, players_container);
   
   Enemy enemies[128];
   Enemy_utils::init_enemies(world, enemies, 128);
@@ -99,7 +99,7 @@ main()
       if(controller.is_button_down(Core::Input::Button::button_0))
       {
         game_state = Game_state::game_mode;
-        Player_utils::init_players(world, players, 1);
+        Player_utils::init_players(world, players_container);
       }
     }
     
@@ -129,21 +129,20 @@ main()
           {
             Player_utils::hit_player(world,
                                      ref_a.get_id(),
-                                     players,
-                                     1,
+                                     players_container,
                                      explosions,
                                      128);
           }
         }
       });
 
-      Camera_utils::move_main_camera(cam, dt, players, 1);
-      Player_utils::move_players(context, world, dt, players, 1, bullets, 128);
+      Camera_utils::move_main_camera(cam, dt, players_container);
+      Player_utils::move_players(context, world, dt, players_container, bullets, 128);
       Enemy_utils::update_enemies(world, dt, enemies, 128);
       Bullet_utils::move_bullets(world, dt, bullets, 16);
       Explosion_utils::update_explosions(world, dt, explosions, 128);
       
-      if(Player_utils::all_dead(players, 1))
+      if(Player_utils::all_dead(players_container))
       {
         game_state = Game_state::selection;
       }

@@ -3,7 +3,7 @@
 
 
 struct Bullet;
-struct Player;
+struct Players_container;
 struct Enemy;
 struct Explosion;
 

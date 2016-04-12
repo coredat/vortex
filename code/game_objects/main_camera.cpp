@@ -48,8 +48,7 @@ init_main_camera(Core::Context &ctx, Core::World &world, Game_camera &cam)
 void
 move_main_camera(Game_camera &cam,
                  const float dt,
-                 const Player players[],
-                 const uint32_t number_of_players)
+                 const Players_container &players_container)
 {
 
   // We set the camera origin as the first point.
@@ -59,9 +58,11 @@ move_main_camera(Game_camera &cam,
   
   // Go through the players and accumulate the target point.
   
-  for(uint32_t i = 0; i < number_of_players; ++i)
+  for(uint32_t i = 0; i < players_container.size; ++i)
   {
-    const math::vec3 player_pos = players[i].entity.get_transform().get_position();
+    auto &player = players_container.player[i];
+  
+    const math::vec3 player_pos = player.entity.get_transform().get_position();
     
     const math::vec3 direction = math::vec3_subtract(player_pos, accum_target);
     const math::vec3 scaled_dir = math::vec3_scale(direction, 0.5f);
