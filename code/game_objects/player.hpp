@@ -48,6 +48,10 @@ hit_player(Core::World &world,
            const uint32_t number_of_explosions);
 
 
+bool
+all_dead(const Player players[],
+         const uint32_t number_of_players);
+
 } // ns
 
 

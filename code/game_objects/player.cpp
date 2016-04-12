@@ -154,4 +154,22 @@ hit_player(Core::World &world,
 }
 
 
+bool
+all_dead(const Player players[],
+         const uint32_t number_of_players)
+{
+  constexpr bool are_all_dead = true;
+
+  for(uint32_t i = 0; i < number_of_players; ++i)
+  {
+    if(players[i].entity)
+    {
+      return false;
+    }
+  }
+  
+  return are_all_dead;
+}
+
+
 } // ns

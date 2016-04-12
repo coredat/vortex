@@ -19,14 +19,32 @@
 #include <core/material/texture.hpp>
 #include <data/resource_data/resource_data.hpp>
 #include <utilities/logging.hpp>
+#include <utilities/timer.hpp>
+
+// Common
+#include <common/object_tags.hpp>
+
+// Game Objects
 #include <game_objects/bullet.hpp>
 #include <game_objects/player.hpp>
 #include <game_objects/enemy.hpp>
 #include <game_objects/main_camera.hpp>
 #include <game_objects/level.hpp>
 #include <game_objects/explosion.hpp>
-#include <utilities/timer.hpp>
-#include <common/object_tags.hpp>
+
+// Game States
+#include <game_states/game.hpp>
+#include <game_states/selection.hpp>
+
+
+enum class Game_state
+{
+  selection,
+  game_mode,
+};
+
+
+Game_state game_state = Game_state::selection;
 
 
 int
@@ -71,39 +89,65 @@ main()
 
     world.think(dt);
     
-    world.get_overlapping_aabbs([&](const Core::Entity_ref ref_a,
-                                    const Core::Entity_ref ref_b)
+    /*
+      Selection.
+    */
+    if(game_state == Game_state::selection)
     {
-      // Enemy collided with a bullet
-      if(ref_a.has_tag(Object_tags::enemy) && ref_b.has_tag(Object_tags::bullet))
+      // Wait for input.
+      Core::Input::Controller controller(context, 0);
+      if(controller.is_button_down(Core::Input::Button::button_0))
       {
-        Enemy_utils::hit_enemy(world,
-                               ref_a.get_id(),
-                               enemies,
-                               128,
-                               explosions,
-                               128);
+        game_state = Game_state::game_mode;
+        Player_utils::init_players(world, players, 1);
       }
+    }
+    
+    /*
+      Play game.
+    */
+    if(game_state == Game_state::game_mode)
+      {
       
-      if(ref_a.has_tag(Object_tags::player))
+      world.get_overlapping_aabbs([&](const Core::Entity_ref ref_a,
+                                      const Core::Entity_ref ref_b)
       {
-        if(ref_b.has_tag(Object_tags::enemy))
+        // Enemy collided with a bullet
+        if(ref_a.has_tag(Object_tags::enemy) && ref_b.has_tag(Object_tags::bullet))
         {
-          Player_utils::hit_player(world,
-                                   ref_a.get_id(),
-                                   players,
-                                   1,
-                                   explosions,
-                                   128);
+          Enemy_utils::hit_enemy(world,
+                                 ref_a.get_id(),
+                                 enemies,
+                                 128,
+                                 explosions,
+                                 128);
         }
-      }
-    });
+        
+        if(ref_a.has_tag(Object_tags::player))
+        {
+          if(ref_b.has_tag(Object_tags::enemy))
+          {
+            Player_utils::hit_player(world,
+                                     ref_a.get_id(),
+                                     players,
+                                     1,
+                                     explosions,
+                                     128);
+          }
+        }
+      });
 
-    Camera_utils::move_main_camera(cam, dt, players, 1);
-    Player_utils::move_players(context, world, dt, players, 1, bullets, 128);
-    Enemy_utils::update_enemies(world, dt, enemies, 128);
-    Bullet_utils::move_bullets(world, dt, bullets, 16);
-    Explosion_utils::update_explosions(world, dt, explosions, 128);
+      Camera_utils::move_main_camera(cam, dt, players, 1);
+      Player_utils::move_players(context, world, dt, players, 1, bullets, 128);
+      Enemy_utils::update_enemies(world, dt, enemies, 128);
+      Bullet_utils::move_bullets(world, dt, bullets, 16);
+      Explosion_utils::update_explosions(world, dt, explosions, 128);
+      
+      if(Player_utils::all_dead(players, 1))
+      {
+        game_state = Game_state::selection;
+      }
+    }
 
     mesh_renderer.render();
   }
