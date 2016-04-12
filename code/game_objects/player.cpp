@@ -9,6 +9,7 @@
 #include <core/material/texture.hpp>
 #include <game_objects/bullet.hpp>
 #include <game_objects/bullet.hpp>
+#include <game_objects/explosion.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
 #include <utilities/logging.hpp>
@@ -85,6 +86,34 @@ move_players(Core::Context &ctx,
       Bullet_utils::create_bullet(world, curr_player.point_on_circle, -1, bullets, number_of_bullets);
       curr_player.gun_cooldown = gun_cooldown_timer;
     }
+  }
+}
+
+
+void
+hit_player(Core::World &world,
+           const Core::Entity_id id,
+           Player players[],
+           const uint32_t number_of_players,
+           Explosion explosions[],
+           const uint32_t number_of_explosions)
+{
+  // Search for entity and hit it.
+  for(uint32_t i = 0; i < number_of_players; ++i)
+  {
+    Player &player = players[i];
+    
+    if(player.entity.get_id() != id)
+    {
+      continue;
+    }
+    
+    Explosion_utils::create_explosion(world,
+                                      player.entity.get_transform().get_position(),
+                                      explosions,
+                                      number_of_explosions);
+    
+    player.entity.destroy();
   }
 }
 

@@ -36,6 +36,15 @@ move_players(Core::Context &ctx,
              Bullet bullets[],
              const uint32_t number_of_bullets);
 
+  
+void
+hit_player(Core::World &world,
+           const Core::Entity_id id,
+           Player players[],
+           const uint32_t number_of_players,
+           Explosion explosions[],
+           const uint32_t number_of_explosions);
+
 
 } // ns
 

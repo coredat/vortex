@@ -71,7 +71,6 @@ create_explosion(const Core::World &world,
       exp.entity = Core::Entity(world);
       exp.entity.set_name("Explosion");
       exp.entity.add_tag(Object_tags::explosion);
-      exp.entity.add_tag(1);
       
       exp.entity.set_model(model);
       exp.entity.set_material_id(texture.get_id());

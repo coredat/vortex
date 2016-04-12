@@ -84,6 +84,19 @@ main()
                                explosions,
                                128);
       }
+      
+      if(ref_a.has_tag(Object_tags::player))
+      {
+        if(ref_b.has_tag(Object_tags::enemy))
+        {
+          Player_utils::hit_player(world,
+                                   ref_a.get_id(),
+                                   players,
+                                   1,
+                                   explosions,
+                                   128);
+        }
+      }
     });
 
     Camera_utils::move_main_camera(cam, dt, players, 1);
