@@ -67,7 +67,7 @@ move_main_camera(Game_camera &cam,
       continue;
     }
   
-    const math::vec3 player_pos = player.entity.get_transform().get_position();    
+    const math::vec3 player_pos = player.entity.get_transform().get_position();
     accum_target = math::vec3_add(accum_target, player_pos);
   }
   
