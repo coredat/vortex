@@ -5,7 +5,7 @@
 
 struct Object_pool
 {
-  
+  // Having second thoughts on this.
 };
 
 

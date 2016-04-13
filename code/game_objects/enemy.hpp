@@ -32,6 +32,12 @@ init_enemies(Core::World &world,
 
 
 void
+spawn_enemies(Core::World &world,
+              const float dt,
+              Enemies_container &enemies_container);
+
+
+void
 update_enemies(Core::World &world,
                const float dt,
                Enemies_container &enemies_container);
@@ -42,6 +48,12 @@ hit_enemy(Core::World &world,
           const Core::Entity_id id,
           Enemies_container &enemies_container,
           Explosions_container &explosions_container);
+
+
+void
+explode_all(Core::World &world,
+            Enemies_container &enemies_container,
+            Explosions_container &explosions_container);
 
 
 }; // ns

@@ -41,6 +41,7 @@ enum class Game_state
 {
   selection,
   game_mode,
+  game_over,
 };
 
 
@@ -72,11 +73,11 @@ main()
   Bullet_utils::init_bullets(world, bullets_container);
   
   Players_container players_container;
-  Player_utils::init_players(world, players_container);
+  //Player_utils::init_players(world, players_container);
   
   Enemies_container enemies_container;
   Enemy_utils::init_enemies(world, enemies_container);
-  
+    
   Explosions_container explosions_container;
   Explosion_utils::init_explosions(world, explosions_container);
   
@@ -89,7 +90,7 @@ main()
     const float dt = static_cast<float>(frame_time) / 1000.f;
 
     world.think(dt);
-    
+
     /*
       Selection.
     */
@@ -133,17 +134,39 @@ main()
           }
         }
       });
-
-      Camera_utils::move_main_camera(cam, dt, players_container);
+        
+      Enemy_utils::spawn_enemies(world, dt, enemies_container);
       Player_utils::move_players(context, world, dt, players_container, bullets_container);
-      Enemy_utils::update_enemies(world, dt,                                  enemies_container);
-      Bullet_utils::move_bullets(world, dt, bullets_container);
-      Explosion_utils::update_explosions(world, dt, explosions_container);
+
       
       if(Player_utils::all_dead(players_container))
       {
+        game_state = Game_state::game_over;
+      }
+    }
+    
+    /*
+      Game over screen
+    */
+    if(game_state == Game_state::game_over)
+    {
+      Enemy_utils::explode_all(world, enemies_container, explosions_container);
+      
+      Core::Input::Controller controller(context, 0);
+      if(controller.is_button_down(Core::Input::Button::button_2))
+      {
         game_state = Game_state::selection;
       }
+    }
+    
+    /*
+      Common Entities to update
+    */
+    {
+      Camera_utils::move_main_camera(cam, dt, players_container);
+      Bullet_utils::move_bullets(world, dt, bullets_container);
+      Explosion_utils::update_explosions(world, dt, explosions_container);
+      Enemy_utils::update_enemies(world, dt, enemies_container);
     }
 
     mesh_renderer.render();

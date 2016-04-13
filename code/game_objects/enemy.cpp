@@ -35,16 +35,16 @@ init_enemies(Core::World &world,
 
 
 void
-update_enemies(Core::World &world,
-               const float dt,
-               Enemies_container &enemies_container)
+spawn_enemies(Core::World &world,
+              const float dt,
+              Enemies_container &enemies_container)
 {
   spawn_timer += dt;
 
   for(uint32_t i = 0; i < enemies_container.size; ++i)
   {
     auto &enemy = enemies_container.enemy[i];
-    
+  
     if(spawn_timer > spawn_rate && !enemy.entity)
     {
       spawn_timer = 0.f;
@@ -58,14 +58,30 @@ update_enemies(Core::World &world,
       enemy.entity.set_model(model);
       enemy.entity.set_material_id(texture.get_id());
       
+      const math::vec2 point = Level::get_point_on_cirlce(enemy.point_on_circle);
+      
       const Core::Transform trans(
-        math::vec3_init(0, 0, Level::get_bottom_of_level()),
+        math::vec3_init(math::vec2_get_x(point), math::vec2_get_y(point), Level::get_bottom_of_level()),
         math::vec3_one(),
         math::quat_init()
       );
       
       enemy.entity.set_transform(trans);
+      
+      return;
     }
+  }
+}
+
+
+void
+update_enemies(Core::World &world,
+               const float dt,
+               Enemies_container &enemies_container)
+{
+  for(uint32_t i = 0; i < enemies_container.size; ++i)
+  {
+    auto &enemy = enemies_container.enemy[i];
     
     Core::Transform trans = enemy.entity.get_transform();
     
@@ -124,5 +140,26 @@ hit_enemy(Core::World &world,
     }
   }
 }
+
+
+void
+explode_all(Core::World &world,
+            Enemies_container &enemies_container,
+            Explosions_container &explosions_container)
+{
+  for(uint32_t i = 0; i < enemies_container.size; ++i)
+  {
+    auto &enemy = enemies_container.enemy[i];
+    
+    if(enemy.entity)
+    {
+      const math::vec3 pos = enemy.entity.get_transform().get_position();
+      Explosion_utils::create_explosion(world, pos, explosions_container);
+      
+      enemy.entity.destroy();
+    }
+  }
+}
+
 
 } // ns
