@@ -38,18 +38,15 @@ void
 move_players(Core::Context &ctx,
              Core::World &world,
              const float delta_time,
-             Players_container &player_container,
-             Bullet bullets[],
-             const uint32_t number_of_bullets);
+             Players_container &players_container,
+             Bullets_container &bullets_container);
 
   
 void
 hit_player(Core::World &world,
            const Core::Entity_id id,
-           Players_container &player_container,
-           Explosion explosions[],
-           const uint32_t number_of_explosions);
-
+           Players_container &players_container,
+           Explosions_container &explosions_container);
 
 bool
 all_dead(Players_container &player_container);

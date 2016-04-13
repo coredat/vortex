@@ -27,30 +27,23 @@ namespace Enemy_utils {
 
 void
 init_enemies(Core::World &world,
-             Enemy *enemy_arr,
-             const uint32_t number_of_entities)
+             Enemies_container &enemies_container)
 {
   model = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
   texture = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_orange_512.png");
-
-  for(uint32_t i = 0; i < number_of_entities; ++i)
-  {
-    Enemy &enemy = enemy_arr[i];
-  }
 }
 
 
 void
 update_enemies(Core::World &world,
                const float dt,
-               Enemy *enemy_arr,
-               const uint32_t number_of_entities)
+               Enemies_container &enemies_container)
 {
   spawn_timer += dt;
 
-  for(uint32_t i = 0; i < number_of_entities; ++i)
+  for(uint32_t i = 0; i < enemies_container.size; ++i)
   {
-    Enemy &enemy = enemy_arr[i];
+    auto &enemy = enemies_container.enemy[i];
     
     if(spawn_timer > spawn_rate && !enemy.entity)
     {
@@ -114,21 +107,18 @@ update_enemies(Core::World &world,
 void
 hit_enemy(Core::World &world,
           const Core::Entity_id id,
-          Enemy enemy_arr[],
-          const uint32_t number_of_entities,
-          Explosion explosions_arr[],
-          const uint32_t number_of_explosions)
+          Enemies_container &enemies_container,
+          Explosions_container &explosions_container)
 {
-  for(uint32_t i = 0; i < number_of_entities; ++i)
+  for(uint32_t i = 0; i < enemies_container.size; ++i)
   {
-    Enemy &enemy = enemy_arr[i];
+    auto &enemy = enemies_container.enemy[i];
     
     if(enemy.entity.get_id() == id)
     {
       Explosion_utils::create_explosion(world,
                                         enemy.entity.get_transform().get_position(),
-                                        explosions_arr,
-                                        number_of_explosions);
+                                        explosions_container);
       
       enemy.entity.destroy();
     }

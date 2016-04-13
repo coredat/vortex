@@ -51,8 +51,7 @@ move_players(Core::Context &ctx,
              Core::World &world,
              const float dt,
              Players_container &players_container,
-             Bullet bullets[],
-             const uint32_t number_of_bullets)
+             Bullets_container &bullets_container)
 {
   for(uint32_t i = 0; i < players_container.size; ++i)
   {
@@ -119,7 +118,7 @@ move_players(Core::Context &ctx,
     // Fire
     if(player.gun_cooldown < 0.f && controller.is_button_down(Core::Input::Button::button_0))
     {
-      Bullet_utils::create_bullet(world, player.point_on_circle, -1, bullets, number_of_bullets);
+      Bullet_utils::create_bullet(world, player.point_on_circle, -1, bullets_container);
       player.gun_cooldown = gun_cooldown_timer;
     }
   }
@@ -130,8 +129,7 @@ void
 hit_player(Core::World &world,
            const Core::Entity_id id,
            Players_container &players_container,
-           Explosion explosions[],
-           const uint32_t number_of_explosions)
+           Explosions_container &explosions_container)
 {
   // Search for entity and hit it.
   for(uint32_t i = 0; i < players_container.size; ++i)
@@ -145,8 +143,7 @@ hit_player(Core::World &world,
     
     Explosion_utils::create_explosion(world,
                                       player.entity.get_transform().get_position(),
-                                      explosions,
-                                      number_of_explosions);
+                                      explosions_container);
     
     player.entity.destroy();
   }

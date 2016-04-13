@@ -8,13 +8,19 @@
 #include <stdint.h>
 
 
-struct Bullet
+struct Bullets_container
 {
-  int32_t           direction         = -1;
-  float             speed             = 100.5f;
-  float             point_on_circle   = 1;
-  Core::Entity      entity;
-  Core::Entity_ref  owner;
+  struct Bullet
+  {
+    int32_t           direction         = -1;
+    float             speed             = 100.5f;
+    float             point_on_circle   = 1;
+    Core::Entity      entity;
+    Core::Entity_ref  owner;
+  };
+  
+  Bullet bullet[128];
+  const uint32_t size = 128;
 };
 
 
@@ -23,23 +29,20 @@ namespace Bullet_utils {
 
 void
 init_bullets(Core::World &world,
-             Bullet bullets[],
-             const uint32_t number_of_bullets);
+             Bullets_container &bullets_container);
 
 
 void
 move_bullets(Core::World &world,
              const float dt,
-             Bullet bullets[],
-             const uint32_t number_of_bullets);
+             Bullets_container &bullets_container);
 
 
 void
 create_bullet(Core::World &world,
               const float position,
               const uint32_t direction,
-              Bullet bullets[],
-              const uint32_t number_of_bullets);
+              Bullets_container &bullets_container);
 
 };
 

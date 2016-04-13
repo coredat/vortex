@@ -6,17 +6,22 @@
 #include <core/world/world_fwd.hpp>
 
 
-struct Level_data
+struct Level_container
 {
-  Core::Entity entity;
+  struct Level_data
+  {
+    Core::Entity entity;
+  };
+  
+  Level_data level[1];
+  const uint32_t size = 1;
 };
-
 
 namespace Level_utils {
 
 
 void
-init_level(Core::World &world, Level_data level[], const uint32_t size_of_level);
+init_level(Core::World &world, Level_container &level);
 
 
 };

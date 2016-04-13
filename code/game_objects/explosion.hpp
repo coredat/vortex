@@ -8,10 +8,16 @@
 #include <stdint.h>
 
 
-struct Explosion
+struct Explosions_container
 {
-  Core::Entity entity;
-  float time = 0.f;
+  struct Explosion
+  {
+    Core::Entity entity;
+    float time = 0.f;
+  };
+  
+  Explosion explosion[128];
+  const uint32_t size = 128;
 };
 
 
@@ -20,22 +26,19 @@ namespace Explosion_utils {
 
 void
 init_explosions(const Core::World &world,
-                Explosion explosions[],
-                const uint32_t number_of_explosions);
+                Explosions_container &explosions_container);
 
 
 void
 update_explosions(const Core::World &world,
                   const float dt,
-                  Explosion explosions[],
-                  const uint32_t number_of_explosions);
+                  Explosions_container &explosions_container);
 
 
 void
 create_explosion(const Core::World &world,
                  const math::vec3 position,
-                 Explosion explosions[],
-                 const uint32_t number_of_explosions);
+                 Explosions_container &explosions_container);
 
 
 } // ns

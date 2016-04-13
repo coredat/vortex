@@ -67,20 +67,20 @@ main()
   Game_camera cam;
   Camera_utils::init_main_camera(context, world, cam);
   
-  Bullet bullets[128];
-  Bullet_utils::init_bullets(world, bullets, 128);
+  Bullets_container bullets_container;
+  Bullet_utils::init_bullets(world, bullets_container);
   
   Players_container players_container;
   Player_utils::init_players(world, players_container);
   
-  Enemy enemies[128];
-  Enemy_utils::init_enemies(world, enemies, 128);
+  Enemies_container enemies_container;
+  Enemy_utils::init_enemies(world, enemies_container);
   
-  Explosion explosions[128];
-  Explosion_utils::init_explosions(world, explosions, 128);
+  Explosions_container explosions_container;
+  Explosion_utils::init_explosions(world, explosions_container);
   
-  Level_data level[1];
-  Level_utils::init_level(world, level, 1);
+  Level_container level;
+  Level_utils::init_level(world, level);
   
   while(context.is_open())
   {
@@ -117,10 +117,8 @@ main()
         {
           Enemy_utils::hit_enemy(world,
                                  ref_a.get_id(),
-                                 enemies,
-                                 128,
-                                 explosions,
-                                 128);
+                                 enemies_container,
+                                 explosions_container);
         }
         
         if(ref_a.has_tag(Object_tags::player))
@@ -130,17 +128,16 @@ main()
             Player_utils::hit_player(world,
                                      ref_a.get_id(),
                                      players_container,
-                                     explosions,
-                                     128);
+                                     explosions_container);
           }
         }
       });
 
       Camera_utils::move_main_camera(cam, dt, players_container);
-      Player_utils::move_players(context, world, dt, players_container, bullets, 128);
-      Enemy_utils::update_enemies(world, dt, enemies, 128);
-      Bullet_utils::move_bullets(world, dt, bullets, 16);
-      Explosion_utils::update_explosions(world, dt, explosions, 128);
+      Player_utils::move_players(context, world, dt, players_container, bullets_container);
+      Enemy_utils::update_enemies(world, dt,                                  enemies_container);
+      Bullet_utils::move_bullets(world, dt, bullets_container);
+      Explosion_utils::update_explosions(world, dt, explosions_container);
       
       if(Player_utils::all_dead(players_container))
       {

@@ -20,8 +20,7 @@ namespace Explosion_utils {
 
 void
 init_explosions(const Core::World &world,
-                Explosion explosions_arr[],
-                const uint32_t number_of_explosions)
+                Explosions_container &explosions_container)
 {
   model = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
   texture = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_colored_squares_512.png");
@@ -31,12 +30,11 @@ init_explosions(const Core::World &world,
 void
 update_explosions(const Core::World &world,
                   const float dt,
-                  Explosion explosions[],
-                  const uint32_t number_of_explosions)
+                  Explosions_container &explosions_container)
 {
-  for(uint32_t i = 0; i < number_of_explosions; ++i)
+  for(uint32_t i = 0; i < explosions_container.size; ++i)
   {
-    Explosion &exp = explosions[i];
+    auto &exp = explosions_container.explosion[i];
     
     exp.time += dt * 10.f;
     const float new_scale = 0.5f + math::sin(exp.time);
@@ -59,12 +57,11 @@ update_explosions(const Core::World &world,
 void
 create_explosion(const Core::World &world,
                  const math::vec3 position,
-                 Explosion explosions[],
-                 const uint32_t number_of_explosions)
+                 Explosions_container &explosions_container)
 {
-  for(uint32_t i = 0; i < number_of_explosions; ++i)
+  for(uint32_t i = 0; i < explosions_container.size; ++i)
   {
-    Explosion &exp = explosions[i];
+    auto &exp = explosions_container.explosion[i];
     
     if(!exp.entity)
     {

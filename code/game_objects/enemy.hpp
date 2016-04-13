@@ -8,12 +8,18 @@
 #include <stdint.h>
 
 
-struct Enemy
+struct Enemies_container
 {
-  float         point_on_circle = 0;
-  float         depth = 0;
-  int32_t       direction = 1;
-  Core::Entity  entity;
+  struct Enemy
+  {
+    float         point_on_circle = 0;
+    float         depth = 0;
+    int32_t       direction = 1;
+    Core::Entity  entity;
+  };
+  
+  Enemy enemy[128];
+  const uint32_t size = 128;
 };
 
 
@@ -22,24 +28,20 @@ namespace Enemy_utils {
 
 void
 init_enemies(Core::World &world,
-             Enemy *enemy_arr,
-             const uint32_t number_of_entities);
+             Enemies_container &enemies_container);
 
 
 void
 update_enemies(Core::World &world,
                const float dt,
-               Enemy *enemy_arr,
-               const uint32_t number_of_entities);
+               Enemies_container &enemies_container);
 
 
 void
 hit_enemy(Core::World &world,
           const Core::Entity_id id,
-          Enemy enemy_arr[],
-          const uint32_t number_of_entities,
-          Explosion explosions_arr[],
-          const uint32_t number_of_explosions);
+          Enemies_container &enemies_container,
+          Explosions_container &explosions_container);
 
 
 }; // ns

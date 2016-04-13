@@ -23,8 +23,7 @@ namespace Bullet_utils {
 
 void
 init_bullets(Core::World &world,
-             Bullet bullets[],
-             const uint32_t number_of_bullets)
+             Bullets_container &bullets_container)
 {
   model = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
   texture = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_blue_512.png");
@@ -34,12 +33,11 @@ init_bullets(Core::World &world,
 void
 move_bullets(Core::World &world,
              const float dt,
-             Bullet bullets[],
-             const uint32_t number_of_bullets)
+             Bullets_container &bullets_container)
 {
-  for(uint32_t i = 0; i < number_of_bullets; ++i)
+  for(uint32_t i = 0; i < bullets_container.size; ++i)
   {
-    Bullet &bullet = bullets[i];
+    auto &bullet = bullets_container.bullet[i];
     
     if(!bullet.entity)
     {
@@ -82,12 +80,11 @@ void
 create_bullet(Core::World &world,
               const float position,
               const uint32_t direction,
-              Bullet bullets[],
-              const uint32_t number_of_bullets)
+              Bullets_container &bullets_container)
 {
-  for(uint32_t i = 0; i < number_of_bullets; ++i)
+  for(uint32_t i = 0; i < bullets_container.size; ++i)
   {
-    Bullet &bullet = bullets[i];
+    auto &bullet = bullets_container.bullet[i];
     
     if(!bullet.entity)
     {
