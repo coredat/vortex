@@ -50,7 +50,7 @@ move_bullets(Core::World &world,
     {
       const float depth = math::vec3_get_z(trans.get_position());
 
-      if(!math::is_between(depth, Level::get_near_death_zones(), Level::get_far_death_zone()))
+      if(!math::is_between(depth, Level::get_near_death_zone(), Level::get_far_death_zone()))
       {
         bullet.entity.destroy();
         continue;

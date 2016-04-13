@@ -4,6 +4,7 @@
 
 #include <core/world/world_fwd.hpp>
 #include <core/entity/entity.hpp>
+#include <math/vec/vec_types.hpp>
 #include <stdint.h>
 
 
@@ -36,6 +37,7 @@ update_powerups(Core::World &world,
 
 void
 create_powerup(Core::World &world,
+               const math::vec3 position,
                Powerups_container &powerups_container);
 
 

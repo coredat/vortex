@@ -1,5 +1,6 @@
 #include <game_objects/enemy.hpp>
 #include <game_objects/explosion.hpp>
+#include <game_objects/powerup_pickup.hpp>
 #include <core/model/model.hpp>
 #include <core/material/texture.hpp>
 #include <core/world/world.hpp>
@@ -124,7 +125,8 @@ void
 hit_enemy(Core::World &world,
           const Core::Entity_id id,
           Enemies_container &enemies_container,
-          Explosions_container &explosions_container)
+          Explosions_container &explosions_container,
+          Powerups_container &powerups_container)
 {
   for(uint32_t i = 0; i < enemies_container.size; ++i)
   {
@@ -132,9 +134,15 @@ hit_enemy(Core::World &world,
     
     if(enemy.entity.get_id() == id)
     {
+      const math::vec3 position = enemy.entity.get_transform().get_position();
+    
       Explosion_utils::create_explosion(world,
-                                        enemy.entity.get_transform().get_position(),
+                                        position,
                                         explosions_container);
+      
+      Powerup_utils::create_powerup(world,
+                                    position,
+                                    powerups_container);
       
       enemy.entity.destroy();
     }

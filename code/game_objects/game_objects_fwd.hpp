@@ -8,7 +8,7 @@ struct Players_container;
 struct Enemies_container;
 struct Explosions_container;
 struct Multipliers_container;
-struct Pickups_container;
+struct Powerups_container;
 
 
 #endif // inc guard

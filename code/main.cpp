@@ -31,6 +31,7 @@
 #include <game_objects/main_camera.hpp>
 #include <game_objects/level.hpp>
 #include <game_objects/explosion.hpp>
+#include <game_objects/powerup_pickup.hpp>
 
 // Game States
 #include <game_states/game.hpp>
@@ -84,6 +85,9 @@ main()
   Level_container level;
   Level_utils::init_level(world, level);
   
+  Powerups_container powerups_container;
+  Powerup_utils::init_powerups(world, powerups_container);
+  
   while(context.is_open())
   {
     const util::milliseconds frame_time = delta_time_ms.split();
@@ -120,7 +124,8 @@ main()
           Enemy_utils::hit_enemy(world,
                                  ref_a.get_id(),
                                  enemies_container,
-                                 explosions_container);
+                                 explosions_container,
+                                 powerups_container);
         }
         
         if(ref_a.has_tag(Object_tags::player))
@@ -167,6 +172,7 @@ main()
       Bullet_utils::move_bullets(world, dt, bullets_container);
       Explosion_utils::update_explosions(world, dt, explosions_container);
       Enemy_utils::update_enemies(world, dt, enemies_container);
+      Powerup_utils::update_powerups(world, powerups_container, dt);
     }
 
     mesh_renderer.render();
