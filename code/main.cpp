@@ -51,6 +51,7 @@ int
 main()
 {
   Core::Context context(800, 480, false, "Vortex");
+  Core::Input::mouse_set_capture(context, true);
   
   Core::Model model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
   assert(model.get_id());
