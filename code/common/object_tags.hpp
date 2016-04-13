@@ -11,13 +11,13 @@
 namespace Object_tags {
 enum ENUM {
 
-
-  bullet    = 1 << 0,
-  enemy     = 1 << 1,
-  player    = 1 << 2,
-  camera    = 1 << 3,
-  explosion = 1 << 4,
-
+  bullet     = 1 << 0,
+  enemy      = 1 << 1,
+  player     = 1 << 2,
+  camera     = 1 << 3,
+  explosion  = 1 << 4,
+  powerup    = 1 << 5,
+  multiplier = 1 << 6,
 
 }; // enum
 } // ns

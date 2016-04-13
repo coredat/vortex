@@ -28,7 +28,8 @@ namespace Player_utils {
 
 void
 init_players(Core::World &world,
-             Players_container &players_container)
+             Players_container &players_container,
+             const uint32_t controller_id)
 {
   for(uint32_t i = 0; i < players_container.size; ++i)
   {
@@ -37,11 +38,21 @@ init_players(Core::World &world,
     
     auto &player = players_container.player[i];
     
+    if(player.entity)
+    {
+      // This entity is already taken.
+      continue;
+    }
+    
+    player.controller_id = controller_id;
+    
     player.entity = Core::Entity(world);
     player.entity.set_name("Player");
-    player.entity.add_tag(Object_tags::player);
+    player.entity.set_tags(Object_tags::player);
     player.entity.set_model(model);
     player.entity.set_material_id(texture.get_id());
+    
+    break;
   }
 }
 
@@ -62,6 +73,7 @@ move_players(Core::Context &ctx,
       continue;
     }
     
+    player.power_up_timer -= dt;
     player.gun_cooldown -= dt;
     
     Core::Input::Controller controller = Core::Input::Controller(ctx, player.controller_id);
@@ -116,10 +128,32 @@ move_players(Core::Context &ctx,
     }
     
     // Fire
-    if(player.gun_cooldown < 0.f && controller.is_button_down(Core::Input::Button::button_0))
     {
-      Bullet_utils::create_bullet(world, player.point_on_circle, -1, bullets_container);
-      player.gun_cooldown = gun_cooldown_timer;
+      const float multipler = player.power_up_timer > 0 ? dt * 15.f : 0.f;
+      const float timer = player.gun_cooldown;
+      
+      if(timer < (0.f + multipler) && controller.is_button_down(Core::Input::Button::button_0))
+      {
+        Bullet_utils::create_bullet(world, player.point_on_circle, -1, bullets_container);
+        player.gun_cooldown = gun_cooldown_timer;
+      }
+    }
+  }
+}
+
+
+void
+power_up(Core::World &world,
+         const Core::Entity_id id,
+         Players_container &players_container)
+{
+  for(uint32_t i = 0; i < players_container.size; ++i)
+  {
+    auto &player = players_container.player[i];
+    
+    if(player.entity.get_id() == id)
+    {
+      player.power_up_timer = 5.f;
     }
   }
 }

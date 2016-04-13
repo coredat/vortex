@@ -19,10 +19,11 @@ struct Players_container
     float         gun_cooldown = 0.f;
     float         jump_speed = 0;
     float         jump_time = 0;
+    float         power_up_timer = 0;
   };
   
-  Player player[1];
-  const uint32_t size = 1;
+  Player player[2];
+  const uint32_t size = 2;
 };
 
 
@@ -31,7 +32,8 @@ namespace Player_utils {
 
 void
 init_players(Core::World &world,
-             Players_container &player_container);
+             Players_container &player_container,
+             const uint32_t controller_id);
 
 
 void
@@ -47,6 +49,13 @@ hit_player(Core::World &world,
            const Core::Entity_id id,
            Players_container &players_container,
            Explosions_container &explosions_container);
+  
+  
+void
+power_up(Core::World &world,
+         const Core::Entity_id id,
+         Players_container &players_container);
+
 
 bool
 all_dead(Players_container &player_container);

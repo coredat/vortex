@@ -52,7 +52,7 @@ Game_state game_state = Game_state::selection;
 int
 main()
 {
-  Core::Context context(800, 480, false, "Vortex");
+  Core::Context context(1152, 648, false, "Vortex");
   Core::Input::mouse_set_capture(context, true);
   
   Core::Model model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
@@ -94,7 +94,7 @@ main()
     const float dt = static_cast<float>(frame_time) / 1000.f;
 
     world.think(dt);
-
+    
     /*
       Selection.
     */
@@ -102,10 +102,11 @@ main()
     {
       // Wait for input.
       Core::Input::Controller controller(context, 0);
-      if(controller.is_button_down(Core::Input::Button::button_0))
+      if(controller.is_button_down(Core::Input::Button::button_4))
       {
         game_state = Game_state::game_mode;
-        Player_utils::init_players(world, players_container);
+        Player_utils::init_players(world, players_container, 0);
+        Player_utils::init_players(world, players_container, 1);
       }
     }
     
@@ -137,13 +138,19 @@ main()
                                      players_container,
                                      explosions_container);
           }
+          
+          if(ref_b.has_tag(Object_tags::powerup))
+          {
+            Player_utils::power_up(world,
+                                   ref_a.get_id(),
+                                   players_container);
+          }
         }
       });
         
       Enemy_utils::spawn_enemies(world, dt, enemies_container);
       Player_utils::move_players(context, world, dt, players_container, bullets_container);
 
-      
       if(Player_utils::all_dead(players_container))
       {
         game_state = Game_state::game_over;
@@ -158,7 +165,7 @@ main()
       Enemy_utils::explode_all(world, enemies_container, explosions_container);
       
       Core::Input::Controller controller(context, 0);
-      if(controller.is_button_down(Core::Input::Button::button_2))
+      if(controller.is_button_down(Core::Input::Button::button_4))
       {
         game_state = Game_state::selection;
       }

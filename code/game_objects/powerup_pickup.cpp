@@ -1,4 +1,5 @@
 #include <game_objects/powerup_pickup.hpp>
+#include <common/object_tags.hpp>
 #include <common/level_functions.hpp>
 #include <core/world/world.hpp>
 #include <core/model/model.hpp>
@@ -88,6 +89,7 @@ create_powerup(Core::World &world,
     {
       powerup.entity = Core::Entity(world);
       powerup.entity.set_name("Powerup");
+      powerup.entity.set_tags(Object_tags::powerup);
       powerup.entity.set_model(model);
       powerup.entity.set_material_id(texture.get_id());
       

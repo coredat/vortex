@@ -61,18 +61,20 @@ move_main_camera(Game_camera &cam,
   for(uint32_t i = 0; i < players_container.size; ++i)
   {
     auto &player = players_container.player[i];
+    
+    if(!player.entity)
+    {
+      continue;
+    }
   
-    const math::vec3 player_pos = player.entity.get_transform().get_position();
-    
-    const math::vec3 direction = math::vec3_subtract(player_pos, accum_target);
-    const math::vec3 scaled_dir = math::vec3_scale(direction, 0.5f);
-    
-    accum_target = math::vec3_add(accum_target, scaled_dir);
+    const math::vec3 player_pos = player.entity.get_transform().get_position();    
+    accum_target = math::vec3_add(accum_target, player_pos);
   }
   
   const math::vec3 cam_distance_from_players = math::vec3_init(0,0,camera_distance_base);
   
-  cam.target_point = math::vec3_add(accum_target, cam_distance_from_players);
+  const math::vec3 scaled_accum = math::vec3_scale(accum_target, 0.45f);
+  cam.target_point = math::vec3_add(scaled_accum, cam_distance_from_players);
   
   const math::vec3 this_pos   = this_trans.get_position();
   const math::vec3 move_dir   = math::vec3_subtract(cam.target_point, this_pos);
