@@ -14,12 +14,12 @@ struct Players_container
   struct Player
   {
     Core::Entity  entity;
-    uint32_t      controller_id = 0;
+    uint32_t      controller_id   = 0;
     float         point_on_circle = 0.f;
-    float         gun_cooldown = 0.f;
-    float         jump_speed = 0;
-    float         jump_time = 0;
-    float         power_up_timer = 0;
+    float         gun_cooldown    = 0.f;
+    float         jump_speed      = 0.f;
+    float         jump_time       = 0.f;
+    float         power_up_timer  = 0.f;
   };
   
   Player player[2];

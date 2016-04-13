@@ -26,7 +26,7 @@ init_bullets(Core::World &world,
              Bullets_container &bullets_container)
 {
   model = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
-  texture = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_blue_512.png");
+  texture = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_red_512.png");
 }
 
 
