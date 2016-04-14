@@ -14,6 +14,7 @@
 #include <common/object_tags.hpp>
 #include <utilities/logging.hpp>
 #include <math/vec/vec2.hpp>
+#include <math/quat/quat.hpp>
 
 
 namespace
@@ -51,6 +52,17 @@ init_players(Core::World &world,
     player.entity.set_tags(Object_tags::player);
     player.entity.set_model(model);
     player.entity.set_material_id(texture.get_id());
+    
+    // We set a temp transform
+    // because this will be the player selection screen.
+    
+    Core::Transform trans(
+      math::vec3_init(-8.f + (i * (8.f / 4.f)), 0, 0),
+      math::vec3_one(),
+      math::quat_init()
+    );
+    
+    player.entity.set_transform(trans);
     
     break;
   }
