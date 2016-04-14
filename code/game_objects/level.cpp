@@ -24,7 +24,9 @@ init_level(Core::World &world, Level_container &level)
     Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_grey_512.png");
 
     const float depth = Level::get_top_of_level() - Level::get_bottom_of_level();
-    Core::Transform trans(math::vec3_init(0, 0, -depth * 0.5f), math::vec3_init(Level::get_radius() * 3.f, Level::get_radius() * 3.f, math::abs(depth * 10.f)), math::quat_init());
+    Core::Transform trans(math::vec3_init(0, 0, -depth * 0.5f),
+                          math::vec3_init(Level::get_radius() * 3.f, Level::get_radius() * 3.f, math::abs(depth * 10.f)),
+                          math::quat_init());
 
     level_data.entity.set_model(model);
     level_data.entity.set_material_id(texture.get_id());

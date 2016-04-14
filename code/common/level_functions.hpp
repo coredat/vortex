@@ -22,7 +22,7 @@ get_radius() { return 7.f; }
 
 
 constexpr float
-get_bottom_of_level() { return -40.f; }
+get_bottom_of_level() { return -90.f; }
 
 
 constexpr float

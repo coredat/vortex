@@ -100,7 +100,7 @@ update_enemies(Core::World &world,
     
     // Depth
     {
-      enemy.depth += (10 * dt * static_cast<float>(enemy.direction));
+      enemy.depth += (20.f * dt * static_cast<float>(enemy.direction));
       
       if(!math::is_between(enemy.depth, Level::get_bottom_of_level(), Level::get_top_of_level()))
       {

@@ -42,7 +42,6 @@ solution "VortexApplication"
       }
 
       links {
-        "enet",
         "OpenGL.framework",
         "CoreFoundation.framework",
         "Foundation.framework",

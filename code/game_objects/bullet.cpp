@@ -3,6 +3,7 @@
 #include <core/model/model.hpp>
 #include <core/material/texture.hpp>
 #include <core/transform/transform.hpp>
+#include <core/audio/sample.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
 #include <math/vec/vec2.hpp>
@@ -15,6 +16,7 @@ namespace
 {
   Core::Model   model; // Nice to be able to load this at global init.
   Core::Texture texture;
+  Core::Sample  gun_shot_sample;
 }
 
 
@@ -27,6 +29,7 @@ init_bullets(Core::World &world,
 {
   model = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
   texture = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_red_512.png");
+  gun_shot_sample = Core::Sample("/Users/PhilCK/Developer/core/assets/audio/temp_shot.wav");
 }
 
 
@@ -105,6 +108,8 @@ create_bullet(Core::World &world,
       );
       
       bullet.entity.set_transform(transform);
+
+      gun_shot_sample.play(math::vec3_zero());
       
       break;
     }
