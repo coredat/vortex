@@ -63,7 +63,7 @@ init_players(Core::World &world,
     // because this will be the player selection screen.
     
     Core::Transform trans(
-      math::vec3_init(-8.f + (i * (8.f / 4.f)), 0, 0),
+      math::vec3_init(-4.f + (i * (8.f / 4.f)), 0, 0),
       math::vec3_one(),
       math::quat_init()
     );
