@@ -67,13 +67,15 @@ move_main_camera(Game_camera &cam,
       continue;
     }
   
+    // Get the difference and add it to the accum.
     const math::vec3 player_pos = player.entity.get_transform().get_position();
-    accum_target = math::vec3_add(accum_target, player_pos);
+    const math::vec3 diff = math::vec3_subtract(player_pos, accum_target);
+    accum_target = math::vec3_add(accum_target, diff);
   }
   
   const math::vec3 cam_distance_from_players = math::vec3_init(0,0,camera_distance_base);
   
-  const math::vec3 scaled_accum = math::vec3_scale(accum_target, 0.45f);
+  const math::vec3 scaled_accum = math::vec3_scale(accum_target, 0.9f);
   cam.target_point = math::vec3_add(scaled_accum, cam_distance_from_players);
   
   const math::vec3 this_pos   = this_trans.get_position();
