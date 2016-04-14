@@ -22,8 +22,8 @@ struct Players_container
     float         power_up_timer  = 0.f;
   };
   
-  Player player[2];
-  const uint32_t size = 2;
+  Player player[4];
+  const uint32_t size = 4;
 };
 
 

@@ -39,9 +39,15 @@ init_players(Core::World &world,
     
     auto &player = players_container.player[i];
     
+    // This entity is already taken.
     if(player.entity)
     {
-      // This entity is already taken.
+      // Controller id has already been alocated so
+      // don't do it again.
+      if(player.controller_id == controller_id)
+      {
+        return;
+      }
       continue;
     }
     
