@@ -27,8 +27,8 @@ void
 init_bullets(Core::World &world,
              Bullets_container &bullets_container)
 {
-  model = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
-  texture = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_red_512.png");
+  model           = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
+  texture         = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_red_512.png");
   gun_shot_sample = Core::Sample("/Users/PhilCK/Developer/core/assets/audio/temp_shot.wav");
 }
 
@@ -103,13 +103,13 @@ create_bullet(Core::World &world,
       
       const Core::Transform transform(
         math::vec3_zero(),
-        math::vec3_init(0.5, 0.5, 1),
+        math::vec3_init(0.5f, 0.5f, 1.f),
         math::quat_init()
       );
       
       bullet.entity.set_transform(transform);
 
-      gun_shot_sample.play(math::vec3_zero());
+      gun_shot_sample.play();
       
       break;
     }

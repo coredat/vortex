@@ -12,9 +12,19 @@ struct Enemies_container
 {
   struct Enemy
   {
+    enum class Type
+    {
+      climber,
+      breeder,
+      
+      size // nothing under here.
+    };
+  
     float         point_on_circle = 0;
     float         depth = 0;
+    float         lifetime = 0;
     int32_t       direction = 1;
+    Type          type = Type::climber;    
     Core::Entity  entity;
   };
   
@@ -36,6 +46,22 @@ spawn_enemies(Core::World &world,
               const float dt,
               Enemies_container &enemies_container);
 
+
+void
+spawn_climber(Core::World &world,
+              Enemies_container &enemies_container,
+              float point_on_circle,
+              float direction,
+              float depth);
+
+
+void
+spawn_breeder(Core::World &world,
+              Enemies_container &enemies_container,
+              float point_on_circle,
+              float direction,
+              float depth);
+  
 
 void
 update_enemies(Core::World &world,
