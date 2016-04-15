@@ -52,7 +52,7 @@ Game_state game_state = Game_state::selection;
 int
 main()
 {
-  Core::Context context(1152, 648, false, "Vortex");
+  Core::Context context(800, 480, false, "Vortex", Core::Context_setup{true});
   Core::Input::mouse_set_capture(context, true);
   
   Core::Model model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");

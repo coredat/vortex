@@ -14,8 +14,9 @@ struct Enemies_container
   {
     enum class Type
     {
-      climber,
-      breeder,
+      climber,    // Climbs up and down.
+      breeder,    // Climbs to the top and drops eggs.
+      egg,        // Spaned by the breader.
       
       size // nothing under here.
     };
@@ -61,6 +62,12 @@ spawn_breeder(Core::World &world,
               float point_on_circle,
               float direction,
               float depth);
+
+void
+spawn_egg(Core::World &world,
+          Enemies_container &enemy_container,
+          float point_on_circle,
+          float depth);
   
 
 void

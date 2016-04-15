@@ -125,7 +125,7 @@ move_players(Core::Context &ctx,
     if(player.jump_speed)
     {
       player.jump_time += dt;
-      float offset = (player.jump_speed * player.jump_time) + (-0.9f * player.jump_time * player.jump_time);
+      float offset = (player.jump_speed * player.jump_time) + (-player.jump_time * player.jump_time * player.jump_time * player.jump_time);
 
       Core::Transform trans = player.entity.get_transform();
       const math::vec3 pos = trans.get_position();

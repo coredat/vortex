@@ -51,7 +51,7 @@ spawn_enemies(Core::World &world,
 
   if(spawn_timer > spawn_rate)
   {
-    spawn_timer = -110000000.f;
+    spawn_timer = 0;
     
     const float point = static_cast<float>(rand() % 1000) / 10.f;
     const float depth = Level::get_bottom_of_level();
@@ -66,9 +66,13 @@ spawn_enemies(Core::World &world,
         break;
         
       case(Enemy_type::breeder):
-        spawn_breeder(world, enemies_container, point, 1, depth);
+        //spawn_breeder(world, enemies_container, point, 1, depth);
         break;
         
+      case(Enemy_type::egg):
+        // Do nohting
+        break;
+      
       default:
         assert(false);
     }
@@ -108,7 +112,7 @@ spawn_climber(Core::World &world,
       const math::vec2 point = Level::get_point_on_cirlce(enemy.point_on_circle);
 
       const Core::Transform trans(
-        math::vec3_init(math::vec2_get_x(point), math::vec2_get_y(point), Level::get_bottom_of_level()),
+        math::vec3_init(math::vec2_get_x(point), math::vec2_get_y(point), enemy.depth),
         math::vec3_one(),
         math::quat_init()
       );
@@ -153,7 +157,7 @@ spawn_breeder(Core::World &world,
       const math::vec2 point = Level::get_point_on_cirlce(enemy.point_on_circle);
 
       const Core::Transform trans(
-        math::vec3_init(math::vec2_get_x(point), math::vec2_get_y(point), Level::get_bottom_of_level()),
+        math::vec3_init(math::vec2_get_x(point), math::vec2_get_y(point), enemy.depth),
         math::vec3_one(),
         math::quat_init()
       );
@@ -167,6 +171,50 @@ spawn_breeder(Core::World &world,
 
 // --
 
+
+void
+spawn_egg(Core::World &world,
+          Enemies_container &enemies_container,
+          float point_on_circle,
+          float depth)
+{
+  // Find space for new entity.
+  for(uint32_t i = 0; i < enemies_container.size; ++i)
+  {
+    auto &enemy = enemies_container.enemy[i];
+  
+    if(!enemy.entity)
+    {
+      enemy = Enemies_container::Enemy();
+    
+      enemy.point_on_circle = point_on_circle;
+      enemy.depth = depth;
+      enemy.type = Enemies_container::Enemy::Type::egg;
+      enemy.direction = 0;
+      enemy.lifetime = 0;
+
+      enemy.entity = Core::Entity(world);
+      enemy.entity.set_name("Enemy");
+      enemy.entity.add_tag(Object_tags::enemy);
+      enemy.entity.set_model(model);
+      enemy.entity.set_material_id(texture_magenta.get_id());
+
+      const math::vec2 point = Level::get_point_on_cirlce(enemy.point_on_circle);
+
+      const Core::Transform trans(
+        math::vec3_init(math::vec2_get_x(point), math::vec2_get_y(point), enemy.depth),
+        math::vec3_init(0.5f),
+        math::quat_init()
+      );
+
+      enemy.entity.set_transform(trans);
+      
+      return; // We don't need to keep looking.
+    }
+  }
+}
+
+// --
 
 namespace
 {
@@ -245,7 +293,7 @@ namespace
         const float new_point = enemy.point_on_circle + ((static_cast<float>(rand() % 100) / 250.f) - 0.2f);
         const float new_depth = math::min(enemy.depth + ((static_cast<float>(rand() % 100) / 50.f) - 0.75f), Level::get_top_of_level());
       
-        Enemy_utils::spawn_breeder(world, enemies_container, new_point, 0, new_depth);
+        Enemy_utils::spawn_egg(world, enemies_container, new_point, new_depth);
       }
     }
     
@@ -299,6 +347,9 @@ update_enemies(Core::World &world,
         
       case(Enemy_type::climber):
         update_climber(enemy, dt);
+        break;
+        
+      case(Enemy_type::egg):
         break;
         
       default:
