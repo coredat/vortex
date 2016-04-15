@@ -28,8 +28,8 @@ struct Enemies_container
     Core::Entity  entity;
   };
   
-  Enemy enemy[128];
-  const uint32_t size = 128;
+  Enemy enemy[256];
+  const uint32_t size = 256;
 };
 
 

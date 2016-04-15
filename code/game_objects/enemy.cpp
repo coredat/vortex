@@ -33,6 +33,12 @@ init_enemies(Core::World &world,
   model           = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
   texture_orange  = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_orange_512.png");
   texture_magenta = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_magenta_512.png");
+  
+  for(uint32_t i = 0; i < enemies_container.size; ++i)
+  {
+    // Reset values.
+    enemies_container.enemy[i] = Enemies_container::Enemy();
+  }
 }
 
 
@@ -45,7 +51,7 @@ spawn_enemies(Core::World &world,
 
   if(spawn_timer > spawn_rate)
   {
-    spawn_timer = 0.f;
+    spawn_timer = -110000000.f;
     
     const float point = static_cast<float>(rand() % 1000) / 10.f;
     const float depth = Level::get_bottom_of_level();
@@ -56,7 +62,7 @@ spawn_enemies(Core::World &world,
     switch(what_to_spawn)
     {
       case(Enemy_type::climber):
-        spawn_climber(world, enemies_container, point, 1, depth);
+        //spawn_climber(world, enemies_container, point, 1, depth);
         break;
         
       case(Enemy_type::breeder):
@@ -234,10 +240,10 @@ namespace
     {
       if(enemy.direction == 0 && enemy.lifetime > 0.4f)
       {
-        enemy.lifetime = 0;
+        enemy.lifetime = 0.f; // Need to fix this.
         
-        const float new_point = enemy.point_on_circle + 10;//((static_cast<float>(rand() % 10) / 20.f) - 5.f);
-        const float new_depth = enemy.depth;// + ((static_cast<float>(rand() % 6) / 20.f) - 3.f);
+        const float new_point = enemy.point_on_circle + ((static_cast<float>(rand() % 100) / 250.f) - 0.2f);
+        const float new_depth = math::min(enemy.depth + ((static_cast<float>(rand() % 100) / 50.f) - 0.75f), Level::get_top_of_level());
       
         Enemy_utils::spawn_breeder(world, enemies_container, new_point, 0, new_depth);
       }
@@ -275,6 +281,12 @@ update_enemies(Core::World &world,
   for(uint32_t i = 0; i < enemies_container.size; ++i)
   {
     auto &enemy = enemies_container.enemy[i];
+    
+    if(!enemy.entity)
+    {
+      continue;
+    }
+    
     enemy.lifetime += dt;
     
     using Enemy_type = Enemies_container::Enemy::Type;
