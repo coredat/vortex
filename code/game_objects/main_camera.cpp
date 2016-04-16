@@ -8,12 +8,15 @@
 #include <core/transform/transform.hpp>
 #include <core/color/color_predefined.hpp>
 #include <math/vec/vec3.hpp>
+#include <math/vec/vec2.hpp>
+#include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
 
 
 namespace
 {
-  constexpr float camera_distance_base = 15.f;
+  constexpr float camera_distance_far = 20.f;
+  constexpr float camera_distance_near = 10.f;
 }
 
 
@@ -56,8 +59,7 @@ move_main_camera(Game_camera &cam,
   
   Core::Transform this_trans = cam.entity.get_transform();
   
-  // Go through the players and accumulate the target point.
-  
+  // Go through the players and accumulate the target xy point.
   for(uint32_t i = 0; i < players_container.size; ++i)
   {
     auto &player = players_container.player[i];
@@ -68,15 +70,30 @@ move_main_camera(Game_camera &cam,
     }
   
     // Get the difference and add it to the accum.
-    const math::vec3 player_pos = player.entity.get_transform().get_position();
-    const math::vec3 diff = math::vec3_subtract(player_pos, accum_target);
-    accum_target = math::vec3_add(accum_target, diff);
+    const math::vec3 player_pos  = player.entity.get_transform().get_position();
+    const math::vec3 diff        = math::vec3_subtract(player_pos, math::vec3_zero());
+    const math::vec3 scaled_diff = math::vec3_scale(diff, 0.5f);
+    
+    accum_target = math::vec3_add(accum_target, scaled_diff);
   }
   
-  const math::vec3 cam_distance_from_players = math::vec3_init(0,0,camera_distance_base);
+  // The closer the target point is to the camera origin the further
+  // we pull back because this means the players are at
+  // oposite ends of the level.
+  math::vec3 pullback_distance = math::vec3_init(0,0,camera_distance_far);
+  {
+    const math::vec3 pullback_near = math::vec3_init(0,0,camera_distance_near);
+    const math::vec3 pullback_far  = math::vec3_init(0,0,camera_distance_far);
+    
+    const float length = math::vec3_length(math::vec3_subtract(math::vec3_zero(), accum_target));
+    const float norm_length = length / Level::get_radius();
+    
+    pullback_distance = math::vec3_lerp(pullback_far, pullback_near, norm_length);
+  }
   
+  // New target point.
   const math::vec3 scaled_accum = math::vec3_scale(accum_target, 0.7f);
-  cam.target_point = math::vec3_add(scaled_accum, cam_distance_from_players);
+  cam.target_point = math::vec3_add(scaled_accum, pullback_distance);
   
   const math::vec3 this_pos   = this_trans.get_position();
   const math::vec3 move_dir   = math::vec3_subtract(cam.target_point, this_pos);

@@ -25,7 +25,7 @@ init_level(Core::World &world, Level_container &level)
 
     const float depth = Level::get_top_of_level() - Level::get_bottom_of_level();
     Core::Transform trans(math::vec3_init(0, 0, -depth * 0.5f),
-                          math::vec3_init(Level::get_radius() * 2.f, Level::get_radius() * 2.f, math::abs(depth)),
+                          math::vec3_init(Level::get_radius() * 2.f, Level::get_radius() * 2.f, math::abs(depth) * 0.9f),
                           math::quat_init());
 
     level_data.entity.set_model(model);
