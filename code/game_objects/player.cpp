@@ -115,7 +115,7 @@ move_players(Core::Context &ctx,
     }
     
     // Jump
-    if(controller.is_button_down(Core::Input::Button::button_2) && player.jump_speed == 0.f)
+    if(controller.is_button_down(Core::Input::Button::button_0) && player.jump_speed == 0.f)
     {
       player.jump_speed = 0.5f;
       player.jump_time = 0.f;
@@ -150,7 +150,7 @@ move_players(Core::Context &ctx,
       const float multipler = player.power_up_timer > 0 ? dt * 15.f : 0.f;
       const float timer = player.gun_cooldown;
       
-      if(timer < (0.f + multipler) && controller.is_button_down(Core::Input::Button::button_0))
+      if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1)))
       {
         Bullet_utils::create_bullet(world, player.point_on_circle, -1, bullets_container);
         player.gun_cooldown = gun_cooldown_timer;

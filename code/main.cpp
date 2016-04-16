@@ -37,6 +37,8 @@
 #include <game_states/game.hpp>
 #include <game_states/selection.hpp>
 
+#include <SDL2/SDL.h>
+
 
 enum class Game_state
 {
@@ -109,7 +111,10 @@ main()
       /*
         If p1 hits start we start.
       */
-      if(controller_01.is_button_down(Core::Input::Button::button_4))
+      if(controller_01.is_button_down(Core::Input::Button::button_4) ||
+         controller_02.is_button_down(Core::Input::Button::button_4) ||
+         controller_03.is_button_down(Core::Input::Button::button_4) ||
+         controller_04.is_button_down(Core::Input::Button::button_4))
       {
         game_state = Game_state::game_mode;
       }

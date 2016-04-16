@@ -67,6 +67,7 @@ spawn_enemies(Core::World &world,
         
       case(Enemy_type::breeder):
         //spawn_breeder(world, enemies_container, point, 1, depth);
+
         break;
         
       case(Enemy_type::egg):
@@ -78,6 +79,7 @@ spawn_enemies(Core::World &world,
     }
   }
 }
+
 
 
 
