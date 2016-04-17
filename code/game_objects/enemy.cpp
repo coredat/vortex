@@ -34,10 +34,10 @@ init_enemies(Core::World &world,
   const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
   model = Core::Model(unit_cube_path.c_str());
 
-  const std::string orange_texture_path = util::get_resource_path() + "assets/models/dev_grid_orange_512.obj";
+  const std::string orange_texture_path = util::get_resource_path() + "assets/textures/dev_grid_orange_512.png";
   texture_orange  = Core::Texture(orange_texture_path.c_str());
 
-  const std::string magenta_texture_path = util::get_resource_path() + "assets/models/dev_grid_magenta_512.obj";
+  const std::string magenta_texture_path = util::get_resource_path() + "assets/textures/dev_grid_magenta_512.png";
   texture_magenta = Core::Texture(magenta_texture_path.c_str());
   
   for(uint32_t i = 0; i < enemies_container.size; ++i)
