@@ -9,6 +9,7 @@
 #include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
+#include <utilities/directory.hpp>
 #include <iostream>
 
 
@@ -27,9 +28,14 @@ void
 init_bullets(Core::World &world,
              Bullets_container &bullets_container)
 {
-  model           = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
-  texture         = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_red_512.png");
-  gun_shot_sample = Core::Sample("/Users/PhilCK/Developer/core/assets/audio/temp_shot.wav");
+  const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
+  model = Core::Model(unit_cube_path.c_str());
+
+  const std::string texture_path = util::get_resource_path() + "assets/textures/dev_grid_red_512.png";
+  texture = Core::Texture(texture_path.c_str());
+
+  const std::string orange_texture_path = util::get_resource_path() + "assets/audio/temp_shot.wav";
+  gun_shot_sample = Core::Sample(orange_texture_path.c_str());
 }
 
 

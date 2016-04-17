@@ -15,6 +15,7 @@
 #include <utilities/logging.hpp>
 #include <math/vec/vec2.hpp>
 #include <math/quat/quat.hpp>
+#include <utilities/directory.hpp>
 
 
 namespace
@@ -34,8 +35,11 @@ init_players(Core::World &world,
 {
   for(uint32_t i = 0; i < players_container.size; ++i)
   {
-    Core::Model   model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
-    Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_green_512.png");
+    const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
+    Core::Model model(unit_cube_path.c_str());
+
+    const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
+    Core::Texture texture(green_texture_path.c_str());
     
     auto &player = players_container.player[i];
     

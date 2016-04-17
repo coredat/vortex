@@ -6,6 +6,7 @@
 #include <core/material/texture.hpp>
 #include <core/transform/transform.hpp>
 #include <math/vec/vec3.hpp>
+#include <utilities/directory.hpp>
 #include <random>
 
 
@@ -23,8 +24,11 @@ void
 init_powerups(Core::World &world,
               Powerups_container &powerups_container)
 {
-  model = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
-  texture = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_squares_512.png");
+  const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
+  model = Core::Model(unit_cube_path.c_str());
+
+  const std::string texture_path = util::get_resource_path() + "assets/textures/dev_squares_512.png";
+  texture = Core::Texture(texture_path.c_str());
 }
 
 

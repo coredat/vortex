@@ -10,6 +10,7 @@
 #include <math/quat/quat.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
+#include <utilities/directory.hpp>
 
 
 namespace
@@ -30,9 +31,14 @@ void
 init_enemies(Core::World &world,
              Enemies_container &enemies_container)
 {
-  model           = Core::Model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
-  texture_orange  = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_orange_512.png");
-  texture_magenta = Core::Texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_magenta_512.png");
+  const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
+  model = Core::Model(unit_cube_path.c_str());
+
+  const std::string orange_texture_path = util::get_resource_path() + "assets/models/dev_grid_orange_512.obj";
+  texture_orange  = Core::Texture(orange_texture_path.c_str());
+
+  const std::string magenta_texture_path = util::get_resource_path() + "assets/models/dev_grid_magenta_512.obj";
+  texture_magenta = Core::Texture(magenta_texture_path.c_str());
   
   for(uint32_t i = 0; i < enemies_container.size; ++i)
   {

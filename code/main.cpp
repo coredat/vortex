@@ -17,7 +17,7 @@
 #include <core/model/model.hpp>
 #include <core/model/mesh.hpp>
 #include <core/material/texture.hpp>
-#include <data/resource_data/resource_data.hpp>
+//#include <data/resource_data/resource_data.hpp>
 #include <utilities/logging.hpp>
 #include <utilities/timer.hpp>
 
@@ -37,7 +37,7 @@
 #include <game_states/game.hpp>
 #include <game_states/selection.hpp>
 
-#include <SDL2/SDL.h>
+//#include <SDL2/SDL.h>
 
 
 enum class Game_state
@@ -54,14 +54,11 @@ Game_state game_state = Game_state::selection;
 int
 main()
 {
-  Core::Context context(800, 480, false, "Vortex", Core::Context_setup{true});
+  Core::Context_setup context_setup;
+  context_setup.vsync = false;
+
+  Core::Context context(800, 480, false, "Vortex", context_setup);
   Core::Input::mouse_set_capture(context, true);
-  
-  Core::Model model("/Users/PhilCK/Developer/core/assets/models/unit_cube.obj");
-  assert(model.get_id());
-  
-  Core::Texture texture("/Users/PhilCK/Developer/core/assets/textures/dev_grid_green_512.png");
-  assert(texture.get_id());
   
   Core::World world(Core::World_setup{});
   Core::Mesh_renderer mesh_renderer;
