@@ -35,6 +35,7 @@ init_main_camera(Core::Context &ctx, Core::World &world, Game_camera &cam)
   main_camera.set_type(Core::Camera_type::perspective);
   main_camera.set_clear_flags(Core::Camera_clear::color | Core::Camera_clear::depth);
   main_camera.set_clear_color(Core::Color_utils::purple());
+//  main_camera.set_feild_of_view(math::quart_tau() / 3);
   
   cam.entity = std::move(camera_entity);
   cam.camera = std::move(main_camera);
@@ -51,7 +52,8 @@ move_main_camera(Game_camera &cam,
   constexpr float camera_distance_near = 10.f;
 
   // We set the camera origin as the first point.
-  math::vec3 accum_target = math::vec3_init(0,0,0);
+  const math::vec3 camera_origin = math::vec3_init(0,0,Level::get_top_of_level());
+  math::vec3 accum_target = camera_origin;
   
   // Go through the players and accumulate the target point.
   for(uint32_t i = 0; i < players_container.size; ++i)
@@ -62,7 +64,7 @@ move_main_camera(Game_camera &cam,
     {
       continue;
     }
-  
+    
     // Get the difference and add it to the accum.
     const math::vec3 player_pos  = player.entity.get_transform().get_position();
     const math::vec3 diff        = math::vec3_subtract(player_pos, math::vec3_zero());
@@ -71,28 +73,38 @@ move_main_camera(Game_camera &cam,
     accum_target = math::vec3_add(accum_target, scaled_diff);
   }
   
-  // The closer the target point is to the camera origin the further
-  // we pull back because this means the players are at
-  // oposite ends of the level.
+  const math::vec3 avg_accum = math::vec3_divide(accum_target, math::vec3_init(3.f));
+  
+  // The closer the target point is to the camera origin the
+  // further we pull back because this means the players
+  // are at oposite ends of the level.
   math::vec3 pullback_distance = math::vec3_init(0,0,camera_distance_far);
   {
-    const math::vec3 pullback_near = math::vec3_init(0,0,camera_distance_near);
-    const math::vec3 pullback_far  = math::vec3_init(0,0,camera_distance_far);
-    
-    const float length      = math::vec3_length(math::vec3_subtract(math::vec3_zero(), accum_target));
-    const float norm_length = length / Level::get_radius();
+    const math::vec3 pullback_near   = math::vec3_init(0,0,camera_distance_near);
+    const math::vec3 pullback_far    = math::vec3_init(0,0,camera_distance_far);
+    const math::vec2 cam_origin_vec2 = math::vec2_init(math::vec3_get_x(camera_origin), math::vec3_get_y(camera_origin));
+    const math::vec2 accum_vec2      = math::vec2_init(math::vec3_get_x(avg_accum), math::vec3_get_y(avg_accum));
+    const float length               = math::abs(math::vec2_length(math::vec2_subtract(cam_origin_vec2, accum_vec2)));
+    const float norm_length          = length / Level::get_radius();
     
     pullback_distance = math::vec3_lerp(pullback_far, pullback_near, norm_length);
+  }
+  
+  // Adjust pullback for players jumping
+  {
+    const math::vec3 accum_jump = math::vec3_init(0,0,math::vec3_get_z(accum_target));
+  
+    pullback_distance = math::vec3_add(pullback_distance, accum_jump);
   }
   
   // New target point.
   Core::Transform this_trans = cam.entity.get_transform();
   math::vec3 new_pos = math::vec3_zero();
   {
-    constexpr float player_influence  = 0.7f;
-    constexpr float camera_move_speed = 7.f;
-  
-    const math::vec3 scaled_accum = math::vec3_scale(accum_target, player_influence);
+    constexpr float player_influence  = 1.f;
+    constexpr float camera_move_speed = 10.f;
+    
+    const math::vec3 scaled_accum = math::vec3_scale(avg_accum, player_influence);
     cam.target_point = math::vec3_add(scaled_accum, pullback_distance);
     
     const math::vec3 this_pos   = this_trans.get_position();
@@ -101,7 +113,7 @@ move_main_camera(Game_camera &cam,
     
     new_pos = math::vec3_add(this_pos, scaled_dir);
   }
-
+  
   this_trans.set_position(new_pos);
   
   cam.entity.set_transform(this_trans);

@@ -34,7 +34,7 @@ get_far_death_zone() { return get_bottom_of_level() * 2; }
 
 
 constexpr float
-get_near_death_zone() { return 5.f; }
+get_near_death_zone() { return 40.f; }
 
 
 } // ns

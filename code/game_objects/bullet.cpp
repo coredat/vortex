@@ -88,6 +88,7 @@ move_bullets(Core::World &world,
 void
 create_bullet(Core::World &world,
               const float position,
+              const float depth,
               const uint32_t direction,
               Bullets_container &bullets_container)
 {
@@ -107,8 +108,13 @@ create_bullet(Core::World &world,
       bullet.point_on_circle = position;
       bullet.direction = direction;
       
+      const math::vec2 new_point = Level::get_point_on_cirlce(bullet.point_on_circle);
+      math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                           math::vec2_get_y(new_point),
+                                           depth);
+      
       const Core::Transform transform(
-        math::vec3_zero(),
+        new_pos,//math::vec3_init(0, 0, depth),
         math::vec3_init(0.5f, 0.5f, 1.f),
         math::quat_init()
       );

@@ -129,7 +129,7 @@ move_players(Core::Context &ctx,
     if(player.jump_speed)
     {
       player.jump_time += dt;
-      float offset = (player.jump_speed * player.jump_time) + (-player.jump_time * player.jump_time * player.jump_time * player.jump_time);
+      float offset = (player.jump_speed * player.jump_time) + (-player.jump_time * player.jump_time * player.jump_time);
 
       Core::Transform trans = player.entity.get_transform();
       const math::vec3 pos = trans.get_position();
@@ -151,12 +151,18 @@ move_players(Core::Context &ctx,
     
     // Fire
     {
+      const math::vec3 pos = player.entity.get_transform().get_position();
+    
       const float multipler = player.power_up_timer > 0 ? dt * 15.f : 0.f;
       const float timer = player.gun_cooldown;
       
       if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1)))
       {
-        Bullet_utils::create_bullet(world, player.point_on_circle, -1, bullets_container);
+        Bullet_utils::create_bullet(world,
+                                    player.point_on_circle,
+                                    math::vec3_get_z(pos),                                    
+                                    -1,
+                                    bullets_container);
         player.gun_cooldown = gun_cooldown_timer;
       }
     }

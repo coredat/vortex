@@ -41,6 +41,7 @@ move_bullets(Core::World &world,
 void
 create_bullet(Core::World &world,
               const float position,
+              const float depth,              
               const uint32_t direction,
               Bullets_container &bullets_container);
 
