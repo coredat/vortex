@@ -17,9 +17,10 @@ solution_data = {
 }
 
 -- Defaults will be based on platform in the future.
+-- Currently only supports buildoptions.
 project_defaults = {
 
-  buildoptions = {
+  buildoptions_macosx = {
     "-std=c++14",
     "-stdlib=libc++",
   },
