@@ -17,16 +17,20 @@ vortex_project_data = {
     make.get_proj_root() .. "../code/**.md",
   },
 
-  lib_directories = {
+  lib_dirs = {
     "/usr/local/lib/",
   },
 
-  links = { -- remove this when link_dependencies works
-    "OpenGL.framework",
-    "CoreFoundation.framework",
-    "Foundation.framework",
+  project_dependencies = { -- This should pick up the links
     "CoreEngine",
   },
+
+  -- links = { -- remove this when link_dependencies works
+  --   "OpenGL.framework",
+  --   "CoreFoundation.framework",
+  --   "Foundation.framework",
+  --   "CoreEngine",
+  -- },
 
   linkoptions = {
     "-lsdl2",
@@ -34,7 +38,7 @@ vortex_project_data = {
     "-lSOIL",
   },
 
-  include_directories = {
+  inc_dirs = {
     "/usr/local/include",
     make.get_proj_root() .. "../code/",
     -- Core Includes.
