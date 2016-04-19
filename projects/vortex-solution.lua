@@ -24,6 +24,14 @@ project_defaults = {
     "-std=c++14",
     "-stdlib=libc++",
   },
+
+  define = {
+    VORTEX_APP,
+  },
+
+  define_macosx = {
+    VORTEX_APP_MACOS,
+  },
 }
 
 -- Generates the premake code calls.
