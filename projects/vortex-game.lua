@@ -1,106 +1,46 @@
+#!lua
 
+vortex_project_data = {
 
-function get_solution_root_dir()
-  if(os.get() == "macosx") then
-    --return "$(SRCROOT)/../"
-    return "../"
-  else
-    return "../"
-  end
-end
+  name      = "VortexGameCode",
+  kind      = "WindowedApp",
+  language  = "C++",
+  location  = make.get_proj_root(),
 
+  src_files = {
+    make.get_proj_root() .. "../code/**.hpp",
+    make.get_proj_root() .. "../code/**.cpp",
+    make.get_proj_root() .. "../code/**.mm",
+    make.get_proj_root() .. "../code/**.h",
+    make.get_proj_root() .. "../code/**.c",
+    make.get_proj_root() .. "../code/**.m",
+    make.get_proj_root() .. "../code/**.md",
+  },
 
-solution "VortexApplication"
-  location("./")
+  lib_directories = {
+    "/usr/local/lib/",
+  },
 
-   configurations {
-     "Debug",
-     "Release"
-   }
+  links = { -- remove this when link_dependencies works
+    "OpenGL.framework",
+    "CoreFoundation.framework",
+    "Foundation.framework",
+    "CoreEngine",
+  },
 
-   project "VortexGameCode"
-      location("./")
+  linkoptions = {
+    "-lsdl2",
+    "-lsdl2_mixer",
+    "-lSOIL",
+  },
 
-      kind "WindowedApp"
-      language "C++"
-
-      files {
-        "../code/**.hpp",
-        "../code/**.cpp",
-        "../code/**.mm",
-        "../code/**.h",
-        "../code/**.c",
-        "../code/**.m",
-        "../code/**.md",
-      }
-
-      if(os.get() == "macosx") then
-        libdirs {
-          "/usr/local/lib/",
-          -- "../../core/3rdparty/SDL/lib/win32/",
-          -- "../../core/3rdparty/GLEW/lib/win32/",
-          -- "../../core/3rdparty/SOIL/lib/win32/",
-        }
-      else
-      libdirs {
-        "/usr/local/lib/",
-        "../../core/3rdparty/sdl/lib/win32/",
-        "../../core/3rdparty/glew/lib/win32/",
-        "../../core/3rdparty/soil/lib/win32/",
-      }
-      end
-
-      if(os.get() == "macosx") then
-      linkoptions {
-        "-lsdl2",
-        "-lsdl2_mixer",
-        "-lSOIL",
-      }
-      end
-
-      if(os.get() == "macosx") then
-      links {
-        "OpenGL.framework",
-        "CoreFoundation.framework",
-        "Foundation.framework",
-        "CoreEngine",
-      }
-      else
-      links {
-        "CoreEngine",
-        "glew32.lib",
-        "sdl2.lib",
-        "SOIL.lib",
-        "opengl32.lib",
-      }
-      end
-
-      includedirs {
-        "../../core/3rdparty/sdl_mixer/include/",
-        "../../core/3rdparty/bullet/include/",
-        "../../core/3rdparty/enet/include",
-        "/usr/local/include",
-        "../../core/code/",
-        "../../core/code/external/math",
-        "../../core/code/external/graphics_api",
-        "../../core/code/external/utilities",
-        get_solution_root_dir() .. "code/",
-      }
-
-      if(os.get() == "macosx") then
-      buildoptions {
-        "-std=c++14",
-        "-stdlib=libc++",
-      }
-      end
-
-      configuration "Debug"
-         defines { "DEBUG" }
-         flags { "Symbols", "Unicode"}
-
-      configuration "Release"
-         defines { "NDEBUG" }
-         flags { "Optimize", "Unicode" }
-
-
-   dofile("../../core/projects/core.lua")
+  include_directories = {
+    "/usr/local/include",
+    make.get_proj_root() .. "../code/",
+    -- Core Includes.
+    make.get_proj_root() .. "../../core/code/",
+    make.get_proj_root() .. "../../core/code/external/math",
+    make.get_proj_root() .. "../../core/code/external/graphics_api",
+    make.get_proj_root() .. "../../core/code/external/utilities",
+  },
+}

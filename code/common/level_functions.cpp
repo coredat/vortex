@@ -2,7 +2,6 @@
 #include <math/vec/vec2.hpp>
 
 
-
 namespace Level {
 
 
