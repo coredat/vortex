@@ -156,7 +156,7 @@ move_players(Core::Context &ctx,
       const float multipler = player.power_up_timer > 0 ? dt * 15.f : 0.f;
       const float timer = player.gun_cooldown;
       
-      if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1)))
+      if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
       {
         Bullet_utils::create_bullet(world,
                                     player.point_on_circle,
