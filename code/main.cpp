@@ -145,38 +145,74 @@ main()
     */
     if(game_state == Game_state::game_mode)
       {
-      
-      world.get_overlapping_aabbs([&](const Core::Entity_ref ref_a,
-                                      const Core::Entity_ref ref_b)
-      {
-        // Enemy collided with a bullet
-        if(ref_a.has_tag(Object_tags::enemy) && ref_b.has_tag(Object_tags::bullet))
+        world.get_overlapping_aabbs([&](const Physics_engine::Collision_pair pairs[], const uint32_t number_of_pairs)
         {
-          Enemy_utils::hit_enemy(world,
-                                 ref_a.get_id(),
-                                 enemies_container,
-                                 explosions_container,
-                                 powerups_container);
-        }
-        
-        if(ref_a.has_tag(Object_tags::player))
-        {
-          if(ref_b.has_tag(Object_tags::enemy))
+          for(uint32_t i = 0; i < number_of_pairs; ++i)
           {
-            Player_utils::hit_player(world,
-                                     ref_a.get_id(),
-                                     players_container,
-                                     explosions_container);
-          }
+            Core::Entity_ref ref_a = world.find_entity_by_id(pairs[i].obj_a);
+            Core::Entity_ref ref_b = world.find_entity_by_id(pairs[i].obj_b);
+
           
-          if(ref_b.has_tag(Object_tags::powerup))
-          {
-            Player_utils::power_up(world,
-                                   ref_a.get_id(),
-                                   players_container);
+            // Enemy collided with a bullet
+            if(ref_b.has_tag(Object_tags::bullet) && ref_a.has_tag(Object_tags::enemy))
+            {
+              Enemy_utils::hit_enemy(world,
+                                     ref_a.get_id(),
+                                     enemies_container,
+                                     explosions_container,
+                                     powerups_container);
+            }
+            
+            if(ref_a.has_tag(Object_tags::player))
+            {
+              if(ref_b.has_tag(Object_tags::enemy))
+              {
+                Player_utils::hit_player(world,
+                                         ref_a.get_id(),
+                                         players_container,
+                                         explosions_container);
+              }
+              
+              if(ref_b.has_tag(Object_tags::powerup))
+              {
+                Player_utils::power_up(world,
+                                       ref_a.get_id(),
+                                       players_container);
+              }
+            }
           }
-        }
-      });
+        });
+//      world.get_overlapping_aabbs([&](const Core::Entity_ref ref_a,
+//                                      const Core::Entity_ref ref_b)
+//      {
+//        // Enemy collided with a bullet
+//        if(ref_a.has_tag(Object_tags::enemy) && ref_b.has_tag(Object_tags::bullet))
+//        {
+//          Enemy_utils::hit_enemy(world,
+//                                 ref_a.get_id(),
+//                                 enemies_container,
+//                                 explosions_container,
+//                                 powerups_container);
+//        }
+//        
+//        if(ref_a.has_tag(Object_tags::player))
+//        {
+//          if(ref_b.has_tag(Object_tags::enemy))
+//          {
+//            Player_utils::hit_player(world,
+//                                     ref_a.get_id(),
+//                                     players_container,
+//                                     explosions_container);
+//          }
+//          
+//          if(ref_b.has_tag(Object_tags::powerup))
+//          {
+//            Player_utils::power_up(world,
+//                                   ref_a.get_id(),
+//                                   players_container);
+//          }
+//        }
+//      });
         
       Enemy_utils::spawn_enemies(world, dt, enemies_container);
       Player_utils::move_players(context, world, dt, players_container, bullets_container);

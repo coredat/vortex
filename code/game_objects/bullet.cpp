@@ -1,8 +1,8 @@
 #include "bullet.hpp"
 #include <core/entity/entity.hpp>
 #include <core/model/model.hpp>
-#include <core/material/texture.hpp>
 #include <core/transform/transform.hpp>
+#include <core/material/texture.hpp>
 #include <core/audio/sample.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
@@ -113,10 +113,14 @@ create_bullet(Core::World &world,
                                            math::vec2_get_y(new_point),
                                            depth);
       
+
+      auto scale = math::vec3_init(0.5f, 0.5f, 1.f);
+      auto rot = math::quat_init();
+      
       const Core::Transform transform(
         new_pos,//math::vec3_init(0, 0, depth),
-        math::vec3_init(0.5f, 0.5f, 1.f),
-        math::quat_init()
+        scale,
+        rot
       );
       
       bullet.entity.set_transform(transform);
