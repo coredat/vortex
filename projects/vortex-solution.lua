@@ -12,7 +12,7 @@ dofile("vortex-game.lua")
 -- Solution data? Should this contain the the project names?
 solution_data = {
 
-  name = "VortexApplication"
+  name = "VortexApplication",
 
 }
 
