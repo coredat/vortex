@@ -121,15 +121,15 @@ move_players(Core::Context &ctx,
     // Jump
     if(controller.is_button_down(Core::Input::Button::button_0) && player.jump_speed == 0.f)
     {
-      player.jump_speed = 0.5f;
+      player.jump_speed = 50.5f;
       player.jump_time = 0.f;
     }
     
     // Jump movement
     if(player.jump_speed)
     {
-      player.jump_time += dt;
-      float offset = (player.jump_speed * player.jump_time) + (-player.jump_time * player.jump_time * player.jump_time);
+      player.jump_time += (dt * 7.f);
+      float offset = (player.jump_speed + (-player.jump_time * player.jump_time * player.jump_time)) * (dt);
 
       Core::Transform trans = player.entity.get_transform();
       const math::vec3 pos = trans.get_position();
