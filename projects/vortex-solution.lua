@@ -25,6 +25,25 @@ project_defaults = {
     "-stdlib=libc++",
   },
 
+  buildoptions_windows = {
+    "/IGNORE:C4577",
+  },
+
+  flags = {
+    "EnableSSE2",
+    "ExtraWarnings",
+    "FloatFast",
+    "NoExceptions", -- deprecated
+    "NoRTTI", -- deprecated
+  },
+
+  defines_windows = {
+    "_HAS_EXCEPTIONS=0",
+  },
+
+  exceptions = false,
+  rtti = false,
+
   define = {
     VORTEX_APP,
   },

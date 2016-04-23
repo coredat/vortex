@@ -17,7 +17,7 @@ vortex_project_data = {
     make.get_proj_root() .. "../code/**.md",
   },
 
-  lib_dirs = {
+  lib_dirs_macosx = {
     "/usr/local/lib/",
   },
 
@@ -25,8 +25,11 @@ vortex_project_data = {
     "CoreEngine",
   },
 
-  inc_dirs = {
+  inc_dirs_macosx = {
     "/usr/local/include",
+  },
+
+  inc_dirs = {
     make.get_proj_root() .. "../code/",
     -- Core Includes.
     make.get_proj_root() .. "../../core/code/",
