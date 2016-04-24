@@ -147,7 +147,7 @@ main()
       {
         world.get_overlapping_aabbs([&](const Physics_engine::Collision_pair pairs[], const uint32_t number_of_pairs)
         {
-          for(uint32_t i = 0; i < number_of_pairs; ++i)
+           for(uint32_t i = 0; i < number_of_pairs; ++i)
           {
             Core::Entity_ref ref_a = world.find_entity_by_id(pairs[i].obj_a);
             Core::Entity_ref ref_b = world.find_entity_by_id(pairs[i].obj_b);

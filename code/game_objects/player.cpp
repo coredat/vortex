@@ -7,6 +7,8 @@
 #include <math/vec/vec3.hpp>
 #include <core/model/model.hpp>
 #include <core/material/texture.hpp>
+#include <core/physics/box_collider.hpp>
+#include <core/physics/box_collider_utils.hpp>
 #include <game_objects/bullet.hpp>
 #include <game_objects/bullet.hpp>
 #include <game_objects/explosion.hpp>
@@ -16,6 +18,7 @@
 #include <math/vec/vec2.hpp>
 #include <math/quat/quat.hpp>
 #include <utilities/directory.hpp>
+
 
 
 namespace
@@ -40,6 +43,8 @@ init_players(Core::World &world,
 
     const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
     Core::Texture texture(green_texture_path.c_str());
+
+    Core::Box_collider collider = Core::Box_collider_utils::create_with_half_extents(model.get_model_aabb().half_extents);
     
     auto &player = players_container.player[i];
     
@@ -62,7 +67,8 @@ init_players(Core::World &world,
     player.entity.set_tags(Object_tags::player);
     player.entity.set_model(model);
     player.entity.set_material_id(texture.get_id());
-    
+    player.entity.set_collider(collider);
+
     // We set a temp transform
     // because this will be the player selection screen.
     

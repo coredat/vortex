@@ -39,6 +39,7 @@ project_defaults = {
 
   defines_windows = {
     "_HAS_EXCEPTIONS=0",
+    "_CRT_NO_WARNINGS",
   },
 
   exceptions = false,
