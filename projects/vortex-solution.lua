@@ -37,6 +37,10 @@ project_defaults = {
     "NoRTTI", -- deprecated
   },
 
+  defines_macosx = {
+    "MATH_USE_SIMD",
+  },
+
   defines_windows = {
     "_HAS_EXCEPTIONS=0",
     "_CRT_NO_WARNINGS",
@@ -44,14 +48,6 @@ project_defaults = {
 
   exceptions = false,
   rtti = false,
-
-  define = {
-    VORTEX_APP,
-  },
-
-  define_macosx = {
-    VORTEX_APP_MACOS,
-  },
 }
 
 -- Generates the premake code calls.
