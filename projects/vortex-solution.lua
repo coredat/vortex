@@ -37,6 +37,10 @@ project_defaults = {
     "NoRTTI", -- deprecated
   },
 
+  defines = {
+    "CORE_USE_SOIL",
+  },
+
   defines_macosx = {
     "MATH_USE_SIMD",
   },

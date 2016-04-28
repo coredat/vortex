@@ -44,7 +44,7 @@ init_players(Core::World &world,
     const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
     Core::Texture texture(green_texture_path.c_str());
 
-    Core::Box_collider collider = Core::Box_collider_utils::create_with_half_extents(model.get_model_aabb().half_extents);
+    Core::Box_collider collider = Core::Box_collider_utils::create_with_half_extents(math::aabb_get_half_extents(model.get_model_aabb()));
     
     auto &player = players_container.player[i];
     

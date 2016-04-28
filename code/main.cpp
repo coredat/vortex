@@ -37,6 +37,8 @@
 #include <game_states/game.hpp>
 #include <game_states/selection.hpp>
 
+#include <iostream>
+
 //#include <SDL2/SDL.h>
 
 
@@ -247,6 +249,8 @@ main()
       Enemy_utils::update_enemies(world, dt, enemies_container);
       Powerup_utils::update_powerups(world, powerups_container, dt);
     }
+
+    std::cout << dt << std::endl;
 
     mesh_renderer.render();
   }
