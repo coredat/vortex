@@ -5,6 +5,7 @@
 #include <core/transform/transform.hpp>
 #include <core/material/texture.hpp>
 #include <core/world/world.hpp>
+#include <core/physics/box_collider.hpp>
 #include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
@@ -116,6 +117,9 @@ spawn_climber(Core::World &world,
       enemy.entity.add_tag(Object_tags::enemy);
       enemy.entity.set_model(model);
       enemy.entity.set_material_id(texture_orange.get_id());
+      
+      Core::Box_collider collider(0.5f, 0.5f, 0.5f);
+      enemy.entity.set_collider(collider);
 
       const math::vec2 point = Level::get_point_on_cirlce(enemy.point_on_circle);
 

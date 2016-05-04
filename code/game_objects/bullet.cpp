@@ -4,6 +4,7 @@
 #include <core/transform/transform.hpp>
 #include <core/material/texture.hpp>
 #include <core/audio/sample.hpp>
+#include <core/physics/box_collider.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
 #include <math/vec/vec2.hpp>
@@ -122,6 +123,9 @@ create_bullet(Core::World &world,
         scale,
         rot
       );
+      
+      Core::Box_collider collider(0.5f, 0.5f, 0.5f);
+      bullet.entity.set_collider(collider);
       
       bullet.entity.set_transform(transform);
 
