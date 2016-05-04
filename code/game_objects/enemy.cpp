@@ -166,6 +166,9 @@ spawn_breeder(Core::World &world,
       enemy.entity.set_model(model);
       enemy.entity.set_material_id(texture_magenta.get_id());
 
+      Core::Box_collider collider(0.5f, 0.5f, 0.5f);
+      enemy.entity.set_collider(collider);
+
       const math::vec2 point = Level::get_point_on_cirlce(enemy.point_on_circle);
 
       const Core::Transform trans(
@@ -210,6 +213,9 @@ spawn_egg(Core::World &world,
       enemy.entity.add_tag(Object_tags::enemy);
       enemy.entity.set_model(model);
       enemy.entity.set_material_id(texture_magenta.get_id());
+      
+      Core::Box_collider collider(0.5f, 0.5f, 0.5f);
+      enemy.entity.set_collider(collider);
 
       const math::vec2 point = Level::get_point_on_cirlce(enemy.point_on_circle);
 

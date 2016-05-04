@@ -17,6 +17,7 @@
 #include <utilities/logging.hpp>
 #include <math/vec/vec2.hpp>
 #include <math/quat/quat.hpp>
+#include <math/geometry/aabb.hpp>
 #include <utilities/directory.hpp>
 
 

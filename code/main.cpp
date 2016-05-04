@@ -147,14 +147,13 @@ main()
     */
     if(game_state == Game_state::game_mode)
       {
-        world.get_overlapping_aabbs([&](const Physics_engine::Collision_pair pairs[], const uint32_t number_of_pairs)
+        world.get_overlapping_aabbs([&](const Core::Collision_pair pairs[], const uint32_t number_of_pairs)
         {
            for(uint32_t i = 0; i < number_of_pairs; ++i)
           {
-            Core::Entity_ref ref_a = world.find_entity_by_id(pairs[i].obj_a);
-            Core::Entity_ref ref_b = world.find_entity_by_id(pairs[i].obj_b);
+            const Core::Entity_ref &ref_a = pairs[i].entity_a;
+            const Core::Entity_ref &ref_b = pairs[i].entity_b;
 
-          
             // Enemy collided with a bullet
             if(ref_b.has_tag(Object_tags::bullet) && ref_a.has_tag(Object_tags::enemy))
             {
