@@ -4,6 +4,7 @@
 #include <core/transform/transform.hpp>
 #include <core/material/texture.hpp>
 #include <core/audio/sample.hpp>
+#include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>

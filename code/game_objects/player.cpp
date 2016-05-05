@@ -7,6 +7,7 @@
 #include <math/vec/vec3.hpp>
 #include <core/model/model.hpp>
 #include <core/material/texture.hpp>
+#include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
 #include <core/physics/box_collider_utils.hpp>
 #include <game_objects/bullet.hpp>

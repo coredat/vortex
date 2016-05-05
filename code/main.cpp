@@ -13,6 +13,7 @@
 #include <core/input/controller.hpp>
 #include <math/vec/vec3.hpp>
 
+#include <core/physics/collision_pair.hpp>
 // Temp Resource loading.
 #include <core/model/model.hpp>
 #include <core/model/mesh.hpp>
