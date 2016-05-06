@@ -36,7 +36,7 @@ update_explosions(const Core::World &world,
 
 
 void
-create_explosion(const Core::World &world,
+create_explosion(Core::World &world,
                  const math::vec3 position,
                  Explosions_container &explosions_container);
 

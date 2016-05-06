@@ -180,7 +180,7 @@ move_players(Core::Context &ctx,
 
 void
 power_up(Core::World &world,
-         const Core::Entity_id id,
+         const util::generic_id id,
          Players_container &players_container)
 {
   for(uint32_t i = 0; i < players_container.size; ++i)
@@ -197,7 +197,7 @@ power_up(Core::World &world,
 
 void
 hit_player(Core::World &world,
-           const Core::Entity_id id,
+           const util::generic_id id,
            Players_container &players_container,
            Explosions_container &explosions_container)
 {

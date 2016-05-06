@@ -380,7 +380,7 @@ update_enemies(Core::World &world,
 
 void
 hit_enemy(Core::World &world,
-          const Core::Entity_id id,
+          const util::generic_id id,
           Enemies_container &enemies_container,
           Explosions_container &explosions_container,
           Powerups_container &powerups_container)
