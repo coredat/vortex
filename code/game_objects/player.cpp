@@ -180,14 +180,14 @@ move_players(Core::Context &ctx,
 
 void
 power_up(Core::World &world,
-         const util::generic_id id,
+         const Core::Entity_ref hit,
          Players_container &players_container)
 {
   for(uint32_t i = 0; i < players_container.size; ++i)
   {
     auto &player = players_container.player[i];
     
-    if(player.entity.get_id() == id)
+    if(player.entity == hit)
     {
       player.power_up_timer = 5.f;
     }
@@ -197,7 +197,7 @@ power_up(Core::World &world,
 
 void
 hit_player(Core::World &world,
-           const util::generic_id id,
+           const Core::Entity_ref &hit,
            Players_container &players_container,
            Explosions_container &explosions_container)
 {
@@ -206,7 +206,7 @@ hit_player(Core::World &world,
   {
     auto &player = players_container.player[i];
     
-    if(player.entity.get_id() != id)
+    if(player.entity != hit)
     {
       continue;
     }

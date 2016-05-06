@@ -46,14 +46,14 @@ move_players(Core::Context &ctx,
   
 void
 hit_player(Core::World &world,
-           const util::generic_id id,
+           const Core::Entity_ref &hit,
            Players_container &players_container,
            Explosions_container &explosions_container);
   
   
 void
 power_up(Core::World &world,
-         const util::generic_id id,
+         const Core::Entity_ref hit,
          Players_container &players_container);
 
 

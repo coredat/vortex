@@ -18,7 +18,6 @@
 #include <core/model/model.hpp>
 #include <core/model/mesh.hpp>
 #include <core/material/texture.hpp>
-//#include <data/resource_data/resource_data.hpp>
 #include <utilities/logging.hpp>
 #include <utilities/timer.hpp>
 
@@ -39,8 +38,6 @@
 #include <game_states/selection.hpp>
 
 #include <iostream>
-
-//#include <SDL2/SDL.h>
 
 
 enum class Game_state
@@ -159,7 +156,7 @@ main()
             if(ref_b.has_tag(Object_tags::bullet) && ref_a.has_tag(Object_tags::enemy))
             {
               Enemy_utils::hit_enemy(world,
-                                     ref_a.get_id(),
+                                     ref_a,
                                      enemies_container,
                                      explosions_container,
                                      powerups_container);
@@ -170,7 +167,7 @@ main()
               if(ref_b.has_tag(Object_tags::enemy))
               {
                 Player_utils::hit_player(world,
-                                         ref_a.get_id(),
+                                         ref_a,
                                          players_container,
                                          explosions_container);
               }
@@ -178,43 +175,12 @@ main()
               if(ref_b.has_tag(Object_tags::powerup))
               {
                 Player_utils::power_up(world,
-                                       ref_a.get_id(),
+                                       ref_a,
                                        players_container);
               }
             }
           }
         });
-//      world.get_overlapping_aabbs([&](const Core::Entity_ref ref_a,
-//                                      const Core::Entity_ref ref_b)
-//      {
-//        // Enemy collided with a bullet
-//        if(ref_a.has_tag(Object_tags::enemy) && ref_b.has_tag(Object_tags::bullet))
-//        {
-//          Enemy_utils::hit_enemy(world,
-//                                 ref_a.get_id(),
-//                                 enemies_container,
-//                                 explosions_container,
-//                                 powerups_container);
-//        }
-//        
-//        if(ref_a.has_tag(Object_tags::player))
-//        {
-//          if(ref_b.has_tag(Object_tags::enemy))
-//          {
-//            Player_utils::hit_player(world,
-//                                     ref_a.get_id(),
-//                                     players_container,
-//                                     explosions_container);
-//          }
-//          
-//          if(ref_b.has_tag(Object_tags::powerup))
-//          {
-//            Player_utils::power_up(world,
-//                                   ref_a.get_id(),
-//                                   players_container);
-//          }
-//        }
-//      });
         
       Enemy_utils::spawn_enemies(world, dt, enemies_container);
       Player_utils::move_players(context, world, dt, players_container, bullets_container);

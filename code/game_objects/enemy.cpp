@@ -380,7 +380,7 @@ update_enemies(Core::World &world,
 
 void
 hit_enemy(Core::World &world,
-          const util::generic_id id,
+          const Core::Entity_ref &hit,
           Enemies_container &enemies_container,
           Explosions_container &explosions_container,
           Powerups_container &powerups_container)
@@ -389,7 +389,7 @@ hit_enemy(Core::World &world,
   {
     auto &enemy = enemies_container.enemy[i];
     
-    if(enemy.entity.get_id() == id)
+    if(enemy.entity == hit)
     {
       const math::vec3 position = enemy.entity.get_transform().get_position();
     
