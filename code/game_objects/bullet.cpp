@@ -6,6 +6,7 @@
 #include <core/audio/sample.hpp>
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
+#include <core/physics/rigidbody_properties.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
 #include <math/vec/vec2.hpp>
@@ -100,35 +101,52 @@ create_bullet(Core::World &world,
     
     if(!bullet.entity)
     {
-      bullet.entity = Core::Entity(world);
-      bullet.entity.set_name("Bullet");
-      bullet.entity.add_tag(Object_tags::bullet);
+      // General settings
+      {
+        bullet.entity = Core::Entity(world);
+        bullet.entity.set_name("Bullet");
+        bullet.entity.add_tag(Object_tags::bullet);
+      }
       
-      bullet.entity.set_model(model);
-      bullet.entity.set_material_id(texture.get_id());
+      // Model and texture
+      {
+        bullet.entity.set_model(model);
+        bullet.entity.set_material_id(texture.get_id());
+      }
       
-      bullet.point_on_circle = position;
-      bullet.direction = direction;
+      // Transform
+      {
+        bullet.point_on_circle = position;
+        bullet.direction = direction;
       
-      const math::vec2 new_point = Level::get_point_on_cirlce(bullet.point_on_circle);
-      math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
-                                           math::vec2_get_y(new_point),
-                                           depth);
+        const math::vec2 new_point = Level::get_point_on_cirlce(bullet.point_on_circle);
+        math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                             math::vec2_get_y(new_point),
+                                             depth);
       
 
-      auto scale = math::vec3_init(0.5f, 0.5f, 1.f);
-      auto rot = math::quat_init();
+        auto scale = math::vec3_init(0.5f, 0.5f, 1.f);
+        auto rot = math::quat_init();
       
-      const Core::Transform transform(
-        new_pos,//math::vec3_init(0, 0, depth),
-        scale,
-        rot
-      );
+        const Core::Transform transform(
+          new_pos,//math::vec3_init(0, 0, depth),
+          scale,
+          rot
+        );
+
+        bullet.entity.set_transform(transform);
+      }
       
-      Core::Box_collider collider(0.5f, 0.5f, 0.5f);
-      bullet.entity.set_collider(collider);
+      // Physics
+      {
+        Core::Box_collider collider(0.5f, 0.5f, 0.5f);
+        bullet.entity.set_collider(collider);
       
-      bullet.entity.set_transform(transform);
+        // Rigidbody properties
+        Core::Rigidbody_properties rb_props;
+        rb_props.set_collision_mask(Object_tags::bullet, Object_tags::enemy);
+        bullet.entity.set_rigidbody_properties(rb_props);
+      }
 
       gun_shot_sample.play();
       

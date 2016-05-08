@@ -37,6 +37,8 @@
 #include <game_states/game.hpp>
 #include <game_states/selection.hpp>
 
+#include <utilities/bits.hpp>
+
 #include <iostream>
 
 

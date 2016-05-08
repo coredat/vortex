@@ -7,6 +7,7 @@
 #include <core/world/world.hpp>
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
+#include <core/physics/rigidbody_properties.hpp>
 #include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
@@ -89,6 +90,47 @@ spawn_enemies(Core::World &world,
 }
 
 
+namespace
+{
+  inline void
+  common_spawn_setup(Core::Entity &entity, const float depth, const float angle)
+  {
+    // General
+    {
+      entity.set_name("Enemy");
+      entity.add_tag(Object_tags::enemy);
+    }
+
+    // Model and Texture
+    {
+      entity.set_model(model);
+      entity.set_material_id(texture_orange.get_id());
+    }
+
+    // Set Transform
+    {        
+      const math::vec2 point = Level::get_point_on_cirlce(angle);
+
+      const Core::Transform trans(
+        math::vec3_init(math::vec2_get_x(point), math::vec2_get_y(point), depth),
+        math::vec3_one(),
+        math::quat_init()
+      );
+
+      entity.set_transform(trans);
+    }
+
+    // Physics
+    {
+      Core::Box_collider collider(0.5f, 0.5f, 0.5f);
+      entity.set_collider(collider);
+
+      Core::Rigidbody_properties rb_props;
+      rb_props.set_collision_mask(Object_tags::enemy, Object_tags::bullet | Object_tags::player);
+      entity.set_rigidbody_properties(rb_props);
+    }
+  }
+}
 
 
 void
@@ -106,32 +148,15 @@ spawn_climber(Core::World &world,
     if(!enemy.entity)
     {
       enemy = Enemies_container::Enemy();
-    
-      enemy.point_on_circle = static_cast<float>(rand() % 1000) / 10;
-      enemy.depth = depth;
       enemy.type = Enemies_container::Enemy::Type::climber;
       enemy.direction = direction;
       enemy.lifetime = 0;
+      enemy.point_on_circle = static_cast<float>(rand() % 1000) / 10;
+      enemy.depth = depth;
 
       enemy.entity = Core::Entity(world);
-      enemy.entity.set_name("Enemy");
-      enemy.entity.add_tag(Object_tags::enemy);
-      enemy.entity.set_model(model);
-      enemy.entity.set_material_id(texture_orange.get_id());
-      
-      Core::Box_collider collider(0.5f, 0.5f, 0.5f);
-      enemy.entity.set_collider(collider);
-
-      const math::vec2 point = Level::get_point_on_cirlce(enemy.point_on_circle);
-
-      const Core::Transform trans(
-        math::vec3_init(math::vec2_get_x(point), math::vec2_get_y(point), enemy.depth),
-        math::vec3_one(),
-        math::quat_init()
-      );
-
-      enemy.entity.set_transform(trans);
-      
+      common_spawn_setup(enemy.entity, enemy.depth, enemy.point_on_circle);
+            
       return; // We don't need to keep looking.
     }
   }
@@ -162,23 +187,10 @@ spawn_breeder(Core::World &world,
       enemy.lifetime = 0;
 
       enemy.entity = Core::Entity(world);
-      enemy.entity.set_name("Enemy");
-      enemy.entity.add_tag(Object_tags::enemy);
-      enemy.entity.set_model(model);
+
+      common_spawn_setup(enemy.entity, enemy.depth, enemy.point_on_circle);
+
       enemy.entity.set_material_id(texture_magenta.get_id());
-
-      Core::Box_collider collider(0.5f, 0.5f, 0.5f);
-      enemy.entity.set_collider(collider);
-
-      const math::vec2 point = Level::get_point_on_cirlce(enemy.point_on_circle);
-
-      const Core::Transform trans(
-        math::vec3_init(math::vec2_get_x(point), math::vec2_get_y(point), enemy.depth),
-        math::vec3_one(),
-        math::quat_init()
-      );
-
-      enemy.entity.set_transform(trans);
       
       return; // We don't need to keep looking.
     }
@@ -210,23 +222,10 @@ spawn_egg(Core::World &world,
       enemy.lifetime = 0;
 
       enemy.entity = Core::Entity(world);
-      enemy.entity.set_name("Enemy");
-      enemy.entity.add_tag(Object_tags::enemy);
-      enemy.entity.set_model(model);
+      common_spawn_setup(enemy.entity, enemy.depth, enemy.point_on_circle);
+
       enemy.entity.set_material_id(texture_magenta.get_id());
-      
-      Core::Box_collider collider(0.5f, 0.5f, 0.5f);
-      enemy.entity.set_collider(collider);
-
-      const math::vec2 point = Level::get_point_on_cirlce(enemy.point_on_circle);
-
-      const Core::Transform trans(
-        math::vec3_init(math::vec2_get_x(point), math::vec2_get_y(point), enemy.depth),
-        math::vec3_init(0.5f),
-        math::quat_init()
-      );
-
-      enemy.entity.set_transform(trans);
+   
       
       return; // We don't need to keep looking.
     }
