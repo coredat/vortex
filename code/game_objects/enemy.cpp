@@ -50,6 +50,7 @@ init_enemies(Core::World &world,
   }
 }
 
+// --
 
 void
 spawn_enemies(Core::World &world,
@@ -89,9 +90,14 @@ spawn_enemies(Core::World &world,
   }
 }
 
+// --
 
 namespace
 {
+  /*
+    Helper to setup entities as most entity settings are the same.
+    the caller can then customize.
+  */
   inline void
   common_spawn_setup(Core::Entity &entity, const float depth, const float angle)
   {
@@ -132,6 +138,7 @@ namespace
   }
 }
 
+// --
 
 void
 spawn_climber(Core::World &world,
@@ -198,7 +205,6 @@ spawn_breeder(Core::World &world,
 }
 
 // --
-
 
 void
 spawn_egg(Core::World &world,

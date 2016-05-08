@@ -10,6 +10,7 @@
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
 #include <core/physics/box_collider_utils.hpp>
+#include <core/physics/rigidbody_properties.hpp>
 #include <game_objects/bullet.hpp>
 #include <game_objects/bullet.hpp>
 #include <game_objects/explosion.hpp>
@@ -48,6 +49,9 @@ init_players(Core::World &world,
 
     Core::Box_collider collider = Core::Box_collider_utils::create_with_half_extents(math::aabb_get_half_extents(model.get_model_aabb()));
     
+    Core::Rigidbody_properties rb_props;
+    rb_props.set_collision_mask(Object_tags::player, Object_tags::enemy);
+
     auto &player = players_container.player[i];
     
     // This entity is already taken.
@@ -70,6 +74,7 @@ init_players(Core::World &world,
     player.entity.set_model(model);
     player.entity.set_material_id(texture.get_id());
     player.entity.set_collider(collider);
+    player.entity.set_rigidbody_properties(rb_props);
 
     // We set a temp transform
     // because this will be the player selection screen.
