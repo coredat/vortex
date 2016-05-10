@@ -31,7 +31,7 @@ void
 init_bullets(Core::World &world,
              Bullets_container &bullets_container)
 {
-  const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
+  const std::string unit_cube_path = util::get_resource_path() + "assets/models/bullet.obj";
   model = Core::Model(unit_cube_path.c_str());
 
   const std::string texture_path = util::get_resource_path() + "assets/textures/dev_grid_red_512.png";
@@ -125,9 +125,9 @@ create_bullet(Core::World &world,
                                              math::vec2_get_y(new_point),
                                              depth);
       
+        auto scale = math::vec3_init(1.6f, 0.6f, 0.6f);
 
-        auto scale = math::vec3_init(0.5f, 0.5f, 1.f);
-        auto rot = math::quat_init();
+        const math::quat rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
       
         const Core::Transform transform(
           new_pos,//math::vec3_init(0, 0, depth),

@@ -41,7 +41,7 @@ init_players(Core::World &world,
 {
   for(uint32_t i = 0; i < players_container.size; ++i)
   {
-    const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
+    const std::string unit_cube_path = util::get_resource_path() + "assets/models/ship.obj";
     Core::Model model(unit_cube_path.c_str());
 
     const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
@@ -79,10 +79,14 @@ init_players(Core::World &world,
     // We set a temp transform
     // because this will be the player selection screen.
     
+    const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
+    const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, math::quart_tau());
+    const math::quat rot = math::quat_multiply(y_rot, z_rot);
+    
     Core::Transform trans(
       math::vec3_init(-4.f + (i * (8.f / 4.f)), 0, 0),
       math::vec3_one(),
-      math::quat_init()
+      rot
     );
     
     player.entity.set_transform(trans);
