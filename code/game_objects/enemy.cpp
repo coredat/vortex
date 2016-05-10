@@ -61,7 +61,7 @@ spawn_enemies(Core::World &world,
 
   if(spawn_timer > spawn_rate)
   {
-    spawn_timer = -11111110;
+    spawn_timer = 0;
     
     const float point = static_cast<float>(rand() % 1000) / 10.f;
     const float depth = Level::get_bottom_of_level();
@@ -69,16 +69,14 @@ spawn_enemies(Core::World &world,
     using Enemy_type = Enemies_container::Enemy::Type;
     Enemy_type what_to_spawn = (Enemy_type)(rand() % (uint32_t)Enemy_type::size);
     
-    spawn_breeder(world, enemies_container, point, 1, depth);
-    
     switch(what_to_spawn)
     {
       case(Enemy_type::climber):
-        //spawn_climber(world, enemies_container, point, 1, depth);
+        spawn_climber(world, enemies_container, point, 1, depth);
         break;
         
       case(Enemy_type::breeder):
-        //spawn_breeder(world, enemies_container, point, 1, depth);
+        spawn_breeder(world, enemies_container, point, 1, depth);
 
         break;
         
