@@ -60,7 +60,7 @@ main()
   context_setup.vsync = false;
 
   Core::Context context(800, 480, false, "Vortex", context_setup);
-  Core::Input::mouse_set_capture(context, true);
+//  Core::Input::mouse_set_capture(context, true);
   
   Core::World world(Core::World_setup{});
   Core::Mesh_renderer mesh_renderer;
@@ -217,8 +217,6 @@ main()
       Enemy_utils::update_enemies(world, dt, enemies_container);
       Powerup_utils::update_powerups(world, powerups_container, dt);
     }
-
-    std::cout << dt << std::endl;
 
     mesh_renderer.render();
   }

@@ -20,6 +20,7 @@ init_level(Core::World &world, Level_container &level)
     auto &level_data = level.level[i];
   
     level_data.entity = Core::Entity(world);
+    level_data.entity.set_name("Level");
     
     const std::string level_path = util::get_resource_path() + "assets/models/unit_tube.obj";
     Core::Model model(level_path.c_str());

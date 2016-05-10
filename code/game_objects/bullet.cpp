@@ -65,6 +65,7 @@ move_bullets(Core::World &world,
       if(!math::is_between(depth, Level::get_near_death_zone(), Level::get_far_death_zone()))
       {
         bullet.entity.destroy();
+        bullet = Bullets_container::Bullet();
         continue;
       }
     }
