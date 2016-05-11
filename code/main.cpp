@@ -126,6 +126,11 @@ main()
         Player_utils::init_players(world, players_container, 0);
       }
       
+      if(controller_01.is_button_down_on_frame(Core::Input::Button::button_0))
+      {
+        Player_utils::selection(world, players_container, 0, +1);
+      }
+      
       if(controller_02.is_button_down(Core::Input::Button::button_0))
       {
         Player_utils::init_players(world, players_container, 1);

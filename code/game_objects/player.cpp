@@ -97,6 +97,15 @@ init_players(Core::World &world,
 
 
 void
+selection(Core::World &world,
+          Players_container &player_container,
+          const uint32_t controller_id,
+          const uint32_t direction)
+{
+}
+
+
+void
 move_players(Core::Context &ctx,
              Core::World &world,
              const float dt,
