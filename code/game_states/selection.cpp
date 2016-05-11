@@ -2,11 +2,21 @@
 #include <core/input/controller.hpp>
 #include <common/game_state.hpp>
 #include <game_objects/player.hpp>
+#include <core/material/texture.hpp>
+#include <core/model/model.hpp>
+#include <utilities/directory.hpp>
 
 
 namespace
 {
+  constexpr uint32_t number_of_textures = 4;
+  Core::Texture textures[number_of_textures];
   
+  constexpr uint32_t number_of_models = 1;
+  Core::Model models[number_of_models];
+  
+  constexpr uint32_t max_number_of_players = 4;
+  uint32_t current_player_selection[max_number_of_players];
 }
 
 
@@ -14,7 +24,37 @@ void
 selection_init(Core::Context &ctx,
                Core::World &world)
 {
+  // Load textures
+  {
+    uint32_t load_texture = 0;
+    
+    const std::string tex_01 = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
+    textures[load_texture++] = Core::Texture(tex_01.c_str());
+    
+    const std::string tex_02 = util::get_resource_path() + "assets/textures/dev_grid_yellow_512.png";
+    textures[load_texture++] = Core::Texture(tex_02.c_str());
+    
+    const std::string tex_03 = util::get_resource_path() + "assets/textures/dev_grid_red_512.png";
+    textures[load_texture++] = Core::Texture(tex_03.c_str());
+    
+    const std::string tex_04 = util::get_resource_path() + "assets/textures/dev_grid_blue_512.png";
+    textures[load_texture++] = Core::Texture(tex_04.c_str());
+  }
   
+  // Load models
+  {
+    uint32_t load_model = 0;
+    const std::string model_01 = util::get_resource_path() + "assets/models/ship.obj";
+    models[load_model++] = Core::Model(model_01.c_str());
+  }
+  
+  // Set player selections
+  {
+    for(uint32_t p = 0; p < max_number_of_players; ++p)
+    {
+      current_player_selection[p] = p;
+    }
+  }
 }
 
 
@@ -25,48 +65,40 @@ selection_update(Core::Context &context,
                  const float dt)
 {
   // Wait for input.
-  Core::Input::Controller controller_01(context, 0);
-  Core::Input::Controller controller_02(context, 1);
-  Core::Input::Controller controller_03(context, 2);
-  Core::Input::Controller controller_04(context, 3);
+  constexpr uint32_t number_of_controllers = 4;
+  
+  Core::Input::Controller controllers[number_of_controllers] = {
+    Core::Input::Controller(context, 0),
+    Core::Input::Controller(context, 1),
+    Core::Input::Controller(context, 2),
+    Core::Input::Controller(context, 3),
+  };
   
   /*
     If p1 hits start we start.
   */
-  if(controller_01.is_button_down(Core::Input::Button::button_4) ||
-     controller_02.is_button_down(Core::Input::Button::button_4) ||
-     controller_03.is_button_down(Core::Input::Button::button_4) ||
-     controller_04.is_button_down(Core::Input::Button::button_4))
+  for(auto &ctrl : controllers)
   {
-    return Game_state::game_mode;
+    if(ctrl.is_button_down(Core::Input::Button::button_4))
+    {
+      return Game_state::game_mode;
+    }
   }
   
   /*
     Add players as the push their buttons.
   */
-  if(controller_01.is_button_down(Core::Input::Button::button_0))
+  for(uint32_t i = 0; i < number_of_controllers; ++i)
   {
-    Player_utils::init_players(world, players_container, 0);
-  }
-  
-  if(controller_01.is_button_down_on_frame(Core::Input::Button::button_0))
-  {
-    Player_utils::selection(world, players_container, 0, +1);
-  }
-  
-  if(controller_02.is_button_down(Core::Input::Button::button_0))
-  {
-    Player_utils::init_players(world, players_container, 1);
-  }
-  
-  if(controller_03.is_button_down(Core::Input::Button::button_0))
-  {
-    Player_utils::init_players(world, players_container, 2);
-  }
-  
-  if(controller_04.is_button_down(Core::Input::Button::button_0))
-  {
-    Player_utils::init_players(world, players_container, 3);
+    if(controllers[i].is_button_down(Core::Input::Button::button_0))
+    {
+      Player_utils::init_players(world, players_container, i);
+    }
+    
+    if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
+    {
+      //Player_utils::selection(world, players_container, 0, +1);
+    }
   }
   
   return Game_state::selection;

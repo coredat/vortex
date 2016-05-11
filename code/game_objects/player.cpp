@@ -100,8 +100,16 @@ void
 selection(Core::World &world,
           Players_container &player_container,
           const uint32_t controller_id,
-          const uint32_t direction)
+          const Core::Model &model,
+          const Core::Texture &texture)
 {
+  auto &player = player_container.player[controller_id];
+  
+  if(player.entity)
+  {
+    player.entity.set_model(model);
+    player.entity.set_material_id(texture.get_id());
+  }
 }
 
 

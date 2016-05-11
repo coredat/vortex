@@ -40,7 +40,8 @@ void
 selection(Core::World &world,
           Players_container &player_container,
           const uint32_t controller_id,
-          const uint32_t direction);
+          const Core::Model &model,
+          const Core::Texture &texture);
 
 
 void
