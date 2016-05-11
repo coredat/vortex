@@ -1,6 +1,8 @@
 #include <game_objects/enemy.hpp>
 #include <game_objects/explosion.hpp>
 #include <game_objects/powerup_pickup.hpp>
+#include <common/level_functions.hpp>
+#include <common/object_tags.hpp>
 #include <core/model/model.hpp>
 #include <core/transform/transform.hpp>
 #include <core/material/texture.hpp>
@@ -11,8 +13,6 @@
 #include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
-#include <common/level_functions.hpp>
-#include <common/object_tags.hpp>
 #include <utilities/directory.hpp>
 
 

@@ -1,29 +1,3 @@
-#include <core/entity/entity_ref.hpp>
-#include <core/context/context.hpp>
-#include <core/world/world.hpp>
-#include <core/world/world_setup.hpp>
-#include <core/camera/camera.hpp>
-#include <core/camera/camera_properties.hpp>
-#include <core/entity/entity.hpp>
-#include <core/color/color.hpp>
-#include <core/color/color_predefined.hpp>
-#include <core/renderer/mesh_renderer.hpp>
-#include <core/transform/transform.hpp>
-#include <core/input/input.hpp>
-#include <core/input/controller.hpp>
-#include <math/vec/vec3.hpp>
-
-// Temp Resource loading.
-#include <core/model/model.hpp>
-#include <core/model/mesh.hpp>
-#include <core/material/texture.hpp>
-#include <utilities/logging.hpp>
-#include <utilities/timer.hpp>
-
-// Common
-#include <common/object_tags.hpp>
-#include <common/game_state.hpp>
-
 // Game Objects
 #include <game_objects/bullet.hpp>
 #include <game_objects/player.hpp>
@@ -38,28 +12,30 @@
 #include <game_states/selection.hpp>
 #include <game_states/game_over.hpp>
 
-#include <utilities/bits.hpp>
-
-#include <iostream>
-
-
-
-
-
-Game_state game_state = Game_state::selection;
+// Core
+#include <core/context/context.hpp>
+#include <core/world/world.hpp>
+#include <core/world/world_setup.hpp>
+#include <core/renderer/mesh_renderer.hpp>
+#include <math/vec/vec3.hpp>
+#include <utilities/timer.hpp>
+#include <utilities/logging.hpp>
 
 
 int
 main()
 {
+  // ** Setup Core ** //
+
   Core::Context_setup context_setup;
   context_setup.vsync = false;
 
   Core::Context context(800, 480, false, "Vortex", context_setup);
-//  Core::Input::mouse_set_capture(context, true);
   
   Core::World world(Core::World_setup{});
   Core::Mesh_renderer mesh_renderer;
+  
+  LOG_TODO("Move delta time into core.");
   
   util::timer delta_time_ms;
   delta_time_ms.start();
@@ -86,6 +62,10 @@ main()
   
   Powerups_container powerups_container;
   Powerup_utils::init_powerups(world, powerups_container);
+  
+  // ** Start Game ** //
+  
+  Game_state game_state = Game_state::selection;
   
   selection_init(context, world);
   game_init(context, world);

@@ -1,14 +1,14 @@
 #include <game_states/game.hpp>
-#include <common/game_state.hpp>
-#include <core/world/world.hpp>
-#include <core/context/context.hpp>
-#include <core/physics/collision_pair.hpp>
-#include <common/object_tags.hpp>
 #include <game_objects/player.hpp>
 #include <game_objects/powerup_pickup.hpp>
 #include <game_objects/enemy.hpp>
 #include <game_objects/explosion.hpp>
 #include <game_objects/bullet.hpp>
+#include <common/game_state.hpp>
+#include <common/object_tags.hpp>
+#include <core/world/world.hpp>
+#include <core/context/context.hpp>
+#include <core/physics/collision_pair.hpp>
 
 
 void

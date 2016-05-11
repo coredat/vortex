@@ -2,9 +2,9 @@
 #define ENEMY_INCLUDED_C60D1C26_65C3_4BF9_AAA6_23A27358D168
 
 
+#include <game_objects/game_objects_fwd.hpp>
 #include <core/world/world_fwd.hpp>
 #include <core/entity/entity.hpp>
-#include <game_objects/game_objects_fwd.hpp>
 #include <stdint.h>
 
 

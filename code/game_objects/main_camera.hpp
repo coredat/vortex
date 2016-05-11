@@ -2,12 +2,12 @@
 #define MAIN_CAMERA_INCLUDED_9A8E6C83_A716_4315_AE91_EE7455B30F77
 
 
+#include <game_objects/game_objects_fwd.hpp>
 #include <core/entity/entity.hpp>
 #include <core/world/world_fwd.hpp>
 #include <core/context/context_fwd.hpp>
 #include <core/camera/camera.hpp>
 #include <math/vec/vec_types.hpp>
-#include <game_objects/game_objects_fwd.hpp>
 
 
 struct Game_camera

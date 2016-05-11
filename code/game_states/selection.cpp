@@ -1,7 +1,7 @@
 #include <game_states/selection.hpp>
-#include <core/input/controller.hpp>
-#include <common/game_state.hpp>
 #include <game_objects/player.hpp>
+#include <common/game_state.hpp>
+#include <core/input/controller.hpp>
 #include <core/material/texture.hpp>
 #include <core/model/model.hpp>
 #include <utilities/directory.hpp>
