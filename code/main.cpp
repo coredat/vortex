@@ -13,7 +13,6 @@
 #include <core/input/controller.hpp>
 #include <math/vec/vec3.hpp>
 
-#include <core/physics/collision_pair.hpp>
 // Temp Resource loading.
 #include <core/model/model.hpp>
 #include <core/model/mesh.hpp>
@@ -23,6 +22,7 @@
 
 // Common
 #include <common/object_tags.hpp>
+#include <common/game_state.hpp>
 
 // Game Objects
 #include <game_objects/bullet.hpp>
@@ -36,18 +36,14 @@
 // Game States
 #include <game_states/game.hpp>
 #include <game_states/selection.hpp>
+#include <game_states/game_over.hpp>
 
 #include <utilities/bits.hpp>
 
 #include <iostream>
 
 
-enum class Game_state
-{
-  selection,
-  game_mode,
-  game_over,
-};
+
 
 
 Game_state game_state = Game_state::selection;
@@ -67,6 +63,8 @@ main()
   
   util::timer delta_time_ms;
   delta_time_ms.start();
+  
+  // ** Game Objects ** //
   
   Game_camera cam;
   Camera_utils::init_main_camera(context, world, cam);
@@ -89,6 +87,10 @@ main()
   Powerups_container powerups_container;
   Powerup_utils::init_powerups(world, powerups_container);
   
+  selection_init(context, world);
+  game_init(context, world);
+  game_over_init(context, world);
+  
   while(context.is_open())
   {
     const util::milliseconds frame_time = delta_time_ms.split();
@@ -96,119 +98,33 @@ main()
 
     world.think(dt);
     
-    /*
-      Selection.
-    */
-    if(game_state == Game_state::selection)
+    // ** Game State ** //
+    switch(game_state)
     {
-      // Wait for input.
-      Core::Input::Controller controller_01(context, 0);
-      Core::Input::Controller controller_02(context, 1);
-      Core::Input::Controller controller_03(context, 2);
-      Core::Input::Controller controller_04(context, 3);
-      
-      /*
-        If p1 hits start we start.
-      */
-      if(controller_01.is_button_down(Core::Input::Button::button_4) ||
-         controller_02.is_button_down(Core::Input::Button::button_4) ||
-         controller_03.is_button_down(Core::Input::Button::button_4) ||
-         controller_04.is_button_down(Core::Input::Button::button_4))
+      case(Game_state::selection):
       {
-        game_state = Game_state::game_mode;
+        game_state = selection_update(context, world, players_container, dt);
+        break;
       }
-      
-      /*
-        Add players as the push their buttons.
-      */
-      if(controller_01.is_button_down(Core::Input::Button::button_0))
-      {
-        Player_utils::init_players(world, players_container, 0);
-      }
-      
-      if(controller_01.is_button_down_on_frame(Core::Input::Button::button_0))
-      {
-        Player_utils::selection(world, players_container, 0, +1);
-      }
-      
-      if(controller_02.is_button_down(Core::Input::Button::button_0))
-      {
-        Player_utils::init_players(world, players_container, 1);
-      }
-      
-      if(controller_03.is_button_down(Core::Input::Button::button_0))
-      {
-        Player_utils::init_players(world, players_container, 2);
-      }
-      
-      if(controller_04.is_button_down(Core::Input::Button::button_0))
-      {
-        Player_utils::init_players(world, players_container, 3);
-      }
-    }
     
-    /*
-      Play game.
-    */
-    if(game_state == Game_state::game_mode)
+      case(Game_state::game_mode):
       {
-        world.get_overlapping_aabbs([&](const Core::Collision_pair pairs[], const uint32_t number_of_pairs)
-        {
-           for(uint32_t i = 0; i < number_of_pairs; ++i)
-          {
-            const Core::Entity_ref &ref_a = pairs[i].entity_a;
-            const Core::Entity_ref &ref_b = pairs[i].entity_b;
-
-            // Enemy collided with a bullet
-            if(ref_b.has_tag(Object_tags::bullet) && ref_a.has_tag(Object_tags::enemy))
-            {
-              Enemy_utils::hit_enemy(world,
-                                     ref_a,
-                                     enemies_container,
-                                     explosions_container,
-                                     powerups_container);
-            }
-            
-            if(ref_a.has_tag(Object_tags::player))
-            {
-              if(ref_b.has_tag(Object_tags::enemy))
-              {
-                Player_utils::hit_player(world,
-                                         ref_a,
-                                         players_container,
-                                         explosions_container);
-              }
-              
-              if(ref_b.has_tag(Object_tags::powerup))
-              {
-                Player_utils::power_up(world,
-                                       ref_a,
-                                       players_container);
-              }
-            }
-          }
-        });
+        game_state = game_update(context,
+                                 world,
+                                 players_container,
+                                 enemies_container,
+                                 explosions_container,
+                                 powerups_container,
+                                 bullets_container,
+                                 dt);
         
-      Enemy_utils::spawn_enemies(world, dt, enemies_container);
-      Player_utils::move_players(context, world, dt, players_container, bullets_container);
-
-      if(Player_utils::all_dead(players_container))
-      {
-        game_state = Game_state::game_over;
+        break;
       }
-    }
     
-    /*
-      Game over screen
-    */
-    if(game_state == Game_state::game_over)
-    {
-      Enemy_utils::explode_all(world, enemies_container, explosions_container);
-      
-      Core::Input::Controller controller(context, 0);
-      if(controller.is_button_down(Core::Input::Button::button_4))
+      case(Game_state::game_over):
       {
-        game_state = Game_state::selection;
+        game_state = game_over_update(context, world, enemies_container, explosions_container, dt);
+        break;
       }
     }
     

@@ -2,8 +2,26 @@
 #define GAME_INCLUDED_74006336_21A6_4078_906C_81BFDC593032
 
 
+#include <core/context/context_fwd.hpp>
+#include <core/world/world_fwd.hpp>
+#include <common/common_fwd.hpp>
+#include <game_objects/game_objects_fwd.hpp>
+
+
 void
-game_update(const float dt);
+game_init(Core::Context &ctx,
+          Core::World &world);
+
+
+Game_state
+game_update(Core::Context &ctx,
+            Core::World &world,
+            Players_container &players,
+            Enemies_container &enemies,
+            Explosions_container &explosions,
+            Powerups_container &powerups,
+            Bullets_container &bullets,
+            const float dt);
 
 
 #endif // inc guard
