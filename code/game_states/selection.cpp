@@ -12,7 +12,7 @@ namespace
   constexpr uint32_t number_of_textures = 4;
   Core::Texture textures[number_of_textures];
   
-  constexpr uint32_t number_of_models = 1;
+  constexpr uint32_t number_of_models = 4;
   Core::Model models[number_of_models];
   
   constexpr uint32_t max_number_of_players = 4;
@@ -46,6 +46,15 @@ selection_init(Core::Context &ctx,
     uint32_t load_model = 0;
     const std::string model_01 = util::get_resource_path() + "assets/models/ship.obj";
     models[load_model++] = Core::Model(model_01.c_str());
+    
+    const std::string model_02 = util::get_resource_path() + "assets/models/ship.obj";
+    models[load_model++] = Core::Model(model_02.c_str());
+    
+    const std::string model_03 = util::get_resource_path() + "assets/models/ship.obj";
+    models[load_model++] = Core::Model(model_03.c_str());
+    
+    const std::string model_04 = util::get_resource_path() + "assets/models/ship.obj";
+    models[load_model++] = Core::Model(model_04.c_str());
   }
   
   // Set player selections
@@ -57,7 +66,7 @@ selection_init(Core::Context &ctx,
   }
 }
 
-
+#include <iostream>
 Game_state
 selection_update(Core::Context &context,
                  Core::World &world,
@@ -97,7 +106,10 @@ selection_update(Core::Context &context,
     
     if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
     {
-      //Player_utils::selection(world, players_container, 0, +1);
+      current_player_selection[i] = (current_player_selection[i] + 1) % number_of_textures;
+      const uint32_t selection = current_player_selection[i];
+      
+      Player_utils::selection(world, players_container, i, models[selection], textures[selection]);
     }
   }
   
