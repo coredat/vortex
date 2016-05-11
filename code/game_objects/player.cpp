@@ -120,6 +120,14 @@ move_players(Core::Context &ctx,
     // Lateral Movement
     {
       const float move_speed = (controller.get_axis(0).x * move_speed_base) * dt;
+      
+      if(move_speed)
+      {
+        player.momentum += (move_speed * 5.f);
+      }
+      
+      player.momentum *= 0.95f;
+      
       player.point_on_circle += move_speed;
       
       const math::vec2 new_point = Level::get_point_on_cirlce(player.point_on_circle);
@@ -130,7 +138,12 @@ move_players(Core::Context &ctx,
       const math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
                                                  math::vec2_get_y(new_point),
                                                  math::vec3_get_z(position));
+      
+      const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
+      const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, -player.point_on_circle + math::quart_tau() - player.momentum);
+
       trans.set_position(new_pos);
+      trans.set_rotation(math::quat_multiply(y_rot, z_rot));
       
       player.entity.set_transform(trans);
     }

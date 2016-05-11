@@ -20,6 +20,7 @@ struct Players_container
     float         jump_speed      = 0.f;
     float         jump_time       = 0.f;
     float         power_up_timer  = 0.f;
+    float         momentum        = 0.f;
   };
   
   Player player[4];
