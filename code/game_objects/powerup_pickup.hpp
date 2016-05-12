@@ -31,9 +31,8 @@ init_powerups(Core::World &world,
 
 void
 update_powerups(Core::World &world,
-                Powerups_container &powerups_container,
-                const float dt);
-
+                const float dt,
+                Powerups_container &powerups_container);
 
 void
 create_powerup(Core::World &world,

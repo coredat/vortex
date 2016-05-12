@@ -30,7 +30,7 @@ main()
   Core::Context_setup context_setup;
   context_setup.vsync = false;
 
-  Core::Context context(800, 480, false, "Vortex", context_setup);
+  Core::Context context(800, 480, false, "Vortex Defender 2099", context_setup);
   
   Core::World world(Core::World_setup{});
   Core::Mesh_renderer mesh_renderer;
@@ -39,6 +39,7 @@ main()
   
   util::timer delta_time_ms;
   delta_time_ms.start();
+  
   
   // ** Game Objects ** //
   
@@ -79,6 +80,10 @@ main()
     // ** Game State ** //
     switch(game_state)
     {
+      /*
+        Player selection screen.
+        Displays the screen where players can join a game.
+      */
       case(Game_state::selection):
       {
         game_state = selection_update(context,
@@ -88,6 +93,10 @@ main()
         break;
       }
     
+      /*
+        Main game screen.
+        This is the active game that is being played.
+      */
       case(Game_state::game_mode):
       {
         game_state = game_update(context,
@@ -102,6 +111,10 @@ main()
         break;
       }
     
+      /*
+        The game over screen.
+        Shows the winner of the round.
+      */
       case(Game_state::game_over):
       {
         game_state = game_over_update(context,
@@ -121,7 +134,7 @@ main()
       Bullet_utils::move_bullets(world, dt, bullets_container);
       Explosion_utils::update_explosions(world, dt, explosions_container);
       Enemy_utils::update_enemies(world, dt, enemies_container);
-      Powerup_utils::update_powerups(world, powerups_container, dt);
+      Powerup_utils::update_powerups(world, dt, powerups_container);
     }
 
     world.think(dt);
