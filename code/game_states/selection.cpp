@@ -73,7 +73,6 @@ selection_update(Core::Context &context,
                  Players_container &players_container,
                  const float dt)
 {
-  // Wait for input.
   constexpr uint32_t number_of_controllers = 4;
   
   Core::Input::Controller controllers[number_of_controllers] = {
@@ -86,7 +85,7 @@ selection_update(Core::Context &context,
   /*
     If p1 hits start we start.
   */
-  for(auto &ctrl : controllers)
+  for(const auto &ctrl : controllers)
   {
     if(ctrl.is_button_down(Core::Input::Button::button_4))
     {
@@ -109,7 +108,11 @@ selection_update(Core::Context &context,
       current_player_selection[i] = (current_player_selection[i] + 1) % number_of_textures;
       const uint32_t selection = current_player_selection[i];
       
-      Player_utils::selection(world, players_container, i, models[selection], textures[selection]);
+      Player_utils::selection(world,
+                              players_container,
+                              i,
+                              models[selection],
+                              textures[selection]);
     }
   }
   

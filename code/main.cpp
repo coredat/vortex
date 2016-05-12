@@ -75,15 +75,16 @@ main()
   {
     const util::milliseconds frame_time = delta_time_ms.split();
     const float dt = static_cast<float>(frame_time) / 1000.f;
-
-    world.think(dt);
     
     // ** Game State ** //
     switch(game_state)
     {
       case(Game_state::selection):
       {
-        game_state = selection_update(context, world, players_container, dt);
+        game_state = selection_update(context,
+                                      world,
+                                      players_container,
+                                      dt);
         break;
       }
     
@@ -103,7 +104,11 @@ main()
     
       case(Game_state::game_over):
       {
-        game_state = game_over_update(context, world, enemies_container, explosions_container, dt);
+        game_state = game_over_update(context,
+                                      world,
+                                      enemies_container,
+                                      explosions_container,
+                                      dt);
         break;
       }
     }
@@ -119,7 +124,7 @@ main()
       Powerup_utils::update_powerups(world, powerups_container, dt);
     }
 
-    mesh_renderer.render();
+    world.think(dt);
   }
 
   return 0;
