@@ -49,11 +49,14 @@ update_explosions(const Core::World &world,
       continue;
     }
     
-    const math::vec3 scale = math::vec3_init(new_scale);
-    Core::Transform trans = exp.entity.get_transform();
-    trans.set_scale(scale);
-    
-    exp.entity.set_transform(trans);
+    if(exp.entity)
+    {
+      const math::vec3 scale = math::vec3_init(new_scale);
+      Core::Transform trans = exp.entity.get_transform();
+      trans.set_scale(scale);
+      
+      exp.entity.set_transform(trans);
+    }
   }
 }
 
