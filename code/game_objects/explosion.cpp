@@ -1,7 +1,7 @@
 #include <game_objects/explosion.hpp>
 #include <common/object_tags.hpp>
 #include <core/model/model.hpp>
-#include <core/material/texture.hpp>
+#include <core/resources/texture.hpp>
 #include <core/transform/transform.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>

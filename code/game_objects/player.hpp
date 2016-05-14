@@ -5,6 +5,7 @@
 #include <core/entity/entity.hpp>
 #include <core/world/world_fwd.hpp>
 #include <core/context/context_fwd.hpp>
+#include <core/resources/resources_fwd.hpp>
 #include <game_objects/game_objects_fwd.hpp>
 #include <stdint.h>
 

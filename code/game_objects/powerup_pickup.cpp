@@ -3,7 +3,7 @@
 #include <common/level_functions.hpp>
 #include <core/world/world.hpp>
 #include <core/model/model.hpp>
-#include <core/material/texture.hpp>
+#include <core/resources/texture.hpp>
 #include <core/transform/transform.hpp>
 #include <math/vec/vec3.hpp>
 #include <utilities/directory.hpp>

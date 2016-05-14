@@ -4,7 +4,7 @@
 #include <core/entity/entity.hpp>
 #include <core/model/model.hpp>
 #include <core/transform/transform.hpp>
-#include <core/material/texture.hpp>
+#include <core/resources/texture.hpp>
 #include <core/audio/sample.hpp>
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>

@@ -16,10 +16,15 @@
 #include <core/context/context.hpp>
 #include <core/world/world.hpp>
 #include <core/world/world_setup.hpp>
-#include <core/renderer/mesh_renderer.hpp>
+#include <core/renderer/material_renderer.hpp>
 #include <math/vec/vec3.hpp>
 #include <utilities/timer.hpp>
 #include <utilities/logging.hpp>
+
+// Testing
+#include <core/resources/material.hpp>
+#include <core/resources/shader.hpp>
+#include <utilities/directory.hpp>
 
 
 int
@@ -33,12 +38,22 @@ main()
   Core::Context context(800, 480, false, "Vortex Defender 2099", context_setup);
   
   Core::World world(Core::World_setup{});
-  Core::Mesh_renderer mesh_renderer;
   
   LOG_TODO("Move delta time into core.");
   
   util::timer delta_time_ms;
   delta_time_ms.start();
+  
+  
+  // Test
+  {
+    const std::string file = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+    Core::Shader shader(file.c_str());
+    
+    Core::Material mat("foo-fee");
+    
+    assert(shader.is_valid());
+  }
   
   
   // ** Game Objects ** //

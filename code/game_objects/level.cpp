@@ -1,7 +1,7 @@
 #include <game_objects/level.hpp>
 #include <common/level_functions.hpp>
 #include <core/world/world.hpp>
-#include <core/material/texture.hpp>
+#include <core/resources/texture.hpp>
 #include <core/model/model.hpp>
 #include <core/transform/transform.hpp>
 #include <math/vec/vec3.hpp>
