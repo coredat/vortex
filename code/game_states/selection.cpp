@@ -3,8 +3,11 @@
 #include <common/game_state.hpp>
 #include <core/input/controller.hpp>
 #include <core/resources/texture.hpp>
+#include <core/transform/transform.hpp>
 #include <core/model/model.hpp>
 #include <utilities/directory.hpp>
+#include <math/vec/vec3.hpp>
+#include <math/quat/quat.hpp>
 
 
 namespace
@@ -79,7 +82,7 @@ selection_init(Core::Context &ctx,
     
     for(auto &sel : selection_screens)
     {
-      sel = Core::Entity();
+      sel = Core::Entity(world);
       sel.set_name("Selection screen");
     }
   }
@@ -109,6 +112,16 @@ selection_update(Core::Context &context,
   {
     if(ctrl.is_button_down(Core::Input::Button::button_4))
     {
+      // Reset selection screen
+      {
+        for(auto &sel : selection_screens)
+        {
+          // Currently the best way to hide an entity is just
+          // to create a new one :D
+          sel = Core::Entity(world);
+        }
+      }
+    
       return Game_state::game_mode;
     }
   }
@@ -121,8 +134,6 @@ selection_update(Core::Context &context,
     if(controllers[i].is_button_down(Core::Input::Button::button_0))
     {
       Player_utils::init_players(world, players_container, i);
-      
-      // Add selection screen.
     }
     
     if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
@@ -135,6 +146,18 @@ selection_update(Core::Context &context,
                               i,
                               models[selection],
                               textures[selection]);
+      
+      // Add selection screen.
+      selection_screens[i].set_model(plane);
+      selection_screens[i].set_material_id(textures[selection].get_id());
+      
+      Core::Transform trans;
+      trans.set_position(math::vec3_init(0, 0, -2));
+      constexpr float scale = 5;
+      trans.set_scale(math::vec3_init(scale, 1, scale * math::g_ratio()));
+      trans.set_rotation(math::quat_init_with_axis_angle(1, 0, 0, -math::quart_tau()));
+      
+      selection_screens[i].set_transform(trans);
     }
   }
   
