@@ -17,6 +17,10 @@ namespace
   
   constexpr uint32_t max_number_of_players = 4;
   uint32_t current_player_selection[max_number_of_players];
+  
+  Core::Entity selection_screens[max_number_of_players];
+  
+  Core::Model plane;
 }
 
 
@@ -24,36 +28,38 @@ void
 selection_init(Core::Context &ctx,
                Core::World &world)
 {
+  const std::string asset_path = util::get_resource_path() + "assets/";
+
   // Load textures
   {
     uint32_t load_texture = 0;
     
-    const std::string tex_01 = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
+    const std::string tex_01 = asset_path + "textures/dev_grid_green_512.png";
     textures[load_texture++] = Core::Texture(tex_01.c_str());
     
-    const std::string tex_02 = util::get_resource_path() + "assets/textures/dev_grid_yellow_512.png";
+    const std::string tex_02 = asset_path + "textures/dev_grid_yellow_512.png";
     textures[load_texture++] = Core::Texture(tex_02.c_str());
     
-    const std::string tex_03 = util::get_resource_path() + "assets/textures/dev_grid_red_512.png";
+    const std::string tex_03 = asset_path + "textures/dev_grid_red_512.png";
     textures[load_texture++] = Core::Texture(tex_03.c_str());
     
-    const std::string tex_04 = util::get_resource_path() + "assets/textures/dev_grid_blue_512.png";
+    const std::string tex_04 = asset_path + "textures/dev_grid_blue_512.png";
     textures[load_texture++] = Core::Texture(tex_04.c_str());
   }
   
   // Load models
   {
     uint32_t load_model = 0;
-    const std::string model_01 = util::get_resource_path() + "assets/models/ship.obj";
+    const std::string model_01 = asset_path + "models/ship.obj";
     models[load_model++] = Core::Model(model_01.c_str());
     
-    const std::string model_02 = util::get_resource_path() + "assets/models/ship.obj";
+    const std::string model_02 = asset_path + "models/ship.obj";
     models[load_model++] = Core::Model(model_02.c_str());
     
-    const std::string model_03 = util::get_resource_path() + "assets/models/ship.obj";
+    const std::string model_03 = asset_path + "models/ship.obj";
     models[load_model++] = Core::Model(model_03.c_str());
     
-    const std::string model_04 = util::get_resource_path() + "assets/models/ship.obj";
+    const std::string model_04 = asset_path + "models/ship.obj";
     models[load_model++] = Core::Model(model_04.c_str());
   }
   
@@ -64,9 +70,22 @@ selection_init(Core::Context &ctx,
       current_player_selection[p] = p;
     }
   }
+  
+  // Selection Screens
+  {
+    const std::string plane_path = asset_path + "models/unit_plane.obj";
+    
+    plane = Core::Model(plane_path.c_str());
+    
+    for(auto &sel : selection_screens)
+    {
+      sel = Core::Entity();
+      sel.set_name("Selection screen");
+    }
+  }
 }
 
-#include <iostream>
+
 Game_state
 selection_update(Core::Context &context,
                  Core::World &world,
@@ -75,7 +94,8 @@ selection_update(Core::Context &context,
 {
   constexpr uint32_t number_of_controllers = 4;
   
-  Core::Input::Controller controllers[number_of_controllers] = {
+  const Core::Input::Controller controllers[number_of_controllers]
+  {
     Core::Input::Controller(context, 0),
     Core::Input::Controller(context, 1),
     Core::Input::Controller(context, 2),
@@ -101,6 +121,8 @@ selection_update(Core::Context &context,
     if(controllers[i].is_button_down(Core::Input::Button::button_0))
     {
       Player_utils::init_players(world, players_container, i);
+      
+      // Add selection screen.
     }
     
     if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
