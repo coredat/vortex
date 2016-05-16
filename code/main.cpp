@@ -25,6 +25,11 @@
 #include <core/resources/material.hpp>
 #include <core/resources/shader.hpp>
 #include <utilities/directory.hpp>
+#include <math/vec/vec4.hpp>
+#include <math/general/to_string.hpp>
+#include <math/mat/mat4.hpp>
+#include <iostream>
+#include <core/camera/camera_utils.hpp>
 
 
 int
@@ -140,6 +145,19 @@ main()
         break;
       }
     }
+    
+    // Test
+    const math::vec4 ray_clip = math::vec4_init(0,0,-1,1);
+    const auto inv_proj = Core::Camera_utils::camera_get_inverse_projection_matrix(cam.camera);
+    
+    math::vec4 eye = math::mat4_multiply(ray_clip, inv_proj);
+    eye = math::vec4_init(math::vec4_get_x(eye), math::vec4_get_y(eye), -1, 0);
+    
+    math::vec4 pos = math::mat4_multiply(eye, Core::Camera_utils::camera_get_inverse_view_matrix(cam.camera));
+    
+    std::cout << math::to_string(pos) << std::endl;
+    
+    //
     
     /*
       Common Entities to update

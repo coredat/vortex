@@ -20,7 +20,7 @@ void
 init_main_camera(Core::Context &ctx, Core::World &world, Game_camera &cam)
 {
   Core::Entity camera_entity(world);
-  Core::Camera main_camera;
+  Core::Camera main_camera(world);
   
   camera_entity.set_name("Main Camera");
   camera_entity.add_tag(Object_tags::camera);
@@ -28,16 +28,17 @@ init_main_camera(Core::Context &ctx, Core::World &world, Game_camera &cam)
   curr_trans.set_position(math::vec3_init(0.f, 0.f, 12.f));
   camera_entity.set_transform(curr_trans);
   
+  cam.entity = std::move(camera_entity);
+  
   main_camera.set_width(ctx.get_width());
   main_camera.set_height(ctx.get_height());
   
-  main_camera.set_attached_entity(camera_entity);
+  main_camera.set_attached_entity(cam.entity);
   main_camera.set_type(Core::Camera_type::perspective);
   main_camera.set_clear_flags(Core::Camera_clear::color | Core::Camera_clear::depth);
   main_camera.set_clear_color(Core::Color_utils::purple());
 //  main_camera.set_feild_of_view(math::quart_tau() / 3);
   
-  cam.entity = std::move(camera_entity);
   cam.camera = std::move(main_camera);
 }
 
