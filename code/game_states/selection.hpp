@@ -6,16 +6,19 @@
 #include <common/common_fwd.hpp>
 #include <core/world/world_fwd.hpp>
 #include <core/context/context_fwd.hpp>
+#include <core/camera/camera_fwd.hpp>
 
 
 void
 selection_init(Core::Context &ctx,
-               Core::World &world);
+               Core::World &world,
+               Core::Camera &camera);
 
 
 Game_state
 selection_update(Core::Context &ctx,
                  Core::World &world,
+                 Core::Camera &camera,
                  Players_container &player_info,
                  const float dt);
 

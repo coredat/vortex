@@ -41,7 +41,7 @@ main()
   Core::Context_setup context_setup;
   context_setup.vsync = false;
 
-  Core::Context context(800, 480, false, "Vortex Defender 2099", context_setup);
+  Core::Context context(1200, 700, false, "Vortex Defender 2099", context_setup);
   
   Core::World world(Core::World_setup{});
   
@@ -89,7 +89,7 @@ main()
   
   Game_state game_state = Game_state::selection;
   
-  selection_init(context, world);
+  selection_init(context, world, cam.camera);
   game_init(context, world);
   game_over_init(context, world);
   
@@ -109,6 +109,7 @@ main()
       {
         game_state = selection_update(context,
                                       world,
+                                      cam.camera,
                                       players_container,
                                       dt);
         break;
@@ -148,43 +149,44 @@ main()
     }
     
     // Test
-    const math::vec4 ray_clip = math::vec4_init(0,0,-1,1);
-    const auto inv_proj = Core::Camera_utils::camera_get_inverse_projection_matrix(cam.camera);
-    
-    math::vec4 eye = math::mat4_multiply(ray_clip, inv_proj);
-    eye = math::vec4_init(math::vec4_get_x(eye), math::vec4_get_y(eye), -1, 0);
-    
-    math::vec4 pos = math::mat4_multiply(eye, Core::Camera_utils::camera_get_inverse_view_matrix(cam.camera));
-    
-
-    math::mat4 proj = Core::Camera_utils::camera_get_projection_matrix(cam.camera);
-    math::mat4 view = Core::Camera_utils::camera_get_view_matrix(cam.camera);
-    math::mat4 inv_vp = math::mat4_get_inverse(math::mat4_multiply(proj, view));
-    math::vec4 screen_pos = math::vec4_init(1,1,-1, 1);
-    math::vec4 world_pos = math::mat4_multiply(screen_pos, inv_vp);
-    math::vec3 world_pos3 = math::vec3_init(math::vec3_get_x(world_pos), math::vec3_get_y(world_pos), math::vec3_get_z(world_pos));
-    math::vec3 dir = math::vec3_normalize(world_pos3);
-    math::vec3 distance = math::vec3_scale(dir, 10);
-    math::vec3 ray = math::vec3_add(cam.entity.get_transform().get_position(), distance);
-    
-    auto intersect_plane = [](const math::vec3 n, const math::vec3 p0, const math::vec3 l0, const math::vec3 l, float &t) -> bool
     {
-        // assuming vectors are all normalized
-        float denom = math::vec3_dot(n, l);
-        if (denom > 1e-6)
-        {
-            math::vec3 p0l0 = math::vec3_subtract(p0, l0);
-            t = math::vec3_dot(p0l0, n) / denom;
-            return (t >= 0); 
-        } 
-     
-        return false; 
-    };
-    
-    float time;
-    const bool did_intersect = intersect_plane(math::vec3_init(0, 0, -1), math::vec3_zero(), cam.entity.get_transform().get_position(), dir, time);
-    
-    std::cout << time << " - " << did_intersect << std::endl;
+//      const math::vec4 ray_clip = math::vec4_init(0,0,-1,1);
+//      const auto inv_proj = Core::Camera_utils::camera_get_inverse_projection_matrix(cam.camera);
+//      
+//      math::vec4 eye = math::mat4_multiply(ray_clip, inv_proj);
+//      eye = math::vec4_init(math::vec4_get_x(eye), math::vec4_get_y(eye), -1, 0);
+//      
+//      math::vec4 pos = math::mat4_multiply(eye, Core::Camera_utils::camera_get_inverse_view_matrix(cam.camera));
+//      
+//      math::mat4 proj = Core::Camera_utils::camera_get_projection_matrix(cam.camera);
+//      math::mat4 view = Core::Camera_utils::camera_get_view_matrix(cam.camera);
+//      math::mat4 inv_vp = math::mat4_get_inverse(math::mat4_multiply(proj, view));
+//      math::vec4 screen_pos = math::vec4_init(1,1,-1, 1);
+//      math::vec4 world_pos = math::mat4_multiply(screen_pos, inv_vp);
+//      math::vec3 world_pos3 = math::vec3_init(math::vec3_get_x(world_pos), math::vec3_get_y(world_pos), math::vec3_get_z(world_pos));
+//      math::vec3 dir = math::vec3_normalize(world_pos3);
+//      math::vec3 distance = math::vec3_scale(dir, 10);
+//      math::vec3 ray = math::vec3_add(cam.entity.get_transform().get_position(), distance);
+//      
+//      auto intersect_plane = [](const math::vec3 n, const math::vec3 p0, const math::vec3 l0, const math::vec3 l, float &t) -> bool
+//      {
+//          // assuming vectors are all normalized
+//          float denom = math::vec3_dot(n, l);
+//          if (denom > 1e-6)
+//          {
+//              math::vec3 p0l0 = math::vec3_subtract(p0, l0);
+//              t = math::vec3_dot(p0l0, n) / denom;
+//              return (t >= 0); 
+//          } 
+//       
+//          return false; 
+//      };
+//      
+//      float time;
+//      const bool did_intersect = intersect_plane(math::vec3_init(0, 0, -1), math::vec3_zero(), cam.entity.get_transform().get_position(), dir, time);
+//      
+//      std::cout << time << " - " << did_intersect << std::endl;
+    }
     
 //   float mouseX = getMousePositionX() / (getWindowWidth()  * 0.5f) - 1.0f;
 //    float mouseY = getMousePositionY() / (getWindowHeight() * 0.5f) - 1.0f;
