@@ -72,11 +72,11 @@ spawn_enemies(Core::World &world,
     switch(what_to_spawn)
     {
       case(Enemy_type::climber):
-        //spawn_climber(world, enemies_container, point, 1, depth);
+        spawn_climber(world, enemies_container, point, 1, depth);
         break;
         
       case(Enemy_type::breeder):
-        //spawn_breeder(world, enemies_container, point, 1, depth);
+        spawn_breeder(world, enemies_container, point, 1, depth);
 
         break;
         
