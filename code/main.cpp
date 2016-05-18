@@ -98,6 +98,17 @@ main()
     const util::milliseconds frame_time = delta_time_ms.split();
     const float dt = static_cast<float>(frame_time) / 1000.f;
     
+    /*
+      Common Entities to update
+    */
+    {
+      Camera_utils::move_main_camera(cam, dt, players_container);
+      Bullet_utils::move_bullets(world, dt, bullets_container);
+      Explosion_utils::update_explosions(world, dt, explosions_container);
+      Enemy_utils::update_enemies(world, dt, enemies_container);
+      Powerup_utils::update_powerups(world, dt, powerups_container);
+    }
+    
     // ** Game State ** //
     switch(game_state)
     {
@@ -204,17 +215,6 @@ main()
 
     //
     
-    /*
-      Common Entities to update
-    */
-    {
-      Camera_utils::move_main_camera(cam, dt, players_container);
-      Bullet_utils::move_bullets(world, dt, bullets_container);
-      Explosion_utils::update_explosions(world, dt, explosions_container);
-      Enemy_utils::update_enemies(world, dt, enemies_container);
-      Powerup_utils::update_powerups(world, dt, powerups_container);
-    }
-
     world.think(dt);
   }
 

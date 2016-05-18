@@ -18,6 +18,8 @@ namespace
   constexpr uint32_t number_of_textures = 4;
   Core::Texture textures[number_of_textures];
   
+  Core::Texture no_selection_texture;
+  
   constexpr uint32_t number_of_models = 4;
   Core::Model models[number_of_models];
   
@@ -36,6 +38,12 @@ selection_init(Core::Context &ctx,
                Core::Camera &cam)
 {
   const std::string asset_path = util::get_resource_path() + "assets/";
+
+  // No selection texture
+  {
+    const std::string tex = asset_path + "textures/dev_grid_grey_512.png";
+    no_selection_texture = Core::Texture(tex.c_str());
+  }
 
   // Load textures
   {
@@ -92,7 +100,7 @@ selection_init(Core::Context &ctx,
       sel.set_name("Selection screen");
       
       sel.set_model(plane);
-      sel.set_material_id(textures[1].get_id());
+      sel.set_material_id(no_selection_texture.get_id());
     }
   }
 }
@@ -143,60 +151,62 @@ selection_update(Core::Context &context,
     {
       auto &sel = selection_screens[i];
       
-      const math::vec4 ray_clip = math::vec4_init(0,0,-1,1);
-      const auto inv_proj = Core::Camera_utils::camera_get_inverse_projection_matrix(cam);
-      
-      math::vec4 eye = math::mat4_multiply(ray_clip, inv_proj);
-      eye = math::vec4_init(math::vec4_get_x(eye), math::vec4_get_y(eye), -1, 0);
-      
-      math::vec4 pos = math::mat4_multiply(eye, Core::Camera_utils::camera_get_inverse_view_matrix(cam));
-      
-      math::mat4 proj = Core::Camera_utils::camera_get_projection_matrix(cam);
-      math::mat4 view = Core::Camera_utils::camera_get_view_matrix(cam);
+      math::mat4 proj   = Core::Camera_utils::camera_get_projection_matrix(cam);
+      math::mat4 view   = Core::Camera_utils::camera_get_view_matrix(cam);
       math::mat4 inv_vp = math::mat4_get_inverse(math::mat4_multiply(proj, view));
       
-      const float offset = -3 + (i * 2.0);
+      const float offset = -3.f + (i * 2.f);
       
-      math::vec4 screen_pos = math::vec4_init(offset,0,-1, 1);
-      math::vec4 world_pos = math::mat4_multiply(screen_pos, inv_vp);
+      math::vec4 screen_pos = math::vec4_init(offset, 0.f, -1.f, 1.f);
+      math::vec4 world_pos  = math::mat4_multiply(screen_pos, inv_vp);
       
       math::vec3 world_pos3 = math::vec3_init(math::vec3_get_x(world_pos), math::vec3_get_y(world_pos), math::vec3_get_z(world_pos));
       math::vec3 dir = math::vec3_normalize(world_pos3);
-      math::vec3 distance = math::vec3_scale(dir, 10);
-      math::vec3 ray = math::vec3_add(cam.get_attached_entity().get_transform().get_position(), distance);
       
-      auto intersect_plane = [](const math::vec3 n, const math::vec3 p0, const math::vec3 l0, const math::vec3 l, float &t) -> bool
+      auto intersect_plane = [](const math::vec3 plane_normal,
+                                const math::vec3 plane_position,
+                                const math::vec3 ray_start,
+                                const math::vec3 ray_dir,
+                                float &time) -> bool
       {
-          // assuming vectors are all normalized
-          float denom = math::vec3_dot(n, l);
-          if (denom > 1e-6)
-          {
-              math::vec3 p0l0 = math::vec3_subtract(p0, l0);
-              t = math::vec3_dot(p0l0, n) / denom;
-              return (t >= 0); 
-          } 
-       
-          return false; 
+        // assuming vectors are all normalized
+        float denom = math::vec3_dot(plane_normal, ray_dir);
+        if (denom > 1e-6)
+        {
+          math::vec3 p0l0 = math::vec3_subtract(plane_position, ray_start);
+          time = math::vec3_dot(p0l0, plane_normal) / denom;
+          return (time >= 0);
+        } 
+     
+        return false; 
       };
       
-      const math::vec3 fwd = math::vec3_scale(cam.get_attached_entity().get_transform().get_forward(), 0.000000001);
-      const math::vec3 plane_pos = math::vec3_add(cam.get_attached_entity().get_transform().get_forward(), fwd);
-      cam.get_attached_entity().get_transform().get_position();
+      const Core::Transform cam_trans = cam.get_attached_entity().get_transform();
+      
+      const math::vec3 fwd = math::vec3_scale(cam_trans.get_forward(), 0.2);
+      const math::vec3 plane_pos = math::vec3_add(cam_trans.get_position(), fwd);
       
       float time;
-      const bool did_intersect = intersect_plane(math::vec3_init(0, 0, -1), plane_pos, cam.get_attached_entity().get_transform().get_position(), dir, time);
+      const bool did_intersect = intersect_plane(math::vec3_init(0, 0, -1),
+                                                 plane_pos,
+                                                 cam_trans.get_position(),
+                                                 dir,
+                                                 time);
       
-      math::vec3 final_scale = math::vec3_scale(dir, time);
-      math::vec3 final_pos = math::vec3_add(cam.get_attached_entity().get_transform().get_position(), final_scale);
+      if(did_intersect)
+      {
+        math::vec3 final_scale = math::vec3_scale(dir, time);
+        math::vec3 final_pos = math::vec3_add(cam_trans.get_position(), final_scale);
 
-      
-      Core::Transform trans;
-      trans.set_position(math::vec3_init(math::vec3_get_x(final_pos), math::vec3_get_y(final_pos), math::vec3_get_z(final_pos)));
-      constexpr float scale = 5;
-      trans.set_scale(math::vec3_init(scale, 1, scale * math::g_ratio()));
-      trans.set_rotation(math::quat_init_with_axis_angle(1, 0, 0, -math::quart_tau()));
-      
-      sel.set_transform(trans);
+        // Place card
+        Core::Transform trans;
+        trans.set_position(math::vec3_init(math::vec3_get_x(final_pos), math::vec3_get_y(final_pos), math::vec3_get_z(final_pos)));
+        constexpr float scale = 0.05f;
+        trans.set_scale(math::vec3_init(scale, 1, scale * math::g_ratio()));
+        trans.set_rotation(math::quat_init_with_axis_angle(1, 0, 0, -math::quart_tau()));
+        
+        sel.set_transform(trans);
+      }
     }
   
   /*
