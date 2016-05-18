@@ -23,6 +23,31 @@ namespace
 }
 
 
+namespace Game_object {
+
+
+Bullet::Bullet(Core::World &world)
+: Game_object(world)
+{
+}
+
+  
+void
+Bullet::on_start()
+{
+}
+
+
+void
+Bullet::on_update(const float dt)
+{
+}
+
+
+} // ns
+
+
+
 namespace Bullet_utils {
 
 

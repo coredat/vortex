@@ -2,10 +2,38 @@
 #define BULLET_INCLUDED_992A35A6_21D1_4D51_BF4E_06917B3704D3
 
 
+#include <game_objects/game_object.hpp>
 #include <game_objects/game_objects_fwd.hpp>
 #include <core/entity/entity.hpp>
 #include <core/entity/entity_ref.hpp>
 #include <stdint.h>
+
+
+namespace Game_object {
+
+
+class Bullet : public Game_object
+{
+public:
+
+
+  explicit          Bullet(Core::World &world);
+  
+  void              on_start();
+  void              on_update(const float dt);
+
+private:
+
+  int32_t           direction         = -1;
+  float             speed             = 100.5f;
+  float             point_on_circle   = 1;
+  Core::Entity_ref  owner;
+
+};
+
+
+} // ns
+
 
 
 struct Bullets_container

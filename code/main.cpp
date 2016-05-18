@@ -1,4 +1,5 @@
 // Game Objects
+#include <game_objects/game_object.hpp>
 #include <game_objects/bullet.hpp>
 #include <game_objects/player.hpp>
 #include <game_objects/enemy.hpp>
@@ -93,10 +94,26 @@ main()
   game_init(context, world);
   game_over_init(context, world);
   
+  
+  
+  // ** Game Objects ** //
+  
+  Game_object::Game_object *objects[1024];
+  
+  for(auto *obj : objects)
+  {
+    obj = nullptr;
+  }
+  
+  Game_object::Player player_obj(world, context);
+  
+  
   while(context.is_open())
   {
     const util::milliseconds frame_time = delta_time_ms.split();
     const float dt = static_cast<float>(frame_time) / 1000.f;
+   
+    player_obj.on_update(dt);
     
     /*
       Common Entities to update
