@@ -23,9 +23,10 @@ public:
   void              on_start() override;
   void              on_update(const float dt) override;
   
-private:
+//private:
 
   Core::Camera      m_camera;
+  math::vec3        m_target_point;
   
 };
 

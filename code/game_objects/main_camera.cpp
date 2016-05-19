@@ -49,10 +49,15 @@ Main_camera::on_update(const float dt)
   Core::Entity_ref ref = get_entity();
   Core::World &world = get_world();
   
-  Core::Entity_ref *players_container;
+  Core::Entity_ref *players;
   size_t ent_size = 0;
   
-  world.find_entities_by_tag(1, &players_container, &ent_size);
+  world.find_entities_by_tag(Object_tags::player, &players, &ent_size);
+
+  if(ent_size)
+  {
+    int v = 0;
+  }
 
   constexpr float camera_distance_far = 20.f;
   constexpr float camera_distance_near = 10.f;
@@ -62,17 +67,17 @@ Main_camera::on_update(const float dt)
   math::vec3 accum_target = camera_origin;
   
   // Go through the players and accumulate the target point.
-  for(uint32_t i = 0; i < players_container.size; ++i)
+  for(uint32_t i = 0; i < ent_size; ++i)
   {
-    auto &player = players_container.player[i];
+    auto &player = players[i];
     
-    if(!player.entity)
+    if(!player.is_valid())
     {
       continue;
     }
     
     // Get the difference and add it to the accum.
-    const math::vec3 player_pos  = player.entity.get_transform().get_position();
+    const math::vec3 player_pos  = player.get_transform().get_position();
     const math::vec3 diff        = math::vec3_subtract(player_pos, math::vec3_zero());
     const math::vec3 scaled_diff = math::vec3_scale(diff, 0.5f);
     
@@ -104,17 +109,17 @@ Main_camera::on_update(const float dt)
   }
   
   // New target point.
-  Core::Transform this_trans = cam.entity.get_transform();
+  Core::Transform this_trans = ref.get_transform();
   math::vec3 new_pos = math::vec3_zero();
   {
     constexpr float player_influence  = 1.f;
     constexpr float camera_move_speed = 10.f;
     
     const math::vec3 scaled_accum = math::vec3_scale(avg_accum, player_influence);
-    cam.target_point = math::vec3_add(scaled_accum, pullback_distance);
+    m_target_point = math::vec3_add(scaled_accum, pullback_distance);
     
     const math::vec3 this_pos   = this_trans.get_position();
-    const math::vec3 move_dir   = math::vec3_subtract(cam.target_point, this_pos);
+    const math::vec3 move_dir   = math::vec3_subtract(m_target_point, this_pos);
     const math::vec3 scaled_dir = math::vec3_scale(move_dir, dt * camera_move_speed);
     
     new_pos = math::vec3_add(this_pos, scaled_dir);
@@ -122,7 +127,7 @@ Main_camera::on_update(const float dt)
   
   this_trans.set_position(new_pos);
   
-  cam.entity.set_transform(this_trans);
+  ref.set_transform(this_trans);
 }
 
 

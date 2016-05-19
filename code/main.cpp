@@ -55,8 +55,8 @@ main()
   
   // ** Game Objects ** //
   
-  Game_camera cam;
-  Camera_utils::init_main_camera(context, world, cam);
+//  Game_camera cam;
+//  Camera_utils::init_main_camera(context, world, cam);
   
   Bullets_container bullets_container;
   Bullet_utils::init_bullets(world, bullets_container);
@@ -80,12 +80,16 @@ main()
   
   Game_state game_state = Game_state::selection;
   
-  selection_init(context, world, cam.camera);
+  Game_object::World_objects objs;
+  
+  Game_object::Main_camera *go_cam = new Game_object::Main_camera(world, context);
+  
+  objs.push_object(go_cam);
+  objs.push_object(new Game_object::Player(world, context));
+  
+  selection_init(context, world, go_cam->m_camera);
   game_init(context, world);
   game_over_init(context, world);
-  
-  Game_object::World_objects objs;
-  objs.push_object(new Game_object::Player(world, context));
   
   while(context.is_open())
   {
@@ -100,7 +104,7 @@ main()
       Common Entities to update
     */
     {
-      Camera_utils::move_main_camera(cam, dt, players_container);
+//      Camera_utils::move_main_camera(cam, dt, players_container);
       Bullet_utils::move_bullets(world, dt, bullets_container);
       Explosion_utils::update_explosions(world, dt, explosions_container);
       Enemy_utils::update_enemies(world, dt, enemies_container);
@@ -118,7 +122,7 @@ main()
       {
         game_state = selection_update(context,
                                       world,
-                                      cam.camera,
+                                      go_cam->m_camera,
                                       players_container,
                                       dt);
         break;
