@@ -25,4 +25,25 @@ Game_object::get_entity() const
 }
 
 
+bool
+Game_object::should_destroy() const
+{
+  return m_should_destroy;
+}
+
+
+void
+Game_object::destroy()
+{
+  m_should_destroy = true;
+}
+
+
+Core::World&
+Game_object::get_world() const
+{
+  return m_world;
+}
+
+
 } // ns

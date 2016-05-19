@@ -22,12 +22,20 @@ public:
   virtual void        on_end()                          {}
   virtual void        on_collision(Game_object *other)  {}
   
+  bool                should_destroy() const;
+  
   Core::Entity_ref    get_entity() const;
+  
+protected:
+
+  void                destroy();
+  Core::World         &get_world() const;
   
 private:
 
-  Core::World       &m_world;
-  Core::Entity      m_entity;
+  Core::World         &m_world;
+  Core::Entity        m_entity;
+  bool                m_should_destroy = false;
 
 };
 

@@ -7,6 +7,7 @@
 #include <game_objects/level.hpp>
 #include <game_objects/explosion.hpp>
 #include <game_objects/powerup_pickup.hpp>
+#include <game_objects/world_objects.hpp>
 
 // Game States
 #include <game_states/game.hpp>
@@ -32,6 +33,7 @@
 #include <iostream>
 #include <core/camera/camera_utils.hpp>
 #include <core/transform/transform.hpp>
+#include <vector>
 
 
 int
@@ -50,18 +52,6 @@ main()
   
   util::timer delta_time_ms;
   delta_time_ms.start();
-  
-  
-  // Test
-  {
-    const std::string file = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
-    Core::Shader shader(file.c_str());
-    
-    Core::Material mat("foo-fee");
-    
-    assert(shader.is_valid());
-  }
-  
   
   // ** Game Objects ** //
   
@@ -94,27 +84,18 @@ main()
   game_init(context, world);
   game_over_init(context, world);
   
-  
-  
-  // ** Game Objects ** //
-  
-  Game_object::Game_object *objects[1024];
-  
-  for(auto *obj : objects)
-  {
-    obj = nullptr;
-  }
-  
-  Game_object::Player player_obj(world, context);
-  
+  Game_object::World_objects objs;
+  objs.push_object(new Game_object::Player(world, context));
   
   while(context.is_open())
   {
     const util::milliseconds frame_time = delta_time_ms.split();
     const float dt = static_cast<float>(frame_time) / 1000.f;
    
-    player_obj.on_update(dt);
-    
+    objs.on_start();
+    objs.on_update(dt);
+    objs.on_destroy();
+   
     /*
       Common Entities to update
     */
@@ -175,62 +156,6 @@ main()
         break;
       }
     }
-    
-    // Test
-    {
-//      const math::vec4 ray_clip = math::vec4_init(0,0,-1,1);
-//      const auto inv_proj = Core::Camera_utils::camera_get_inverse_projection_matrix(cam.camera);
-//      
-//      math::vec4 eye = math::mat4_multiply(ray_clip, inv_proj);
-//      eye = math::vec4_init(math::vec4_get_x(eye), math::vec4_get_y(eye), -1, 0);
-//      
-//      math::vec4 pos = math::mat4_multiply(eye, Core::Camera_utils::camera_get_inverse_view_matrix(cam.camera));
-//      
-//      math::mat4 proj = Core::Camera_utils::camera_get_projection_matrix(cam.camera);
-//      math::mat4 view = Core::Camera_utils::camera_get_view_matrix(cam.camera);
-//      math::mat4 inv_vp = math::mat4_get_inverse(math::mat4_multiply(proj, view));
-//      math::vec4 screen_pos = math::vec4_init(1,1,-1, 1);
-//      math::vec4 world_pos = math::mat4_multiply(screen_pos, inv_vp);
-//      math::vec3 world_pos3 = math::vec3_init(math::vec3_get_x(world_pos), math::vec3_get_y(world_pos), math::vec3_get_z(world_pos));
-//      math::vec3 dir = math::vec3_normalize(world_pos3);
-//      math::vec3 distance = math::vec3_scale(dir, 10);
-//      math::vec3 ray = math::vec3_add(cam.entity.get_transform().get_position(), distance);
-//      
-//      auto intersect_plane = [](const math::vec3 n, const math::vec3 p0, const math::vec3 l0, const math::vec3 l, float &t) -> bool
-//      {
-//          // assuming vectors are all normalized
-//          float denom = math::vec3_dot(n, l);
-//          if (denom > 1e-6)
-//          {
-//              math::vec3 p0l0 = math::vec3_subtract(p0, l0);
-//              t = math::vec3_dot(p0l0, n) / denom;
-//              return (t >= 0); 
-//          } 
-//       
-//          return false; 
-//      };
-//      
-//      float time;
-//      const bool did_intersect = intersect_plane(math::vec3_init(0, 0, -1), math::vec3_zero(), cam.entity.get_transform().get_position(), dir, time);
-//      
-//      std::cout << time << " - " << did_intersect << std::endl;
-    }
-    
-//   float mouseX = getMousePositionX() / (getWindowWidth()  * 0.5f) - 1.0f;
-//    float mouseY = getMousePositionY() / (getWindowHeight() * 0.5f) - 1.0f;
-
-//    glm::mat4 invVP = glm::inverse(proj * view);
-//    glm::vec4 screenPos = glm::vec4(mouseX, -mouseY, 1.0f, 1.0f);
-//    glm::vec4 worldPos = invVP * screenPos;
-//
-//    glm::vec3 dir = glm::normalize(glm::vec3(worldPos));
-    
-    
-//        std::cout << math::to_string(dir) << std::endl;
-//    std::cout << math::to_string(cam.entity.get_transform().get_position()) << std::endl;
-//    std::cout << "--" << std::endl;
-
-    //
     
     world.think(dt);
   }
