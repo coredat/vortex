@@ -216,7 +216,6 @@ selection_update(Core::Context &context,
   {
     if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
     {
-//      Player_utils::init_players(world, players_container, i);
       objects.push_object(new Game_object::Player(world, context));
     }
     

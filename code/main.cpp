@@ -79,7 +79,6 @@ main()
   Game_object::Main_camera *go_cam = new Game_object::Main_camera(world, context);
   
   objs.push_object(go_cam);
-  objs.push_object(new Game_object::Player(world, context));
   objs.push_object(new Game_object::Level(world));
   
   selection_init(context, world, go_cam->m_camera);
