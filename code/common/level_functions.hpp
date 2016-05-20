@@ -10,7 +10,7 @@
 #include <math/vec/vec_fwd.hpp>
 
 
-namespace Level {
+namespace Level_funcs {
 
 
 math::vec2

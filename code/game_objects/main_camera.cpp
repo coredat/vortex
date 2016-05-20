@@ -63,7 +63,7 @@ Main_camera::on_update(const float dt)
   constexpr float camera_distance_near = 10.f;
 
   // We set the camera origin as the first point.
-  const math::vec3 camera_origin = math::vec3_init(0,0,Level::get_top_of_level());
+  const math::vec3 camera_origin = math::vec3_init(0,0,Level_funcs::get_top_of_level());
   math::vec3 accum_target = camera_origin;
   
   // Go through the players and accumulate the target point.
@@ -96,7 +96,7 @@ Main_camera::on_update(const float dt)
     const math::vec2 cam_origin_vec2 = math::vec2_init(math::vec3_get_x(camera_origin), math::vec3_get_y(camera_origin));
     const math::vec2 accum_vec2      = math::vec2_init(math::vec3_get_x(avg_accum), math::vec3_get_y(avg_accum));
     const float length               = math::abs(math::vec2_length(math::vec2_subtract(cam_origin_vec2, accum_vec2)));
-    const float norm_length          = length / Level::get_radius();
+    const float norm_length          = length / Level_funcs::get_radius();
     
     pullback_distance = math::vec3_lerp(pullback_far, pullback_near, norm_length);
   }
@@ -174,7 +174,7 @@ move_main_camera(Game_camera &cam,
   constexpr float camera_distance_near = 10.f;
 
   // We set the camera origin as the first point.
-  const math::vec3 camera_origin = math::vec3_init(0,0,Level::get_top_of_level());
+  const math::vec3 camera_origin = math::vec3_init(0,0,Level_funcs::get_top_of_level());
   math::vec3 accum_target = camera_origin;
   
   // Go through the players and accumulate the target point.
@@ -207,7 +207,7 @@ move_main_camera(Game_camera &cam,
     const math::vec2 cam_origin_vec2 = math::vec2_init(math::vec3_get_x(camera_origin), math::vec3_get_y(camera_origin));
     const math::vec2 accum_vec2      = math::vec2_init(math::vec3_get_x(avg_accum), math::vec3_get_y(avg_accum));
     const float length               = math::abs(math::vec2_length(math::vec2_subtract(cam_origin_vec2, accum_vec2)));
-    const float norm_length          = length / Level::get_radius();
+    const float norm_length          = length / Level_funcs::get_radius();
     
     pullback_distance = math::vec3_lerp(pullback_far, pullback_near, norm_length);
   }

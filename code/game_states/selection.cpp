@@ -110,7 +110,7 @@ Game_state
 selection_update(Core::Context &context,
                  Core::World &world,
                  Core::Camera &cam,
-                 Players_container &players_container,
+                 Game_object::World_objects &objects,
                  const float dt)
 {
   constexpr uint32_t number_of_controllers = 4;
@@ -161,7 +161,7 @@ selection_update(Core::Context &context,
       math::vec4 world_pos  = math::mat4_multiply(screen_pos, inv_vp);
       
       math::vec3 world_pos3 = math::vec3_init(math::vec3_get_x(world_pos), math::vec3_get_y(world_pos), math::vec3_get_z(world_pos));
-      math::vec3 dir = math::vec3_normalize(world_pos3);
+      math::vec3 dir        = math::vec3_normalize(world_pos3);
       
       auto intersect_plane = [](const math::vec3 plane_normal,
                                 const math::vec3 plane_position,
@@ -214,9 +214,10 @@ selection_update(Core::Context &context,
   */
   for(uint32_t i = 0; i < number_of_controllers; ++i)
   {
-    if(controllers[i].is_button_down(Core::Input::Button::button_0))
+    if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
     {
-      Player_utils::init_players(world, players_container, i);
+//      Player_utils::init_players(world, players_container, i);
+      objects.push_object(new Game_object::Player(world, context));
     }
     
     if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
@@ -224,11 +225,11 @@ selection_update(Core::Context &context,
       current_player_selection[i] = (current_player_selection[i] + 1) % number_of_textures;
       const uint32_t selection = current_player_selection[i];
       
-      Player_utils::selection(world,
-                              players_container,
-                              i,
-                              models[selection],
-                              textures[selection]);
+//      Player_utils::selection(world,
+//                              players_container,
+//                              i,
+//                              models[selection],
+//                              textures[selection]);
       
       // Add selection screen.
       selection_screens[i].set_model(plane);

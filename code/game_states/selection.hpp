@@ -3,6 +3,7 @@
 
 
 #include <game_objects/game_objects_fwd.hpp>
+#include <game_objects/world_objects.hpp>
 #include <common/common_fwd.hpp>
 #include <core/world/world_fwd.hpp>
 #include <core/context/context_fwd.hpp>
@@ -19,7 +20,7 @@ Game_state
 selection_update(Core::Context &ctx,
                  Core::World &world,
                  Core::Camera &camera,
-                 Players_container &player_info,
+                 Game_object::World_objects &objects,
                  const float dt);
 
 

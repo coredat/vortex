@@ -86,7 +86,7 @@ move_bullets(Core::World &world,
     {
       const float depth = math::vec3_get_z(trans.get_position());
 
-      if(!math::is_between(depth, Level::get_near_death_zone(), Level::get_far_death_zone()))
+      if(!math::is_between(depth, Level_funcs::get_near_death_zone(), Level_funcs::get_far_death_zone()))
       {
         bullet.entity.destroy();
         bullet = Bullets_container::Bullet();
@@ -96,7 +96,7 @@ move_bullets(Core::World &world,
     
     // Move
     {
-      const math::vec2 new_point = Level::get_point_on_cirlce(bullet.point_on_circle);
+      const math::vec2 new_point = Level_funcs::get_point_on_cirlce(bullet.point_on_circle);
       const math::vec3 position  = trans.get_position();
       
       const float velocity = ((bullet.speed * dt) * bullet.direction);
@@ -144,7 +144,7 @@ create_bullet(Core::World &world,
         bullet.point_on_circle = position;
         bullet.direction = direction;
       
-        const math::vec2 new_point = Level::get_point_on_cirlce(bullet.point_on_circle);
+        const math::vec2 new_point = Level_funcs::get_point_on_cirlce(bullet.point_on_circle);
         math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
                                              math::vec2_get_y(new_point),
                                              depth);

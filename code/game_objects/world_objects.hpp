@@ -22,7 +22,7 @@ public:
   void                        on_destroy();
   
   
-private:
+//private:
 
   std::vector<Game_object*>   m_start_objects;
   std::vector<Game_object*>   m_update_objects;

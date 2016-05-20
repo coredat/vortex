@@ -105,7 +105,7 @@ Player::on_update(const float dt)
       
       point_on_circle += move_speed;
       
-      const math::vec2 new_point = Level::get_point_on_cirlce(point_on_circle);
+      const math::vec2 new_point = Level_funcs::get_point_on_cirlce(point_on_circle);
 
       Core::Transform trans = ref.get_transform();
       const math::vec3 position = trans.get_position();
@@ -141,9 +141,9 @@ Player::on_update(const float dt)
       
       float new_depth = math::vec3_get_z(pos) + offset;
       
-      if(new_depth < Level::get_top_of_level())
+      if(new_depth < Level_funcs::get_top_of_level())
       {
-        new_depth = Level::get_top_of_level();
+        new_depth = Level_funcs::get_top_of_level();
         jump_speed = 0.f;
         jump_time = 0.f;
       }
@@ -302,7 +302,7 @@ move_players(Core::Context &ctx,
       
       player.point_on_circle += move_speed;
       
-      const math::vec2 new_point = Level::get_point_on_cirlce(player.point_on_circle);
+      const math::vec2 new_point = Level_funcs::get_point_on_cirlce(player.point_on_circle);
 
       Core::Transform trans = player.entity.get_transform();
       const math::vec3 position = trans.get_position();
@@ -338,9 +338,9 @@ move_players(Core::Context &ctx,
       
       float new_depth = math::vec3_get_z(pos) + offset;
       
-      if(new_depth < Level::get_top_of_level())
+      if(new_depth < Level_funcs::get_top_of_level())
       {
-        new_depth = Level::get_top_of_level();
+        new_depth = Level_funcs::get_top_of_level();
         player.jump_speed = 0.f;
         player.jump_time = 0.f;
       }

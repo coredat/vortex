@@ -64,7 +64,7 @@ spawn_enemies(Core::World &world,
     spawn_timer = 0;
     
     const float point = static_cast<float>(rand() % 1000) / 10.f;
-    const float depth = Level::get_bottom_of_level();
+    const float depth = Level_funcs::get_bottom_of_level();
     
     using Enemy_type = Enemies_container::Enemy::Type;
     Enemy_type what_to_spawn = (Enemy_type)(rand() % (uint32_t)Enemy_type::size);
@@ -115,7 +115,7 @@ namespace
 
     // Set Transform
     {        
-      const math::vec2 point = Level::get_point_on_cirlce(angle);
+      const math::vec2 point = Level_funcs::get_point_on_cirlce(angle);
 
       const Core::Transform trans(
         math::vec3_init(math::vec2_get_x(point), math::vec2_get_y(point), depth),
@@ -252,7 +252,7 @@ namespace
     
     // Point on circle
     {
-      math::vec2 new_point = Level::get_point_on_cirlce(enemy.point_on_circle);
+      math::vec2 new_point = Level_funcs::get_point_on_cirlce(enemy.point_on_circle);
       
       const math::vec3 position = trans.get_position();
       
@@ -266,9 +266,9 @@ namespace
     {
       enemy.depth += (20.f * dt * static_cast<float>(enemy.direction));
       
-      if(!math::is_between(enemy.depth, Level::get_bottom_of_level(), Level::get_top_of_level()))
+      if(!math::is_between(enemy.depth, Level_funcs::get_bottom_of_level(), Level_funcs::get_top_of_level()))
       {
-        enemy.depth = math::clamp(enemy.depth, Level::get_bottom_of_level(), Level::get_top_of_level());
+        enemy.depth = math::clamp(enemy.depth, Level_funcs::get_bottom_of_level(), Level_funcs::get_top_of_level());
         enemy.direction *= -1;
       }
       
@@ -298,7 +298,7 @@ namespace
     
     // Point on circle
     {
-      math::vec2 new_point = Level::get_point_on_cirlce(enemy.point_on_circle);
+      math::vec2 new_point = Level_funcs::get_point_on_cirlce(enemy.point_on_circle);
       
       const math::vec3 position = trans.get_position();
       
@@ -315,7 +315,7 @@ namespace
         enemy.lifetime = 0.f; // Need to fix this.
         
         const float new_point = enemy.point_on_circle + ((static_cast<float>(rand() % 100) / 250.f) - 0.2f);
-        const float new_depth = math::min(enemy.depth + ((static_cast<float>(rand() % 100) / 50.f) - 0.75f), Level::get_top_of_level());
+        const float new_depth = math::min(enemy.depth + ((static_cast<float>(rand() % 100) / 50.f) - 0.75f), Level_funcs::get_top_of_level());
       
         Enemy_utils::spawn_egg(world, enemies_container, new_point, new_depth);
       }
@@ -326,7 +326,7 @@ namespace
     {
       enemy.depth += (20.f * dt * static_cast<float>(enemy.direction));
       
-      if(enemy.depth > Level::get_top_of_level())
+      if(enemy.depth > Level_funcs::get_top_of_level())
       {
         enemy.direction = 0;
 //        enemy.lifetime = 0;

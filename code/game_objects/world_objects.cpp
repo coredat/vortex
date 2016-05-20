@@ -7,6 +7,9 @@ namespace Game_object {
 
 World_objects::World_objects()
 {
+  m_start_objects.reserve(2048);
+  m_update_objects.reserve(2048);
+  m_end_objects.reserve(2048);
 }
 
 

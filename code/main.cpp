@@ -55,9 +55,6 @@ main()
   
   // ** Game Objects ** //
   
-//  Game_camera cam;
-//  Camera_utils::init_main_camera(context, world, cam);
-  
   Bullets_container bullets_container;
   Bullet_utils::init_bullets(world, bullets_container);
   
@@ -69,9 +66,6 @@ main()
     
   Explosions_container explosions_container;
   Explosion_utils::init_explosions(world, explosions_container);
-  
-  Level_container level;
-  Level_utils::init_level(world, level);
   
   Powerups_container powerups_container;
   Powerup_utils::init_powerups(world, powerups_container);
@@ -86,6 +80,7 @@ main()
   
   objs.push_object(go_cam);
   objs.push_object(new Game_object::Player(world, context));
+  objs.push_object(new Game_object::Level(world));
   
   selection_init(context, world, go_cam->m_camera);
   game_init(context, world);
@@ -123,7 +118,7 @@ main()
         game_state = selection_update(context,
                                       world,
                                       go_cam->m_camera,
-                                      players_container,
+                                      objs,
                                       dt);
         break;
       }

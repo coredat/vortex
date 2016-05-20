@@ -59,7 +59,7 @@ update_powerups(Core::World &world,
         trans.set_position(new_pos);
         powerup.entity.set_transform(trans);
         
-        if(math::vec3_get_z(new_pos) > Level::get_near_death_zone())
+        if(math::vec3_get_z(new_pos) > Level_funcs::get_near_death_zone())
         {
           powerup.entity.destroy();
         }

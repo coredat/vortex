@@ -2,13 +2,13 @@
 #include <math/vec/vec2.hpp>
 
 
-namespace Level {
+namespace Level_funcs {
 
 
 math::vec2
 get_point_on_cirlce(const float a)
 {
-  const float radius = get_radius();
+  const float radius = Level_funcs::get_radius();
   const float origin_x = 0.f;
   const float origin_y = 0.f;
   

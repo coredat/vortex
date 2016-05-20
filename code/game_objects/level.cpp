@@ -9,6 +9,42 @@
 #include <utilities/directory.hpp>
 
 
+namespace Game_object {
+
+
+Level::Level(Core::World &world)
+: Game_object(world)
+{
+}
+
+
+void
+Level::on_start()
+{
+  auto ref = get_entity();
+
+  ref.set_name("Level");
+  
+  const std::string level_path = util::get_resource_path() + "assets/models/unit_tube.obj";
+  Core::Model model(level_path.c_str());
+
+  const std::string grey_texture_path = util::get_resource_path() + "assets/textures/dev_grid_grey_512.png";
+  Core::Texture texture(grey_texture_path.c_str());
+
+  const float depth = Level_funcs::get_top_of_level() - Level_funcs::get_bottom_of_level();
+  Core::Transform trans(math::vec3_init(0, 0, -depth * 0.5f),
+                        math::vec3_init(Level_funcs::get_radius() * 2.1f, Level_funcs::get_radius() * 2.1f, math::abs(depth) * 0.9f),
+                        math::quat_init());
+
+  ref.set_model(model);
+  ref.set_material_id(texture.get_id());
+  ref.set_transform(trans);
+}
+
+
+} // ns
+
+
 namespace Level_utils {
 
 
@@ -28,9 +64,9 @@ init_level(Core::World &world, Level_container &level)
     const std::string grey_texture_path = util::get_resource_path() + "assets/textures/dev_grid_grey_512.png";
     Core::Texture texture(grey_texture_path.c_str());
 
-    const float depth = Level::get_top_of_level() - Level::get_bottom_of_level();
+    const float depth = Level_funcs::get_top_of_level() - Level_funcs::get_bottom_of_level();
     Core::Transform trans(math::vec3_init(0, 0, -depth * 0.5f),
-                          math::vec3_init(Level::get_radius() * 2.1f, Level::get_radius() * 2.1f, math::abs(depth) * 0.9f),
+                          math::vec3_init(Level_funcs::get_radius() * 2.1f, Level_funcs::get_radius() * 2.1f, math::abs(depth) * 0.9f),
                           math::quat_init());
 
     level_data.entity.set_model(model);
