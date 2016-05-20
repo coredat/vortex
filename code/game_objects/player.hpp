@@ -18,16 +18,16 @@ class Player : public Game_object::Game_object
 {
 public:
   
-  explicit          Player(Core::World &world, Core::Context &ctx);
+  explicit          Player(Core::World &world, Core::Context &ctx, const uint32_t controller_id);
   
   void              on_start() override;
-  void              on_update(const float dt) override;
+  bool              on_update(const float dt, World_objects &world_objs) override;
   void              on_end() override;
 
 private:
 
   Core::Context     &m_context;
-  uint32_t          controller_id   = 0;
+  uint32_t          m_controller_id   = 0;
   float             point_on_circle = 0.f;
   float             gun_cooldown    = 0.f;
   float             jump_speed      = 0.f;

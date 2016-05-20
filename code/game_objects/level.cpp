@@ -42,6 +42,13 @@ Level::on_start()
 }
 
 
+bool
+Level::on_update(const float dt, World_objects &objs)
+{
+  return true;
+}
+
+
 } // ns
 
 

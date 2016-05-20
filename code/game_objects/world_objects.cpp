@@ -39,7 +39,7 @@ World_objects::on_update(const float dt)
 {
   for(auto &obj : m_update_objects)
   {
-    obj->on_update(dt);
+    obj->on_update(dt, *this);
   }
   
   // Gather objects for destruction.

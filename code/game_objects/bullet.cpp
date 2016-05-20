@@ -26,15 +26,12 @@ namespace
 namespace Game_object {
 
 
-Bullet::Bullet(Core::World &world)
+Bullet::Bullet(Core::World &world, const float point, const uint32_t dir)
 : Game_object(world)
 {
-}
-
+  direction = dir;
+  point_on_circle = point;
   
-void
-Bullet::on_start()
-{
   const std::string unit_cube_path = util::get_resource_path() + "assets/models/bullet.obj";
   model = Core::Model(unit_cube_path.c_str());
 
@@ -43,11 +40,68 @@ Bullet::on_start()
 
   const std::string orange_texture_path = util::get_resource_path() + "assets/audio/temp_shot.wav";
   gun_shot_sample = Core::Sample(orange_texture_path.c_str());
+
+  auto ref = get_entity();
+
+  // General settings
+  {
+    ref.set_name("Bullet");
+    ref.add_tag(Object_tags::bullet);
+  }
+  
+  // Model and texture
+  {
+    ref.set_model(model);
+    ref.set_material_id(texture.get_id());
+  }
+  
+  // Transform
+  {
+//    point_on_circle = position;
+//    direction = direction;
+  
+    float depth = Level_funcs::get_top_of_level();
+    
+  
+    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(point_on_circle);
+    math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                         math::vec2_get_y(new_point),
+                                         depth);
+  
+    auto scale = math::vec3_init(1.6f, 0.6f, 0.6f);
+
+    const math::quat rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
+  
+    const Core::Transform transform(
+      new_pos,//math::vec3_init(0, 0, depth),
+      scale,
+      rot
+    );
+
+    ref.set_transform(transform);
+  }
+  
+  // Physics
+  {
+    Core::Box_collider collider(0.5f, 0.5f, 0.5f);
+    ref.set_collider(collider);
+  
+    // Rigidbody properties
+    Core::Rigidbody_properties rb_props;
+    rb_props.set_collision_mask(Object_tags::bullet, Object_tags::enemy);
+    ref.set_rigidbody_properties(rb_props);
+  }  
+}
+
+  
+void
+Bullet::on_start()
+{
 }
 
 
-void
-Bullet::on_update(const float dt)
+bool
+Bullet::on_update(const float dt, World_objects &world_objs)
 {
   auto ref = get_entity();
   
@@ -59,8 +113,8 @@ Bullet::on_update(const float dt)
 
     if(!math::is_between(depth, Level_funcs::get_near_death_zone(), Level_funcs::get_far_death_zone()))
     {
-      ref.destroy();
-      return;
+      destroy();
+      return false;
     }
   }
   
@@ -79,6 +133,8 @@ Bullet::on_update(const float dt)
     trans.set_position(new_pos);
     ref.set_transform(trans);
   }
+  
+  return true;
 }
 
 

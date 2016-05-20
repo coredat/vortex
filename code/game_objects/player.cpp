@@ -2,6 +2,7 @@
 #include <game_objects/bullet.hpp>
 #include <game_objects/bullet.hpp>
 #include <game_objects/explosion.hpp>
+#include <game_objects/world_objects.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
 #include <core/world/world.hpp>
@@ -34,9 +35,10 @@ namespace
 namespace Game_object {
 
 
-Player::Player(Core::World &world, Core::Context &ctx)
+Player::Player(Core::World &world, Core::Context &ctx, const uint32_t controller_id)
 : Game_object(world)
 , m_context(ctx)
+, m_controller_id(controller_id)
 {
   Core::Entity_ref ref = get_entity();
   
@@ -81,16 +83,16 @@ Player::on_start()
 }
 
 
-void
-Player::on_update(const float dt)
+bool
+Player::on_update(const float dt, World_objects &world_objs)
 {
-      Core::Entity_ref ref = get_entity();
+    Core::Entity_ref ref = get_entity();
 
 
     power_up_timer -= dt;
     gun_cooldown -= dt;
     
-    Core::Input::Controller controller = Core::Input::Controller(m_context, controller_id);
+    Core::Input::Controller controller = Core::Input::Controller(m_context, m_controller_id);
     
     // Lateral Movement
     {
@@ -163,6 +165,9 @@ Player::on_update(const float dt)
       
       if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
       {
+        auto bullet = new Bullet(get_world(), point_on_circle, -1);
+        world_objs.push_object(bullet);
+        
 //        Bullet_utils::create_bullet(world,
 //                                    point_on_circle,
 //                                    math::vec3_get_z(pos),                                    
@@ -172,6 +177,7 @@ Player::on_update(const float dt)
       }
     }
 
+  return true;
 }
 
 

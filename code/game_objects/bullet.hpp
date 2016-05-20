@@ -6,6 +6,7 @@
 #include <game_objects/game_objects_fwd.hpp>
 #include <core/entity/entity.hpp>
 #include <core/entity/entity_ref.hpp>
+#include <math/vec/vec_types.hpp>
 #include <stdint.h>
 
 
@@ -17,10 +18,10 @@ class Bullet : public Game_object
 public:
 
 
-  explicit          Bullet(Core::World &world);
+  explicit          Bullet(Core::World &world, const float point, const uint32_t direction);
   
-  void              on_start();
-  void              on_update(const float dt);
+  void              on_start() override;
+  bool              on_update(const float dt, World_objects &world_objs) override;
 
 private:
 

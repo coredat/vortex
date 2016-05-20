@@ -29,6 +29,8 @@ namespace
   Core::Entity selection_screens[max_number_of_players];
   
   Core::Model plane;
+  
+  Core::Entity_ref signed_in_players[4];
 }
 
 
@@ -214,9 +216,16 @@ selection_update(Core::Context &context,
   */
   for(uint32_t i = 0; i < number_of_controllers; ++i)
   {
-    if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
+  
+    if(!signed_in_players[i].is_valid())
     {
-      objects.push_object(new Game_object::Player(world, context));
+      if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
+      {
+        auto new_player = new Game_object::Player(world, context, i);
+        signed_in_players[i] = new_player->get_entity();
+        
+        objects.push_object(new_player);
+      }
     }
     
     if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
@@ -224,12 +233,9 @@ selection_update(Core::Context &context,
       current_player_selection[i] = (current_player_selection[i] + 1) % number_of_textures;
       const uint32_t selection = current_player_selection[i];
       
-//      Player_utils::selection(world,
-//                              players_container,
-//                              i,
-//                              models[selection],
-//                              textures[selection]);
-      
+      signed_in_players[i].set_model(models[selection]);
+      signed_in_players[i].set_material_id(textures[selection].get_id());
+
       // Add selection screen.
       selection_screens[i].set_model(plane);
       selection_screens[i].set_material_id(textures[selection].get_id());
