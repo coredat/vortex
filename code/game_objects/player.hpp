@@ -23,6 +23,7 @@ public:
   void              on_start() override;
   bool              on_update(const float dt, World_objects &world_objs) override;
   void              on_end() override;
+  void              on_collision(Game_object *obj) override;
 
 private:
 
@@ -36,69 +37,6 @@ private:
   float             momentum        = 0.f;
 
 };
-
-
-} // ns
-
-
-struct Players_container
-{
-  struct Player
-  {
-    Core::Entity  entity;
-    uint32_t      controller_id   = 0;
-    float         point_on_circle = 0.f;
-    float         gun_cooldown    = 0.f;
-    float         jump_speed      = 0.f;
-    float         jump_time       = 0.f;
-    float         power_up_timer  = 0.f;
-    float         momentum        = 0.f;
-  };
-  
-  Player player[4];
-  const uint32_t size = 4;
-};
-
-
-namespace Player_utils {
-
-
-void
-init_players(Core::World &world,
-             Players_container &player_container,
-             const uint32_t controller_id);
-
-void
-selection(Core::World &world,
-          Players_container &player_container,
-          const uint32_t controller_id,
-          const Core::Model &model,
-          const Core::Texture &texture);
-
-
-void
-move_players(Core::Context &ctx,
-             Core::World &world,
-             const float delta_time,
-             Players_container &players_container,
-             Bullets_container &bullets_container);
-
-  
-void
-hit_player(Core::World &world,
-           const Core::Entity_ref &hit,
-           Players_container &players_container,
-           Explosions_container &explosions_container);
-  
-  
-void
-power_up(Core::World &world,
-         const Core::Entity_ref hit,
-         Players_container &players_container);
-
-
-bool
-all_dead(Players_container &player_container);
 
 
 } // ns

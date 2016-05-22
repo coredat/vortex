@@ -86,100 +86,101 @@ Player::on_start()
 bool
 Player::on_update(const float dt, World_objects &world_objs)
 {
-    Core::Entity_ref ref = get_entity();
+  Core::Entity_ref ref = get_entity();
 
-
-    power_up_timer -= dt;
-    gun_cooldown -= dt;
+  power_up_timer -= dt;
+  gun_cooldown -= dt;
+  
+  Core::Input::Controller controller = Core::Input::Controller(m_context, m_controller_id);
+  
+  // Lateral Movement
+  {
+    const float move_speed = (controller.get_axis(0).x * move_speed_base) * dt;
     
-    Core::Input::Controller controller = Core::Input::Controller(m_context, m_controller_id);
-    
-    // Lateral Movement
+    if(move_speed)
     {
-      const float move_speed = (controller.get_axis(0).x * move_speed_base) * dt;
-      
-      if(move_speed)
-      {
-        momentum += (move_speed * 5.f);
-      }
-      
-      momentum *= 0.95f;
-      
-      point_on_circle += move_speed;
-      
-      const math::vec2 new_point = Level_funcs::get_point_on_cirlce(point_on_circle);
-
-      Core::Transform trans = ref.get_transform();
-      const math::vec3 position = trans.get_position();
-      
-      const math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
-                                                 math::vec2_get_y(new_point),
-                                                 math::vec3_get_z(position));
-      
-      const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
-      const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, -point_on_circle + math::quart_tau() - momentum);
-
-      trans.set_position(new_pos);
-      trans.set_rotation(math::quat_multiply(y_rot, z_rot));
-      
-      ref.set_transform(trans);
+      momentum += (move_speed * 5.f);
     }
     
-    // Jump
-    if(controller.is_button_down(Core::Input::Button::button_0) && jump_speed == 0.f)
+    momentum *= 0.95f;
+    
+    point_on_circle += move_speed;
+    
+    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(point_on_circle);
+
+    Core::Transform trans = ref.get_transform();
+    const math::vec3 position = trans.get_position();
+    
+    const math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                               math::vec2_get_y(new_point),
+                                               math::vec3_get_z(position));
+    
+    const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
+    const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, -point_on_circle + math::quart_tau() - momentum);
+
+    trans.set_position(new_pos);
+    trans.set_rotation(math::quat_multiply(y_rot, z_rot));
+    
+    ref.set_transform(trans);
+  }
+  
+  // Jump
+  if(controller.is_button_down(Core::Input::Button::button_0) && jump_speed == 0.f)
+  {
+    jump_speed = 50.5f;
+    jump_time = 0.f;
+  }
+  
+  // Jump movement
+  if(jump_speed)
+  {
+    jump_time += (dt * 7.f);
+    float offset = (jump_speed + (-jump_time * jump_time * jump_time)) * (dt);
+
+    Core::Transform trans = ref.get_transform();
+    const math::vec3 pos = trans.get_position();
+    
+    float new_depth = math::vec3_get_z(pos) + offset;
+    
+    if(new_depth < Level_funcs::get_top_of_level())
     {
-      jump_speed = 50.5f;
+      new_depth = Level_funcs::get_top_of_level();
+      jump_speed = 0.f;
       jump_time = 0.f;
     }
     
-    // Jump movement
-    if(jump_speed)
-    {
-      jump_time += (dt * 7.f);
-      float offset = (jump_speed + (-jump_time * jump_time * jump_time)) * (dt);
-
-      Core::Transform trans = ref.get_transform();
-      const math::vec3 pos = trans.get_position();
-      
-      float new_depth = math::vec3_get_z(pos) + offset;
-      
-      if(new_depth < Level_funcs::get_top_of_level())
-      {
-        new_depth = Level_funcs::get_top_of_level();
-        jump_speed = 0.f;
-        jump_time = 0.f;
-      }
-      
-      const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos), math::vec3_get_y(pos), new_depth);
-      trans.set_position(new_pos);
-      
-      ref.set_transform(trans);
-    }
+    const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos), math::vec3_get_y(pos), new_depth);
+    trans.set_position(new_pos);
     
-    // Fire
-    {
-      const math::vec3 pos = ref.get_transform().get_position();
+    ref.set_transform(trans);
+  }
+  
+  // Fire
+  {
+    const math::vec3 pos = ref.get_transform().get_position();
+  
+    const float multipler = power_up_timer > 0 ? dt * 15.f : 0.f;
+    const float timer = gun_cooldown;
     
-      const float multipler = power_up_timer > 0 ? dt * 15.f : 0.f;
-      const float timer = gun_cooldown;
+    if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
+    {
+      auto bullet = new Bullet(get_world(),
+                               point_on_circle,
+                               math::vec3_get_z(pos),
+                               -1);
+      world_objs.push_object(bullet);
       
-      if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
-      {
-        auto bullet = new Bullet(get_world(), point_on_circle, -1);
-        world_objs.push_object(bullet);
-        
 //        Bullet_utils::create_bullet(world,
 //                                    point_on_circle,
 //                                    math::vec3_get_z(pos),                                    
 //                                    -1,
 //                                    bullets_container);
-        gun_cooldown = gun_cooldown_timer;
-      }
+      gun_cooldown = gun_cooldown_timer;
     }
+  }
 
   return true;
 }
-
 
 
 void
@@ -188,254 +189,10 @@ Player::on_end()
 }
 
 
-} // ns
-
-
-
-namespace Player_utils {
-
-
 void
-init_players(Core::World &world,
-             Players_container &players_container,
-             const uint32_t controller_id)
+Player::on_collision(Game_object::Game_object *obj)
 {
-  for(uint32_t i = 0; i < players_container.size; ++i)
-  {
-    const std::string unit_cube_path = util::get_resource_path() + "assets/models/ship.obj";
-    Core::Model model(unit_cube_path.c_str());
-
-    const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
-    Core::Texture texture(green_texture_path.c_str());
-
-    Core::Box_collider collider = Core::Box_collider_utils::create_with_half_extents(math::aabb_get_half_extents(model.get_model_aabb()));
-    
-    Core::Rigidbody_properties rb_props;
-    rb_props.set_collision_mask(Object_tags::player, Object_tags::enemy);
-
-    auto &player = players_container.player[i];
-    
-    // This entity is already taken.
-    if(player.entity)
-    {
-      // Controller id has already been alocated so
-      // don't do it again.
-      if(player.controller_id == controller_id)
-      {
-        return;
-      }
-      continue;
-    }
-    
-    player.controller_id = controller_id;
-    
-    player.entity = Core::Entity(world);
-    player.entity.set_name("Player");
-    player.entity.set_tags(Object_tags::player);
-    player.entity.set_model(model);
-    player.entity.set_material_id(texture.get_id());
-    player.entity.set_collider(collider);
-    player.entity.set_rigidbody_properties(rb_props);
-
-    // We set a temp transform
-    // because this will be the player selection screen.
-    
-    const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
-    const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, math::quart_tau());
-    const math::quat rot = math::quat_multiply(y_rot, z_rot);
-    
-    Core::Transform trans(
-      math::vec3_init(-4.f + (i * (8.f / 4.f)), 0, 0),
-      math::vec3_one(),
-      rot
-    );
-    
-    player.entity.set_transform(trans);
-    
-    break;
-  }
-}
-
-
-void
-selection(Core::World &world,
-          Players_container &player_container,
-          const uint32_t controller_id,
-          const Core::Model &model,
-          const Core::Texture &texture)
-{
-  auto &player = player_container.player[controller_id];
-  
-  if(player.entity)
-  {
-    player.entity.set_model(model);
-    player.entity.set_material_id(texture.get_id());
-  }
-}
-
-
-void
-move_players(Core::Context &ctx,
-             Core::World &world,
-             const float dt,
-             Players_container &players_container,
-             Bullets_container &bullets_container)
-{
-  for(uint32_t i = 0; i < players_container.size; ++i)
-  {
-    auto &player = players_container.player[i];
-    
-    if(!player.entity)
-    {
-      continue;
-    }
-    
-    player.power_up_timer -= dt;
-    player.gun_cooldown -= dt;
-    
-    Core::Input::Controller controller = Core::Input::Controller(ctx, player.controller_id);
-    
-    // Lateral Movement
-    {
-      const float move_speed = (controller.get_axis(0).x * move_speed_base) * dt;
-      
-      if(move_speed)
-      {
-        player.momentum += (move_speed * 5.f);
-      }
-      
-      player.momentum *= 0.95f;
-      
-      player.point_on_circle += move_speed;
-      
-      const math::vec2 new_point = Level_funcs::get_point_on_cirlce(player.point_on_circle);
-
-      Core::Transform trans = player.entity.get_transform();
-      const math::vec3 position = trans.get_position();
-      
-      const math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
-                                                 math::vec2_get_y(new_point),
-                                                 math::vec3_get_z(position));
-      
-      const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
-      const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, -player.point_on_circle + math::quart_tau() - player.momentum);
-
-      trans.set_position(new_pos);
-      trans.set_rotation(math::quat_multiply(y_rot, z_rot));
-      
-      player.entity.set_transform(trans);
-    }
-    
-    // Jump
-    if(controller.is_button_down(Core::Input::Button::button_0) && player.jump_speed == 0.f)
-    {
-      player.jump_speed = 50.5f;
-      player.jump_time = 0.f;
-    }
-    
-    // Jump movement
-    if(player.jump_speed)
-    {
-      player.jump_time += (dt * 7.f);
-      float offset = (player.jump_speed + (-player.jump_time * player.jump_time * player.jump_time)) * (dt);
-
-      Core::Transform trans = player.entity.get_transform();
-      const math::vec3 pos = trans.get_position();
-      
-      float new_depth = math::vec3_get_z(pos) + offset;
-      
-      if(new_depth < Level_funcs::get_top_of_level())
-      {
-        new_depth = Level_funcs::get_top_of_level();
-        player.jump_speed = 0.f;
-        player.jump_time = 0.f;
-      }
-      
-      const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos), math::vec3_get_y(pos), new_depth);
-      trans.set_position(new_pos);
-      
-      player.entity.set_transform(trans);
-    }
-    
-    // Fire
-    {
-      const math::vec3 pos = player.entity.get_transform().get_position();
-    
-      const float multipler = player.power_up_timer > 0 ? dt * 15.f : 0.f;
-      const float timer = player.gun_cooldown;
-      
-      if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
-      {
-        Bullet_utils::create_bullet(world,
-                                    player.point_on_circle,
-                                    math::vec3_get_z(pos),                                    
-                                    -1,
-                                    bullets_container);
-        player.gun_cooldown = gun_cooldown_timer;
-      }
-    }
-  }
-}
-
-
-void
-power_up(Core::World &world,
-         const Core::Entity_ref hit,
-         Players_container &players_container)
-{
-  for(uint32_t i = 0; i < players_container.size; ++i)
-  {
-    auto &player = players_container.player[i];
-    
-    if(player.entity == hit)
-    {
-      player.power_up_timer = 5.f;
-    }
-  }
-}
-
-
-void
-hit_player(Core::World &world,
-           const Core::Entity_ref &hit,
-           Players_container &players_container,
-           Explosions_container &explosions_container)
-{
-  // Search for entity and hit it.
-  for(uint32_t i = 0; i < players_container.size; ++i)
-  {
-    auto &player = players_container.player[i];
-    
-    if(player.entity != hit)
-    {
-      continue;
-    }
-    
-    Explosion_utils::create_explosion(world,
-                                      player.entity.get_transform().get_position(),
-                                      explosions_container);
-    
-    player.entity.destroy();
-  }
-}
-
-
-bool
-all_dead(Players_container &players_container)
-{
-  constexpr bool are_all_dead = true;
-
-  for(uint32_t i = 0; i < players_container.size; ++i)
-  {
-    auto &player = players_container.player[i];
-  
-    if(player.entity)
-    {
-      return false;
-    }
-  }
-  
-  return are_all_dead;
+  this->destroy();
 }
 
 

@@ -17,8 +17,10 @@ class Bullet : public Game_object
 {
 public:
 
-
-  explicit          Bullet(Core::World &world, const float point, const uint32_t direction);
+  explicit          Bullet(Core::World &world,
+                           const float point,
+                           const float depth,
+                           const uint32_t direction);
   
   void              on_start() override;
   bool              on_update(const float dt, World_objects &world_objs) override;
@@ -34,47 +36,6 @@ private:
 
 
 } // ns
-
-
-
-struct Bullets_container
-{
-  struct Bullet
-  {
-    int32_t           direction         = -1;
-    float             speed             = 100.5f;
-    float             point_on_circle   = 1;
-    Core::Entity      entity;
-    Core::Entity_ref  owner;
-  };
-  
-  Bullet bullet[128];
-  const uint32_t size = 128;
-};
-
-
-namespace Bullet_utils {
-
-
-void
-init_bullets(Core::World &world,
-             Bullets_container &bullets_container);
-
-
-void
-move_bullets(Core::World &world,
-             const float dt,
-             Bullets_container &bullets_container);
-
-
-void
-create_bullet(Core::World &world,
-              const float position,
-              const float depth,              
-              const uint32_t direction,
-              Bullets_container &bullets_container);
-
-};
 
 
 #endif // inc guard

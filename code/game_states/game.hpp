@@ -16,11 +16,9 @@ game_init(Core::Context &ctx,
 Game_state
 game_update(Core::Context &ctx,
             Core::World &world,
-            Players_container &players,
             Enemies_container &enemies,
             Explosions_container &explosions,
             Powerups_container &powerups,
-            Bullets_container &bullets,
             const float dt);
 
 

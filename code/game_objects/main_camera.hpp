@@ -34,30 +34,4 @@ public:
 } // ns
 
 
-struct Game_camera
-{
-  Core::Entity entity;
-  Core::Camera camera;
-  math::vec3 target_point;
-};
-
-
-namespace Camera_utils {
-
-
-void
-init_main_camera(Core::Context &ctx,
-                 Core::World &world,
-                 Game_camera &cam);
-
-
-void
-move_main_camera(Game_camera &cam,
-                 const float dt,
-                 const Players_container &players_container);
-
-
-} // ns
-
-
 #endif // inc guard

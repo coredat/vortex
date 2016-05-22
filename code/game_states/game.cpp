@@ -21,16 +21,14 @@ game_init(Core::Context &ctx,
 Game_state
 game_update(Core::Context &context,
             Core::World &world,
-            Players_container &players_container,
             Enemies_container &enemies_container,
             Explosions_container &explosions_container,
             Powerups_container &powerups_container,
-            Bullets_container &bullets_container,
             const float dt)
 {
   world.get_overlapping_aabbs([&](const Core::Collision_pair pairs[], const uint32_t number_of_pairs)
   {
-     for(uint32_t i = 0; i < number_of_pairs; ++i)
+    for(uint32_t i = 0; i < number_of_pairs; ++i)
     {
       const Core::Entity_ref &ref_a = pairs[i].entity_a;
       const Core::Entity_ref &ref_b = pairs[i].entity_b;
@@ -49,17 +47,22 @@ game_update(Core::Context &context,
       {
         if(ref_b.has_tag(Object_tags::enemy))
         {
-          Player_utils::hit_player(world,
-                                   ref_a,
-                                   players_container,
-                                   explosions_container);
+          Game_object::Game_object *go_obj    = reinterpret_cast<Game_object::Game_object*>(ref_a.get_user_data());
+          Game_object::Game_object *other_obj = reinterpret_cast<Game_object::Game_object*>(ref_b.get_user_data());
+          
+          go_obj->on_collision(other_obj);
+        
+//          Player_utils::hit_player(world,
+//                                   ref_a,
+//                                   players_container,
+//                                   explosions_container);
         }
         
         if(ref_b.has_tag(Object_tags::powerup))
         {
-          Player_utils::power_up(world,
-                                 ref_a,
-                                 players_container);
+//          Player_utils::power_up(world,
+//                                 ref_a,
+//                                 players_container);
         }
       }
     }
@@ -67,16 +70,10 @@ game_update(Core::Context &context,
     
   Enemy_utils::spawn_enemies(world, dt, enemies_container);
 
-  Player_utils::move_players(context,
-                             world,
-                             dt,
-                             players_container,
-                             bullets_container);
-
-  if(Player_utils::all_dead(players_container))
-  {
-    return Game_state::game_over;
-  }
+//  if(Player_utils::all_dead(players_container))
+//  {
+//    return Game_state::game_over;
+//  }
   
   return Game_state::game_mode;
 }

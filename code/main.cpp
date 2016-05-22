@@ -55,12 +55,6 @@ main()
   
   // ** Game Objects ** //
   
-  Bullets_container bullets_container;
-  Bullet_utils::init_bullets(world, bullets_container);
-  
-  Players_container players_container;
-  //Player_utils::init_players(world, players_container);
-  
   Enemies_container enemies_container;
   Enemy_utils::init_enemies(world, enemies_container);
     
@@ -89,17 +83,15 @@ main()
   {
     const util::milliseconds frame_time = delta_time_ms.split();
     const float dt = static_cast<float>(frame_time) / 1000.f;
-   
+    
     objs.on_start();
     objs.on_update(dt);
     objs.on_destroy();
-   
+    
     /*
       Common Entities to update
     */
     {
-//      Camera_utils::move_main_camera(cam, dt, players_container);
-      Bullet_utils::move_bullets(world, dt, bullets_container);
       Explosion_utils::update_explosions(world, dt, explosions_container);
       Enemy_utils::update_enemies(world, dt, enemies_container);
       Powerup_utils::update_powerups(world, dt, powerups_container);
@@ -130,11 +122,9 @@ main()
       {
         game_state = game_update(context,
                                  world,
-                                 players_container,
                                  enemies_container,
                                  explosions_container,
                                  powerups_container,
-                                 bullets_container,
                                  dt);
         
         break;

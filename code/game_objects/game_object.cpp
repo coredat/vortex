@@ -36,7 +36,6 @@ void
 Game_object::destroy()
 {
   m_should_destroy = true;
-  get_entity().destroy();
 }
 
 

@@ -27,26 +27,4 @@ private:
 } // ns
 
 
-struct Level_container
-{
-  struct Level_data
-  {
-    Core::Entity entity;
-  };
-  
-  Level_data level[1];
-  const uint32_t size = 1;
-};
-
-
-namespace Level_utils {
-
-
-void
-init_level(Core::World &world, Level_container &level);
-
-
-};
-
-
 #endif // inc guard
