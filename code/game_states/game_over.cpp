@@ -14,11 +14,10 @@ game_over_init(Core::Context &ctx,
 Game_state
 game_over_update(Core::Context &context,
                  Core::World &world,
-                 Enemies_container &enemies_container,
                  Explosions_container &explosions_container,
                  const float dt)
 {
-  Enemy_utils::explode_all(world, enemies_container, explosions_container);
+//  Enemy_utils::explode_all(world, enemies_container, explosions_container);
 
   Core::Input::Controller controller(context, 0);
   if(controller.is_button_down(Core::Input::Button::button_4))

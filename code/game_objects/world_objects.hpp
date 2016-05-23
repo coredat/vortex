@@ -18,7 +18,8 @@ public:
   void                        push_object(Game_object *object);
   
   void                        on_start();
-d  void                        on_destroy();
+  void                        on_update(const float dt);
+  void                        on_destroy();
   
   
 //private:

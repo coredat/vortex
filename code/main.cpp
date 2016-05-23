@@ -55,9 +55,9 @@ main()
   
   // ** Game Objects ** //
   
-  Enemies_container enemies_container;
-  Enemy_utils::init_enemies(world, enemies_container);
-    
+//  Enemies_container enemies_container;
+//  Enemy_utils::init_enemies(world, enemies_container);
+  
   Explosions_container explosions_container;
   Explosion_utils::init_explosions(world, explosions_container);
   
@@ -86,14 +86,13 @@ main()
     
     objs.on_start();
     objs.on_update(dt);
-    objs.on_destroy();
     
     /*
       Common Entities to update
     */
     {
       Explosion_utils::update_explosions(world, dt, explosions_container);
-      Enemy_utils::update_enemies(world, dt, enemies_container);
+//      Enemy_utils::update_enemies(world, dt, enemies_container);
       Powerup_utils::update_powerups(world, dt, powerups_container);
     }
     
@@ -122,9 +121,9 @@ main()
       {
         game_state = game_update(context,
                                  world,
-                                 enemies_container,
                                  explosions_container,
                                  powerups_container,
+                                 objs,
                                  dt);
         
         break;
@@ -138,13 +137,13 @@ main()
       {
         game_state = game_over_update(context,
                                       world,
-                                      enemies_container,
                                       explosions_container,
                                       dt);
         break;
       }
     }
     
+    objs.on_destroy();
     world.think(dt);
   }
 

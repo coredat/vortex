@@ -1,4 +1,6 @@
 #include <game_states/game.hpp>
+#include <common/level_functions.hpp>
+#include <game_objects/world_objects.hpp>
 #include <game_objects/player.hpp>
 #include <game_objects/powerup_pickup.hpp>
 #include <game_objects/enemy.hpp>
@@ -9,6 +11,7 @@
 #include <core/world/world.hpp>
 #include <core/context/context.hpp>
 #include <core/physics/collision_pair.hpp>
+#include <utilities/logging.hpp>
 
 
 void
@@ -18,12 +21,54 @@ game_init(Core::Context &ctx,
 }
 
 
+namespace
+{
+
+constexpr float spawn_rate = 0.2f;
+float spawn_timer = 0.f;
+
+void
+spawn_enemies(Core::World &world,
+              const float dt,
+              Game_object::World_objects &objs)
+{
+  spawn_timer += dt;
+
+  if(spawn_timer > spawn_rate)
+  {
+    spawn_timer = 0;
+    
+    const float point = static_cast<float>(rand() % 1000) / 10.f;
+    const float depth = Level_funcs::get_bottom_of_level();
+    
+    using Enemy_type = Game_object::Enemy::Type;
+    Enemy_type what_to_spawn = (Enemy_type)(rand() % (uint32_t)Enemy_type::size);
+    
+    switch(what_to_spawn)
+    {
+      case(Enemy_type::climber):
+      case(Enemy_type::breeder):
+        objs.push_object(new Game_object::Enemy(world, what_to_spawn));
+        break;
+        
+      case(Enemy_type::egg):
+        break;
+      
+      default:
+        assert(false);
+    }
+  }
+}
+
+}
+
+
 Game_state
 game_update(Core::Context &context,
             Core::World &world,
-            Enemies_container &enemies_container,
             Explosions_container &explosions_container,
             Powerups_container &powerups_container,
+            Game_object::World_objects &objs,
             const float dt)
 {
   world.get_overlapping_aabbs([&](const Core::Collision_pair pairs[], const uint32_t number_of_pairs)
@@ -32,30 +77,34 @@ game_update(Core::Context &context,
     {
       const Core::Entity_ref &ref_a = pairs[i].entity_a;
       const Core::Entity_ref &ref_b = pairs[i].entity_b;
+      
+      if(!ref_a.is_valid())
+      {
+        continue;
+      }
 
       // Enemy collided with a bullet
       if(ref_b.has_tag(Object_tags::bullet) && ref_a.has_tag(Object_tags::enemy))
       {
-        Enemy_utils::hit_enemy(world,
-                               ref_a,
-                               enemies_container,
-                               explosions_container,
-                               powerups_container);
+//        Enemy_utils::hit_enemy(world,
+//                               ref_a,
+//                               enemies_container,
+//                               explosions_container,
+//                               powerups_container);
       }
       
       if(ref_a.has_tag(Object_tags::player))
       {
         if(ref_b.has_tag(Object_tags::enemy))
         {
-          Game_object::Game_object *go_obj    = reinterpret_cast<Game_object::Game_object*>(ref_a.get_user_data());
-          Game_object::Game_object *other_obj = reinterpret_cast<Game_object::Game_object*>(ref_b.get_user_data());
+          Game_object::Game_object *this_obj = reinterpret_cast<Game_object::Game_object*>(ref_a.get_user_data());
+          Game_object::Game_object *that_obj = reinterpret_cast<Game_object::Game_object*>(ref_b.get_user_data());
+          assert(this_obj);
           
-          go_obj->on_collision(other_obj);
-        
-//          Player_utils::hit_player(world,
-//                                   ref_a,
-//                                   players_container,
-//                                   explosions_container);
+          if(this_obj)
+          {
+            this_obj->on_collision(that_obj);
+          }
         }
         
         if(ref_b.has_tag(Object_tags::powerup))
@@ -68,7 +117,7 @@ game_update(Core::Context &context,
     }
   });
     
-  Enemy_utils::spawn_enemies(world, dt, enemies_container);
+  spawn_enemies(world, dt, objs);
 
 //  if(Player_utils::all_dead(players_container))
 //  {

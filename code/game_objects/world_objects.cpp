@@ -67,6 +67,7 @@ World_objects::on_destroy()
   for(auto &obj : m_end_objects)
   {
     obj->on_end();
+    obj->get_entity().set_user_data(0);
     obj->get_entity().destroy();
     delete obj;
   }

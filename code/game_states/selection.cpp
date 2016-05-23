@@ -100,7 +100,6 @@ selection_init(Core::Context &ctx,
       
       sel = Core::Entity(world);
       sel.set_name("Selection screen");
-      
       sel.set_model(plane);
       sel.set_material_id(no_selection_texture.get_id());
     }
