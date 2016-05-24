@@ -153,6 +153,7 @@ Enemy::Enemy(Core::World &world, Type type)
 void
 Enemy::on_start()
 {
+  get_entity().set_name("Enemy");
   m_direction = 1;
   m_lifetime = 0;
   m_point_on_circle = static_cast<float>(rand() % 1000) / 10;

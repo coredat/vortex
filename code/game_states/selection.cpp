@@ -137,7 +137,7 @@ selection_update(Core::Context &context,
         {
           // Currently the best way to hide an entity is just
           // to create a new one :D
-          sel = Core::Entity(world);
+          sel.destroy();
         }
       }
     
