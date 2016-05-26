@@ -86,11 +86,14 @@ game_update(Core::Context &context,
       // Enemy collided with a bullet
       if(ref_b.has_tag(Object_tags::bullet) && ref_a.has_tag(Object_tags::enemy))
       {
-//        Enemy_utils::hit_enemy(world,
-//                               ref_a,
-//                               enemies_container,
-//                               explosions_container,
-//                               powerups_container);
+        Game_object::Game_object *this_obj = reinterpret_cast<Game_object::Game_object*>(ref_a.get_user_data());
+        Game_object::Game_object *that_obj = reinterpret_cast<Game_object::Game_object*>(ref_b.get_user_data());
+        assert(this_obj);
+        
+        if(this_obj)
+        {
+          this_obj->on_collision(that_obj);
+        }
       }
       
       if(ref_a.has_tag(Object_tags::player))
@@ -109,20 +112,13 @@ game_update(Core::Context &context,
         
         if(ref_b.has_tag(Object_tags::powerup))
         {
-//          Player_utils::power_up(world,
-//                                 ref_a,
-//                                 players_container);
+
         }
       }
     }
   });
     
   spawn_enemies(world, dt, objs);
-
-//  if(Player_utils::all_dead(players_container))
-//  {
-//    return Game_state::game_over;
-//  }
   
   return Game_state::game_mode;
 }

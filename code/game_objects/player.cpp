@@ -60,19 +60,19 @@ Player::Player(Core::World &world, Core::Context &ctx, const uint32_t controller
   ref.set_collider(collider);
   ref.set_rigidbody_properties(rb_props);
   
-    const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
-    const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, math::quart_tau());
-    const math::quat rot = math::quat_multiply(y_rot, z_rot);
+  const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
+  const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, math::quart_tau());
+  const math::quat rot = math::quat_multiply(y_rot, z_rot);
+
+  uint32_t i = 0;
+
+  Core::Transform trans(
+    math::vec3_init(-4.f + (i * (8.f / 4.f)), 0, 0),
+    math::vec3_one(),
+    rot
+  );
   
-    uint32_t i = 0;
-  
-    Core::Transform trans(
-      math::vec3_init(-4.f + (i * (8.f / 4.f)), 0, 0),
-      math::vec3_one(),
-      rot
-    );
-    
-    ref.set_transform(trans);
+  ref.set_transform(trans);
 }
 
 

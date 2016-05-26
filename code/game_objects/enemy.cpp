@@ -10,9 +10,11 @@
 #include <core/world/world.hpp>
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
+#include <core/physics/box_collider_utils.hpp>
 #include <core/physics/rigidbody_properties.hpp>
 #include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
+#include <math/geometry/aabb.hpp>
 #include <math/quat/quat.hpp>
 #include <utilities/directory.hpp>
 
@@ -153,7 +155,21 @@ Enemy::Enemy(Core::World &world, Type type)
 void
 Enemy::on_start()
 {
-  get_entity().set_name("Enemy");
+  auto ref = get_entity();
+  
+  ref.set_name("Enemy");
+  ref.set_tags(Object_tags::enemy);
+  ref.set_model(model);
+  ref.set_material_id(texture_magenta.get_id());
+  
+  Core::Box_collider coll = Core::Box_collider_utils::create_with_half_extents(math::aabb_get_half_extents(model.get_model_aabb()));
+  ref.set_collider(coll);
+  
+  Core::Rigidbody_properties rb_props;
+  rb_props.set_collision_mask(Object_tags::enemy, Object_tags::bullet | Object_tags::player);
+  
+  ref.set_rigidbody_properties(rb_props);
+
   m_direction = 1;
   m_lifetime = 0;
   m_point_on_circle = static_cast<float>(rand() % 1000) / 10;
@@ -165,8 +181,20 @@ bool
 Enemy::on_update(const float dt, World_objects &objs)
 {
   update_climber(*this, dt);
+  
+  auto ref = get_entity();
+  
+  ref.set_model(model);
+  ref.set_material_id(texture_magenta.get_id());
 
   return false;
+}
+
+
+void
+Enemy::on_collision(Game_object::Game_object *other)
+{
+  this->destroy();
 }
 
 
