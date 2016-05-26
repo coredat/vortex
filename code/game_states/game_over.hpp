@@ -16,7 +16,7 @@ game_over_init(Core::Context &ctx,
 Game_state
 game_over_update(Core::Context &context,
                  Core::World &world,
-                 Explosions_container &explosions_container,
+//                 Explosions_container  &explosions_container,
                  const float dt);
 
 

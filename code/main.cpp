@@ -57,8 +57,8 @@ main()
 //  Enemies_container enemies_container;
 //  Enemy_utils::init_enemies(world, enemies_container);
   
-  Explosions_container explosions_container;
-  Explosion_utils::init_explosions(world, explosions_container);
+//  Explosions_container explosions_container;
+//  Explosion_utils::init_explosions(world, explosions_container);
   
   Powerups_container powerups_container;
   Powerup_utils::init_powerups(world, powerups_container);
@@ -90,7 +90,7 @@ main()
       Common Entities to update
     */
     {
-      Explosion_utils::update_explosions(world, dt, explosions_container);
+//      Explosion_utils::update_explosions(world, dt, explosions_container);
 //      Enemy_utils::update_enemies(world, dt, enemies_container);
       Powerup_utils::update_powerups(world, dt, powerups_container);
     }
@@ -120,7 +120,7 @@ main()
       {
         game_state = game_update(context,
                                  world,
-                                 explosions_container,
+//                                 explosions_container,
                                  powerups_container,
                                  objs,
                                  dt);
@@ -136,7 +136,7 @@ main()
       {
         game_state = game_over_update(context,
                                       world,
-                                      explosions_container,
+//                                      explosions_container,
                                       dt);
         break;
       }

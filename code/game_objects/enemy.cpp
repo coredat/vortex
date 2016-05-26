@@ -169,7 +169,7 @@ Enemy::on_start()
   rb_props.set_collision_mask(Object_tags::enemy, Object_tags::bullet | Object_tags::player);
   
   ref.set_rigidbody_properties(rb_props);
-
+  
   m_direction = 1;
   m_lifetime = 0;
   m_point_on_circle = static_cast<float>(rand() % 1000) / 10;
@@ -186,6 +186,11 @@ Enemy::on_update(const float dt, World_objects &objs)
   
   ref.set_model(model);
   ref.set_material_id(texture_magenta.get_id());
+  
+  if(go_boom)
+  {
+    objs.push_object(new Explosion(get_world(), ref.get_transform().get_position()));
+  }
 
   return false;
 }
@@ -195,6 +200,7 @@ void
 Enemy::on_collision(Game_object::Game_object *other)
 {
   this->destroy();
+  go_boom = true;
 }
 
 

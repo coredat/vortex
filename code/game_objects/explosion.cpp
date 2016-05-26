@@ -16,82 +16,71 @@ namespace
 }
 
 
-namespace Explosion_utils {
+namespace Game_object {
+
+
+  
+Explosion::Explosion(Core::World &world, const math::vec3 position)
+: Game_object(world)
+{
+  auto ref = get_entity();
+
+  const Core::Transform transform(
+    position,
+    math::vec3_zero(),
+    math::quat_init()
+  );
+  
+  ref.set_transform(transform);
+}
 
 
 void
-init_explosions(const Core::World &world,
-                Explosions_container &explosions_container)
+Explosion::on_start()
 {
   const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
   model = Core::Model(unit_cube_path.c_str());
 
   const std::string grid_texture_path = util::get_resource_path() + "assets/textures/dev_colored_squares_512.png";
   texture = Core::Texture(grid_texture_path.c_str());
-}
-
-
-void
-update_explosions(const Core::World &world,
-                  const float dt,
-                  Explosions_container &explosions_container)
-{
-  for(uint32_t i = 0; i < explosions_container.size; ++i)
+  
   {
-    auto &exp = explosions_container.explosion[i];
+    auto ref = get_entity();
+  
+    ref.set_name("Explosion");
+    ref.add_tag(Object_tags::explosion);
     
-    exp.time += dt * 10.f;
-    const float new_scale = 0.5f + math::sin(exp.time);
+    ref.set_model(model);
+    ref.set_material_id(texture.get_id());
     
-    if(new_scale < 0)
-    {
-      exp.entity.destroy();
-      continue;
-    }
-    
-    if(exp.entity)
-    {
-      const math::vec3 scale = math::vec3_init(new_scale);
-      Core::Transform trans = exp.entity.get_transform();
-      trans.set_scale(scale);
-      
-      exp.entity.set_transform(trans);
-    }
+    m_time = 0;
   }
 }
 
 
-void
-create_explosion(Core::World &world,
-                 const math::vec3 position,
-                 Explosions_container &explosions_container)
+bool
+Explosion::on_update(const float dt, World_objects &objs)
 {
-  for(uint32_t i = 0; i < explosions_container.size; ++i)
+  m_time += dt * 10.f;
+  const float new_scale = 0.5f + math::sin(m_time);
+  
+  if(new_scale < 0)
   {
-    auto &exp = explosions_container.explosion[i];
-    
-    if(!exp.entity)
-    {
-      exp.entity = Core::Entity(world);
-      exp.entity.set_name("Explosion");
-      exp.entity.add_tag(Object_tags::explosion);
-      
-      exp.entity.set_model(model);
-      exp.entity.set_material_id(texture.get_id());
-      
-      exp.time = 0;
-      
-      const Core::Transform transform(
-        position,
-        math::vec3_zero(),
-        math::quat_init()
-      );
-      
-      exp.entity.set_transform(transform);
-      
-      break;
-    }
+    //get_entity().destroy();
+    destroy();
+    return false;
   }
+  
+  if(get_entity().is_valid())
+  {
+    const math::vec3 scale = math::vec3_init(new_scale);
+    Core::Transform trans = get_entity().get_transform();
+    trans.set_scale(scale);
+    
+    get_entity().set_transform(trans);
+  }
+
+  return false;
 }
 
 

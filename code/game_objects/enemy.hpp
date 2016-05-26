@@ -37,6 +37,8 @@ public:
   float           m_lifetime = 0;
   int32_t         m_direction = 1;
   Type            m_type = Type::climber;
+  
+  bool            go_boom = false;
 
 };
 

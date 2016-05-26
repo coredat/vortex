@@ -2,43 +2,29 @@
 #define EXPLOSION_INCLUDED_0377F28D_5ECA_4177_88FD_311040A61AC5
 
 
+#include <game_objects/game_object.hpp>
 #include <core/entity/entity.hpp>
 #include <core/world/world_fwd.hpp>
 #include <math/vec/vec_fwd.hpp>
 #include <stdint.h>
 
 
-struct Explosions_container
+namespace Game_object {
+
+
+class Explosion : public Game_object
 {
-  struct Explosion
-  {
-    Core::Entity entity;
-    float time = 0.f;
-  };
+public:
   
-  Explosion explosion[128];
-  const uint32_t size = 128;
+  explicit        Explosion(Core::World &world, const math::vec3 position);
+  void            on_start() override;
+  bool            on_update(const float dt, World_objects &objs) override;
+
+private:
+
+  float m_time = 0.f;
+
 };
-
-
-namespace Explosion_utils {
-
-
-void
-init_explosions(const Core::World &world,
-                Explosions_container &explosions_container);
-
-
-void
-update_explosions(const Core::World &world,
-                  const float dt,
-                  Explosions_container &explosions_container);
-
-
-void
-create_explosion(Core::World &world,
-                 const math::vec3 position,
-                 Explosions_container &explosions_container);
 
 
 } // ns

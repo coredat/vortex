@@ -66,7 +66,7 @@ spawn_enemies(Core::World &world,
 Game_state
 game_update(Core::Context &context,
             Core::World &world,
-            Explosions_container &explosions_container,
+//            Explosions_container &explosions_container,
             Powerups_container &powerups_container,
             Game_object::World_objects &objs,
             const float dt)
