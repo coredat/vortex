@@ -47,22 +47,6 @@ main()
   
   Core::World world(Core::World_setup{});
   
-  LOG_TODO("Move delta time into core.");
-  
-  util::timer delta_time_ms;
-  delta_time_ms.start();
-  
-  // ** Game Objects ** //
-  
-//  Enemies_container enemies_container;
-//  Enemy_utils::init_enemies(world, enemies_container);
-  
-//  Explosions_container explosions_container;
-//  Explosion_utils::init_explosions(world, explosions_container);
-  
-  Powerups_container powerups_container;
-  Powerup_utils::init_powerups(world, powerups_container);
-  
   // ** Start Game ** //
   
   Game_state game_state = Game_state::selection;
@@ -80,20 +64,10 @@ main()
   
   while(context.is_open())
   {
-    const util::milliseconds frame_time = delta_time_ms.split();
-    const float dt = static_cast<float>(frame_time) / 1000.f;
+    const float dt = world.get_delta_time();
     
     objs.on_start();
     objs.on_update(dt);
-    
-    /*
-      Common Entities to update
-    */
-    {
-//      Explosion_utils::update_explosions(world, dt, explosions_container);
-//      Enemy_utils::update_enemies(world, dt, enemies_container);
-      Powerup_utils::update_powerups(world, dt, powerups_container);
-    }
     
     // ** Game State ** //
     switch(game_state)
@@ -134,14 +108,13 @@ main()
       {
         game_state = game_over_update(context,
                                       world,
-//                                      explosions_container,
                                       dt);
         break;
       }
     }
     
     objs.on_destroy();
-    world.think(dt);
+    world.think();
   }
 
   return 0;
