@@ -21,8 +21,9 @@ public:
   void                        on_update(const float dt);
   void                        on_destroy();
   
+  void                        send_event(const uint32_t evt_id, void *data = nullptr);
   
-//private:
+private:
 
   std::vector<Game_object*>   m_start_objects;
   std::vector<Game_object*>   m_update_objects;
