@@ -118,5 +118,18 @@ game_update(Core::Context &context,
     
   spawn_enemies(world, dt, objs);
   
+  // If all player ships are dead move to game overscreen
+  {
+    Core::Entity_ref *out_players;
+    size_t found_players = 0;
+    
+    world.find_entities_by_tag(Object_tags::player, &out_players, &found_players);
+    
+    if(found_players == 0)
+    {
+      return Game_state::game_over;
+    }
+  }
+  
   return Game_state::game_mode;
 }

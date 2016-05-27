@@ -10,7 +10,7 @@
 
 void
 game_over_init(Core::Context &ctx,
-          Core::World &world);
+               Core::World &world);
 
 
 Game_state

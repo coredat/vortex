@@ -4,6 +4,7 @@
 
 enum class Game_state
 {
+  null,
   selection,
   game_mode,
   game_over,

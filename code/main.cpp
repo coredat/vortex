@@ -26,13 +26,12 @@
 // Testing
 #include <core/resources/material.hpp>
 #include <core/resources/shader.hpp>
-#include <utilities/directory.hpp>
+#include <core/camera/camera_utils.hpp>
+#include <core/transform/transform.hpp>
 #include <math/vec/vec4.hpp>
 #include <math/general/to_string.hpp>
 #include <math/mat/mat4.hpp>
-#include <iostream>
-#include <core/camera/camera_utils.hpp>
-#include <core/transform/transform.hpp>
+#include <utilities/directory.hpp>
 #include <vector>
 
 
@@ -48,7 +47,8 @@ main()
   
   // ** Start Game ** //
   
-  Game_state game_state = Game_state::selection;
+  Game_state curr_state = Game_state::null;
+  Game_state next_state = Game_state::selection;
   
   Game_object::World_objects objs;
   
@@ -61,6 +61,9 @@ main()
   game_init(context, world);
   game_over_init(context, world);
   
+  // Game state
+  
+  
   while(context.is_open())
   {
     const float dt = world.get_delta_time();
@@ -69,7 +72,27 @@ main()
     objs.on_update(dt);
     
     // ** Game State ** //
-    switch(game_state)
+    if(curr_state != next_state)
+    {
+      switch(next_state)
+      {
+        case(Game_state::selection):
+          selection_init(context, world, go_cam->m_camera);
+          break;
+        
+        case(Game_state::game_mode):
+          game_init(context, world);
+          break;
+          
+        case(Game_state::game_over):
+          game_over_init(context, world);
+          break;
+      }
+      
+      curr_state = next_state;
+    }
+    
+    switch(curr_state)
     {
       /*
         Player selection screen.
@@ -77,7 +100,7 @@ main()
       */
       case(Game_state::selection):
       {
-        game_state = selection_update(context,
+        next_state = selection_update(context,
                                       world,
                                       go_cam->m_camera,
                                       objs,
@@ -91,7 +114,7 @@ main()
       */
       case(Game_state::game_mode):
       {
-        game_state = game_update(context,
+        next_state = game_update(context,
                                  world,
                                  objs,
                                  dt);
@@ -105,7 +128,7 @@ main()
       */
       case(Game_state::game_over):
       {
-        game_state = game_over_update(context,
+        next_state = game_over_update(context,
                                       world,
                                       dt);
         break;
