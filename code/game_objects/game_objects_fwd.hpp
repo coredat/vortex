@@ -13,13 +13,4 @@ class Main_camera;
 } // ns
 
 
-struct Level_container;
-struct Bullets_container;
-struct Players_container;
-struct Enemies_container;
-struct Explosions_container;
-struct Multipliers_container;
-struct Powerups_container;
-
-
 #endif // inc guard

@@ -15,13 +15,7 @@ namespace Game_object {
 Level::Level(Core::World &world)
 : Game_object(world)
 {
-}
-
-
-void
-Level::on_start()
-{
-  auto ref = get_entity();
+  Core::Entity_ref ref = get_entity();
 
   ref.set_name("Level");
   

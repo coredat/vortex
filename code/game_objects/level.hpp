@@ -3,8 +3,6 @@
 
 
 #include <game_objects/game_object.hpp>
-#include <core/entity/entity.hpp>
-#include <core/world/world_fwd.hpp>
 
 
 namespace Game_object {
@@ -16,7 +14,6 @@ public:
 
   explicit        Level(Core::World &world);
   
-  void            on_start() override;
   bool            on_update(const float dt, World_objects &objs) override;
 
 private:

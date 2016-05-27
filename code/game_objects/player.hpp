@@ -4,10 +4,7 @@
 
 #include <game_objects/game_object.hpp>
 #include <core/entity/entity.hpp>
-#include <core/world/world_fwd.hpp>
 #include <core/context/context_fwd.hpp>
-#include <core/resources/resources_fwd.hpp>
-#include <game_objects/game_objects_fwd.hpp>
 #include <stdint.h>
 
 
@@ -18,23 +15,24 @@ class Player : public Game_object::Game_object
 {
 public:
   
-  explicit          Player(Core::World &world, Core::Context &ctx, const uint32_t controller_id);
+  explicit          Player(Core::World &world,
+                           Core::Context &ctx,
+                           const uint32_t controller_id);
   
   void              on_start() override;
   bool              on_update(const float dt, World_objects &world_objs) override;
-  void              on_end() override;
   void              on_collision(Game_object *obj) override;
 
 private:
 
   Core::Context     &m_context;
-  uint32_t          m_controller_id   = 0;
-  float             point_on_circle = 0.f;
-  float             gun_cooldown    = 0.f;
-  float             jump_speed      = 0.f;
-  float             jump_time       = 0.f;
-  float             power_up_timer  = 0.f;
-  float             momentum        = 0.f;
+  const uint32_t    m_controller_id   = 0;
+  float             m_point_on_circle   = 0.f;
+  float             m_gun_cooldown      = 0.f;
+  float             m_jump_speed        = 0.f;
+  float             m_jump_time         = 0.f;
+  float             m_power_up_timer    = 0.f;
+  float             m_momentum          = 0.f;
 
 };
 

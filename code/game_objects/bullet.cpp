@@ -32,17 +32,32 @@ Bullet::Bullet(Core::World &world,
                const uint32_t dir)
 : Game_object(world)
 {
-  direction = dir;
-  point_on_circle = point;
-  
-  const std::string unit_cube_path = util::get_resource_path() + "assets/models/bullet.obj";
-  model = Core::Model(unit_cube_path.c_str());
+  // Load up missnig assets
+  {
+    if(!model)
+    {
+      const std::string unit_cube_path = util::get_resource_path() + "assets/models/bullet.obj";
+      model = Core::Model(unit_cube_path.c_str());
+    }
 
-  const std::string texture_path = util::get_resource_path() + "assets/textures/dev_grid_red_512.png";
-  texture = Core::Texture(texture_path.c_str());
+    if(!texture)
+    {
+      const std::string texture_path = util::get_resource_path() + "assets/textures/dev_grid_red_512.png";
+      texture = Core::Texture(texture_path.c_str());
+    }
 
-  const std::string orange_texture_path = util::get_resource_path() + "assets/audio/temp_shot.wav";
-  gun_shot_sample = Core::Sample(orange_texture_path.c_str());
+    if(!gun_shot_sample)
+    {
+      const std::string orange_texture_path = util::get_resource_path() + "assets/audio/temp_shot.wav";
+      gun_shot_sample = Core::Sample(orange_texture_path.c_str());
+    }
+  }
+
+  // Setup Members
+  {
+    m_direction = dir;
+    m_point_on_circle = point;
+  }
 
   auto ref = get_entity();
 
@@ -60,7 +75,7 @@ Bullet::Bullet(Core::World &world,
   
   // Transform
   {
-    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(point_on_circle);
+    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point_on_circle);
     math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
                                          math::vec2_get_y(new_point),
                                          depth);
@@ -90,17 +105,11 @@ Bullet::Bullet(Core::World &world,
   }  
 }
 
-  
-void
-Bullet::on_start()
-{
-}
-
 
 bool
 Bullet::on_update(const float dt, World_objects &world_objs)
 {
-  auto ref = get_entity();
+  Core::Entity_ref ref = get_entity();
   
   Core::Transform trans = ref.get_transform();
   
@@ -108,7 +117,9 @@ Bullet::on_update(const float dt, World_objects &world_objs)
   {
     const float depth = math::vec3_get_z(trans.get_position());
 
-    if(!math::is_between(depth, Level_funcs::get_near_death_zone(), Level_funcs::get_far_death_zone()))
+    if(!math::is_between(depth,
+                         Level_funcs::get_near_death_zone(),
+                         Level_funcs::get_far_death_zone()))
     {
       destroy();
       return false;
@@ -117,10 +128,10 @@ Bullet::on_update(const float dt, World_objects &world_objs)
   
   // Move
   {
-    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(point_on_circle);
+    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point_on_circle);
     const math::vec3 position  = trans.get_position();
     
-    const float velocity = ((speed * dt) * direction);
+    const float velocity = ((m_speed * dt) * m_direction);
     const float depth    = math::vec3_get_z(position) + velocity;
     
     math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),

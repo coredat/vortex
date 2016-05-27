@@ -155,7 +155,7 @@ Enemy::Enemy(Core::World &world, Type type)
 void
 Enemy::on_start()
 {
-  auto ref = get_entity();
+  Core::Entity_ref ref = get_entity();
   
   ref.set_name("Enemy");
   ref.set_tags(Object_tags::enemy);

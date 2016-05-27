@@ -22,10 +22,13 @@ public:
   
   void              on_start() override;
   bool              on_update(const float dt, World_objects &world_objs) override;
-  
-//private:
 
-  Core::Camera      m_camera;
+public:
+
+  Core::Camera      m_camera; // Currently selection screen needs to know where to place gui.
+  
+private:
+
   math::vec3        m_target_point;
   
 };

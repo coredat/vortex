@@ -1,6 +1,5 @@
 #include <game_objects/player.hpp>
 #include <game_objects/bullet.hpp>
-#include <game_objects/bullet.hpp>
 #include <game_objects/explosion.hpp>
 #include <game_objects/world_objects.hpp>
 #include <common/level_functions.hpp>
@@ -21,24 +20,31 @@
 #include <math/quat/quat.hpp>
 #include <math/geometry/aabb.hpp>
 #include <utilities/directory.hpp>
-#include <utilities/logging.hpp>
-
 
 
 namespace
 {
   constexpr float gun_cooldown_timer = 0.1f;
-  constexpr float move_speed_base = 5.f;
+  constexpr float move_speed_base    = 5.f;
+  constexpr float momentum_falloff   = 0.95f;
 }
 
 
 namespace Game_object {
 
 
-Player::Player(Core::World &world, Core::Context &ctx, const uint32_t controller_id)
+Player::Player(Core::World &world,
+               Core::Context &ctx,
+               const uint32_t controller_id)
 : Game_object(world)
 , m_context(ctx)
 , m_controller_id(controller_id)
+, m_point_on_circle(0.f)
+, m_gun_cooldown(0.f)
+, m_jump_speed(0.f)
+, m_jump_time(0.f)
+, m_power_up_timer(0.f)
+, m_momentum(0.f)
 {
   Core::Entity_ref ref = get_entity();
   
@@ -88,8 +94,8 @@ Player::on_update(const float dt, World_objects &world_objs)
 {
   Core::Entity_ref ref = get_entity();
 
-  power_up_timer -= dt;
-  gun_cooldown -= dt;
+  m_power_up_timer -= dt;
+  m_gun_cooldown -= dt;
   
   Core::Input::Controller controller = Core::Input::Controller(m_context, m_controller_id);
   
@@ -99,14 +105,14 @@ Player::on_update(const float dt, World_objects &world_objs)
     
     if(move_speed)
     {
-      momentum += (move_speed * 5.f);
+      m_momentum += (move_speed * 5.f);
     }
     
-    momentum *= 0.95f;
+    m_momentum *= momentum_falloff;
     
-    point_on_circle += move_speed;
+    m_point_on_circle += move_speed;
     
-    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(point_on_circle);
+    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point_on_circle);
 
     Core::Transform trans = ref.get_transform();
     const math::vec3 position = trans.get_position();
@@ -116,7 +122,7 @@ Player::on_update(const float dt, World_objects &world_objs)
                                                math::vec3_get_z(position));
     
     const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
-    const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, -point_on_circle + math::quart_tau() - momentum);
+    const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, -m_point_on_circle + math::quart_tau() - m_momentum);
 
     trans.set_position(new_pos);
     trans.set_rotation(math::quat_multiply(y_rot, z_rot));
@@ -125,17 +131,17 @@ Player::on_update(const float dt, World_objects &world_objs)
   }
   
   // Jump
-  if(controller.is_button_down(Core::Input::Button::button_0) && jump_speed == 0.f)
+  if(controller.is_button_down(Core::Input::Button::button_0) && m_jump_speed == 0.f)
   {
-    jump_speed = 50.5f;
-    jump_time = 0.f;
+    m_jump_speed = 50.5f;
+    m_jump_time = 0.f;
   }
   
   // Jump movement
-  if(jump_speed)
+  if(m_jump_speed)
   {
-    jump_time += (dt * 7.f);
-    float offset = (jump_speed + (-jump_time * jump_time * jump_time)) * (dt);
+    m_jump_time += (dt * 7.f);
+    float offset = (m_jump_speed + (-m_jump_time * m_jump_time * m_jump_time)) * (dt);
 
     Core::Transform trans = ref.get_transform();
     const math::vec3 pos = trans.get_position();
@@ -145,8 +151,8 @@ Player::on_update(const float dt, World_objects &world_objs)
     if(new_depth < Level_funcs::get_top_of_level())
     {
       new_depth = Level_funcs::get_top_of_level();
-      jump_speed = 0.f;
-      jump_time = 0.f;
+      m_jump_speed = 0.f;
+      m_jump_time = 0.f;
     }
     
     const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos), math::vec3_get_y(pos), new_depth);
@@ -159,23 +165,18 @@ Player::on_update(const float dt, World_objects &world_objs)
   {
     const math::vec3 pos = ref.get_transform().get_position();
   
-    const float multipler = power_up_timer > 0 ? dt * 15.f : 0.f;
-    const float timer = gun_cooldown;
+    const float multipler = m_power_up_timer > 0 ? dt * 15.f : 0.f;
+    const float timer = m_gun_cooldown;
     
     if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
     {
       auto bullet = new Bullet(get_world(),
-                               point_on_circle,
+                               m_point_on_circle,
                                math::vec3_get_z(pos),
                                -1);
       world_objs.push_object(bullet);
       
-//        Bullet_utils::create_bullet(world,
-//                                    point_on_circle,
-//                                    math::vec3_get_z(pos),                                    
-//                                    -1,
-//                                    bullets_container);
-      gun_cooldown = gun_cooldown_timer;
+      m_gun_cooldown = gun_cooldown_timer;
     }
   }
 
@@ -184,15 +185,9 @@ Player::on_update(const float dt, World_objects &world_objs)
 
 
 void
-Player::on_end()
-{
-}
-
-
-void
 Player::on_collision(Game_object::Game_object *obj)
 {
-  this->destroy();
+  destroy();
 }
 
 
