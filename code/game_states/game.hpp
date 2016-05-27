@@ -17,8 +17,6 @@ game_init(Core::Context &ctx,
 Game_state
 game_update(Core::Context &ctx,
             Core::World &world,
-//            Explosions_container &explosions,
-            Powerups_container &powerups,
             Game_object::World_objects &objs,
             const float dt);
 

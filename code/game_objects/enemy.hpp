@@ -38,7 +38,14 @@ public:
   int32_t         m_direction = 1;
   Type            m_type = Type::climber;
   
-  bool            go_boom = false;
+  enum class State
+  {
+    alive,
+    dying,
+    dead,
+  };
+  
+  State           m_state = State::alive;
 
 };
 

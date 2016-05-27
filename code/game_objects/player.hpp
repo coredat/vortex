@@ -11,7 +11,7 @@
 namespace Game_object {
 
 
-class Player : public Game_object::Game_object
+class Player : public Game_object
 {
 public:
   
@@ -26,13 +26,22 @@ public:
 private:
 
   Core::Context     &m_context;
-  const uint32_t    m_controller_id   = 0;
+  const uint32_t    m_controller_id     = 0;
   float             m_point_on_circle   = 0.f;
   float             m_gun_cooldown      = 0.f;
   float             m_jump_speed        = 0.f;
   float             m_jump_time         = 0.f;
   float             m_power_up_timer    = 0.f;
   float             m_momentum          = 0.f;
+  
+  enum class State
+  {
+    alive,
+    dying,
+    dead,
+  };
+  
+  State             m_state = State::alive;
 
 };
 

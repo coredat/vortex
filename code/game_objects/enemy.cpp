@@ -180,16 +180,19 @@ Enemy::on_start()
 bool
 Enemy::on_update(const float dt, World_objects &objs)
 {
-  update_climber(*this, dt);
-  
-  auto ref = get_entity();
-  
-  ref.set_model(model);
-  ref.set_material_id(texture_magenta.get_id());
-  
-  if(go_boom)
+  switch(m_state)
   {
-    objs.push_object(new Explosion(get_world(), ref.get_transform().get_position()));
+    case(State::alive):
+      update_climber(*this, dt);
+      break;
+      
+    case(State::dying):
+      objs.push_object(new Explosion(get_world(),
+                                     get_entity().get_transform().get_position()));
+      m_state = State::dead;
+      break;
+      
+    default: ;
   }
 
   return false;
@@ -200,7 +203,7 @@ void
 Enemy::on_collision(Game_object::Game_object *other)
 {
   this->destroy();
-  go_boom = true;
+  m_state = State::dying;
 }
 
 

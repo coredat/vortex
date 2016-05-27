@@ -120,8 +120,6 @@ main()
       {
         game_state = game_update(context,
                                  world,
-//                                 explosions_container,
-                                 powerups_container,
                                  objs,
                                  dt);
         
