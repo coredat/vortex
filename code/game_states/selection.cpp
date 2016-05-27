@@ -31,6 +31,8 @@ namespace
   Core::Model plane;
   
   Core::Entity_ref signed_in_players[4];
+  
+  uint32_t players_signed_in = 0;
 }
 
 
@@ -42,12 +44,14 @@ selection_init(Core::Context &ctx,
   const std::string asset_path = util::get_resource_path() + "assets/";
 
   // No selection texture
+  if(!no_selection_texture)
   {
     const std::string tex = asset_path + "textures/dev_grid_grey_512.png";
     no_selection_texture = Core::Texture(tex.c_str());
   }
 
   // Load textures
+  if(!textures[0])
   {
     uint32_t load_texture = 0;
     
@@ -65,6 +69,7 @@ selection_init(Core::Context &ctx,
   }
   
   // Load models
+  if(!models[0])
   {
     uint32_t load_model = 0;
     const std::string model_01 = asset_path + "models/ship.obj";
@@ -82,6 +87,8 @@ selection_init(Core::Context &ctx,
   
   // Set player selections
   {
+    players_signed_in = 0;
+    
     for(uint32_t p = 0; p < max_number_of_players; ++p)
     {
       current_player_selection[p] = p;
@@ -129,7 +136,7 @@ selection_update(Core::Context &context,
   */
   for(const auto &ctrl : controllers)
   {
-    if(ctrl.is_button_down(Core::Input::Button::button_4))
+    if(ctrl.is_button_up_on_frame(Core::Input::Button::button_4) && players_signed_in > 0)
     {
       // Reset selection screen
       {
@@ -224,6 +231,8 @@ selection_update(Core::Context &context,
         signed_in_players[i] = new_player->get_entity();
         
         objects.push_object(new_player);
+        
+        ++players_signed_in;
       }
     }
     

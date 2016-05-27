@@ -22,6 +22,7 @@
 #include <math/vec/vec3.hpp>
 #include <utilities/timer.hpp>
 #include <utilities/logging.hpp>
+#include <utilities/optimizations.hpp>
 
 // Testing
 #include <core/resources/material.hpp>
@@ -87,6 +88,9 @@ main()
         case(Game_state::game_over):
           game_over_init(context, world);
           break;
+          
+        default:
+          UNREACHABLE;
       }
       
       curr_state = next_state;
@@ -133,6 +137,9 @@ main()
                                       dt);
         break;
       }
+      
+      default:
+        UNREACHABLE;
     }
     
     objs.on_destroy();
