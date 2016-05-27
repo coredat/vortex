@@ -187,6 +187,7 @@ Enemy::on_update(const float dt, World_objects &objs)
       break;
       
     case(State::dying):
+      destroy();
       objs.push_object(new Explosion(get_world(),
                                      get_entity().get_transform().get_position()));
       m_state = State::dead;
@@ -202,7 +203,6 @@ Enemy::on_update(const float dt, World_objects &objs)
 void
 Enemy::on_collision(Game_object::Game_object *other)
 {
-  this->destroy();
   m_state = State::dying;
 }
 

@@ -189,6 +189,7 @@ Player::on_update(const float dt, World_objects &world_objs)
     
     case(State::dying):
     {
+      destroy();
       world_objs.push_object(new Explosion(get_world(),
                                            get_entity().get_transform().get_position()));
       m_state = State::dead;
@@ -206,7 +207,6 @@ Player::on_update(const float dt, World_objects &world_objs)
 void
 Player::on_collision(Game_object::Game_object *obj)
 {
-  destroy();
   m_state = State::dying;
 }
 
