@@ -48,7 +48,7 @@ Player::Player(Core::World &world,
 {
   Core::Entity_ref ref = get_entity();
   
-  const std::string unit_cube_path = util::get_resource_path() + "assets/models/ship_01.obj";
+  const std::string unit_cube_path = util::get_resource_path() + "assets/models/ship.obj";
   Core::Model model(unit_cube_path.c_str());
 
   const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
