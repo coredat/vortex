@@ -72,16 +72,16 @@ selection_init(Core::Context &ctx,
   if(!models[0])
   {
     uint32_t load_model = 0;
-    const std::string model_01 = asset_path + "models/ship.obj";
+    const std::string model_01 = asset_path + "models/ship_01.obj";
     models[load_model++] = Core::Model(model_01.c_str());
     
-    const std::string model_02 = asset_path + "models/ship.obj";
+    const std::string model_02 = asset_path + "models/ship_01.obj";
     models[load_model++] = Core::Model(model_02.c_str());
     
-    const std::string model_03 = asset_path + "models/ship.obj";
+    const std::string model_03 = asset_path + "models/ship_01.obj";
     models[load_model++] = Core::Model(model_03.c_str());
     
-    const std::string model_04 = asset_path + "models/ship.obj";
+    const std::string model_04 = asset_path + "models/ship_01.obj";
     models[load_model++] = Core::Model(model_04.c_str());
   }
   

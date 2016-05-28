@@ -48,7 +48,7 @@ Player::Player(Core::World &world,
 {
   Core::Entity_ref ref = get_entity();
   
-  const std::string unit_cube_path = util::get_resource_path() + "assets/models/ship.obj";
+  const std::string unit_cube_path = util::get_resource_path() + "assets/models/ship_01.obj";
   Core::Model model(unit_cube_path.c_str());
 
   const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
@@ -67,7 +67,7 @@ Player::Player(Core::World &world,
   ref.set_rigidbody_properties(rb_props);
   
   const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
-  const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, math::quart_tau());
+  const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, -1, math::quart_tau());
   const math::quat rot = math::quat_multiply(y_rot, z_rot);
 
   uint32_t i = 0;
