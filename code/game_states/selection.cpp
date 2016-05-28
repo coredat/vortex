@@ -168,7 +168,7 @@ selection_update(Core::Context &context,
       math::vec4 screen_pos = math::vec4_init(offset, 0.f, -1.f, 1.f);
       math::vec4 world_pos  = math::mat4_multiply(screen_pos, inv_vp);
       
-      math::vec3 world_pos3 = math::vec3_init(math::vec3_get_x(world_pos), math::vec3_get_y(world_pos), math::vec3_get_z(world_pos));
+      math::vec3 world_pos3 = math::vec3_init(math::vec4_get_x(world_pos), math::vec4_get_y(world_pos), math::vec4_get_z(world_pos));
       math::vec3 dir        = math::vec3_normalize(world_pos3);
       
       auto intersect_plane = [](const math::vec3 plane_normal,

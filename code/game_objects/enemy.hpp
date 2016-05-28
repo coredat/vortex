@@ -28,7 +28,7 @@ public:
   explicit        Enemy(Core::World &world, Type type);
   void            on_start() override;
   bool            on_update(const float dt, World_objects &objs) override;
-  void            on_collision(Game_object::Game_object *other) override;
+  void            on_collision(Game_object *other) override;
 
 //private:
 

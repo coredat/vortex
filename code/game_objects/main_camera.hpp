@@ -14,7 +14,7 @@
 namespace Game_object {
 
 
-class Main_camera : public Game_object::Game_object
+class Main_camera : public Game_object
 {
 public:
 

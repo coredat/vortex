@@ -201,7 +201,7 @@ Enemy::on_update(const float dt, World_objects &objs)
 
 
 void
-Enemy::on_collision(Game_object::Game_object *other)
+Enemy::on_collision(Game_object *other)
 {
   m_state = State::dying;
 }

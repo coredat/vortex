@@ -12,6 +12,7 @@
 #include <core/context/context.hpp>
 #include <core/physics/collision_pair.hpp>
 #include <utilities/logging.hpp>
+#include <assert.h>
 
 
 void

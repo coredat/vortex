@@ -205,7 +205,7 @@ Player::on_update(const float dt, World_objects &world_objs)
 
 
 void
-Player::on_collision(Game_object::Game_object *obj)
+Player::on_collision(Game_object *obj)
 {
   m_state = State::dying;
 }

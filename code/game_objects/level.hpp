@@ -8,7 +8,7 @@
 namespace Game_object {
 
 
-class Level : public Game_object::Game_object
+class Level : public Game_object
 {
 public:
 
