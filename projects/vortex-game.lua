@@ -2,10 +2,10 @@
 
 vortex_project_data = {
 
-  name      = "VortexGameCode",
-  kind      = "WindowedApp",
-  language  = "C++",
-  location  = make.get_proj_root(),
+  name     = "VortexGameCode",
+  kind     = "WindowedApp",
+  language = "C++",
+  location = make.get_proj_root(),
 
   src_files = {
     make.get_proj_root() .. "../code/**.hpp",
