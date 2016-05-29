@@ -10,6 +10,7 @@
 #include <game_objects/world_objects.hpp>
 
 // Game States
+#include <game_states/loading.hpp>
 #include <game_states/game.hpp>
 #include <game_states/selection.hpp>
 #include <game_states/game_over.hpp>
@@ -43,13 +44,12 @@ main()
   Core::Context_setup context_setup;
   context_setup.vsync = false;
 
-  Core::Context context(800, 480, false, "Vortex Defender 2099", context_setup);
+  Core::Context context(1200, 700, false, "Vortex Defender 2099", context_setup);
   Core::World   world(context, Core::World_setup{});
   
   // ** Start Game ** //
-  
   Game_state curr_state = Game_state::null;
-  Game_state next_state = Game_state::selection;
+  Game_state next_state = Game_state::null;
   
   Game_object::World_objects objs;
   
@@ -77,6 +77,10 @@ main()
     {
       switch(next_state)
       {
+        case(Game_state::null):
+          loading_init(context, world);
+          break;
+
         case(Game_state::selection):
           selection_init(context, world, go_cam->m_camera);
           break;
@@ -98,6 +102,14 @@ main()
     
     switch(curr_state)
     {
+      /*
+        Loading
+      */
+      case(Game_state::null):
+      {
+        next_state = loading_update(context, world);
+      }
+
       /*
         Player selection screen.
         Displays the screen where players can join a game.

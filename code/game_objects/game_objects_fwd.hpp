@@ -4,11 +4,14 @@
 
 namespace Game_object {
 
+
 class World_objects;
 class Level;
+class Horizon_particle;
 class Player;
 class Bullet;
 class Main_camera;
+
 
 } // ns
 

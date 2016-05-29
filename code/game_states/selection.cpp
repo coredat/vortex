@@ -46,7 +46,7 @@ selection_init(Core::Context &ctx,
   // No selection texture
   if(!no_selection_texture)
   {
-    const std::string tex = asset_path + "textures/dev_grid_grey_512.png";
+    const std::string tex = asset_path + "textures/no_ship.png";
     no_selection_texture = Core::Texture(tex.c_str());
   }
 
@@ -55,16 +55,16 @@ selection_init(Core::Context &ctx,
   {
     uint32_t load_texture = 0;
     
-    const std::string tex_01 = asset_path + "textures/dev_grid_green_512.png";
+    const std::string tex_01 = asset_path + "textures/ship_01.png";
     textures[load_texture++] = Core::Texture(tex_01.c_str());
     
-    const std::string tex_02 = asset_path + "textures/dev_grid_yellow_512.png";
+    const std::string tex_02 = asset_path + "textures/ship_02.png";
     textures[load_texture++] = Core::Texture(tex_02.c_str());
     
-    const std::string tex_03 = asset_path + "textures/dev_grid_red_512.png";
+    const std::string tex_03 = asset_path + "textures/ship_03.png";
     textures[load_texture++] = Core::Texture(tex_03.c_str());
     
-    const std::string tex_04 = asset_path + "textures/dev_grid_blue_512.png";
+    const std::string tex_04 = asset_path + "textures/ship_04.png";
     textures[load_texture++] = Core::Texture(tex_04.c_str());
   }
   
@@ -72,16 +72,16 @@ selection_init(Core::Context &ctx,
   if(!models[0])
   {
     uint32_t load_model = 0;
-    const std::string model_01 = asset_path + "models/ship.obj";
+    const std::string model_01 = asset_path + "models/ship_01.obj";
     models[load_model++] = Core::Model(model_01.c_str());
     
-    const std::string model_02 = asset_path + "models/ship.obj";
+    const std::string model_02 = asset_path + "models/ship_02.obj";
     models[load_model++] = Core::Model(model_02.c_str());
     
-    const std::string model_03 = asset_path + "models/ship.obj";
+    const std::string model_03 = asset_path + "models/ship_03.obj";
     models[load_model++] = Core::Model(model_03.c_str());
     
-    const std::string model_04 = asset_path + "models/ship.obj";
+    const std::string model_04 = asset_path + "models/ship_04.obj";
     models[load_model++] = Core::Model(model_04.c_str());
   }
   
