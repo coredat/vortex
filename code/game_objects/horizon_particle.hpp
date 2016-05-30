@@ -15,14 +15,14 @@ class Horizon_particle : public Game_object
 {
 public:
 
-  explicit            Horizon_particle(Core::World &ctx);
+  explicit            Horizon_particle(Core::World &world);
 
   void                on_start() override;
   bool                on_update(const float dt, World_objects &objs) override;
 
 private:
 
-  
+  float               m_horizon_speed = 100.f;
 
 };
 

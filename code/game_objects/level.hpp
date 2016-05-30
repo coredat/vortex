@@ -18,6 +18,9 @@ public:
 
 private:
 
+  float           m_horizon_timer   = 0.2f;
+  float           m_curr_horz_timer = 0.f;
+
 };
 
 
