@@ -11,6 +11,7 @@ namespace Game_object {
 Horizon_particle::Horizon_particle(Core::World &world)
 : Game_object(world)
 {
+  get_entity().set_name("Horizon-Particle");
 }
 
 

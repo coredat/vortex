@@ -54,7 +54,7 @@ Player::Player(Core::World &world,
   const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
   Core::Texture texture(green_texture_path.c_str());
 
-  Core::Box_collider collider = Core::Box_collider_utils::create_with_half_extents(math::aabb_get_half_extents(model.get_model_aabb()));
+  Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());
   
   Core::Rigidbody_properties rb_props;
   rb_props.set_collision_mask(Object_tags::player, Object_tags::enemy);

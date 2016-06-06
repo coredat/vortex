@@ -73,6 +73,17 @@ Bullet::Bullet(Core::World &world,
     ref.set_material_id(texture.get_id());
   }
   
+  // Physics
+  {
+    Core::Box_collider collider(0.5f, 0.5f, 0.5f);
+    ref.set_collider(collider);
+  
+    // Rigidbody properties
+    Core::Rigidbody_properties rb_props;
+    rb_props.set_collision_mask(Object_tags::bullet, Object_tags::enemy);
+    ref.set_rigidbody_properties(rb_props);
+  }
+  
   // Transform
   {
     const math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point_on_circle);
@@ -80,7 +91,7 @@ Bullet::Bullet(Core::World &world,
                                          math::vec2_get_y(new_point),
                                          depth);
   
-    auto scale = math::vec3_init(1.6f, 0.6f, 0.6f);
+    auto scale = math::vec3_init(1.f, 0.5f, 0.5f);
 
     const math::quat rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
   
@@ -92,17 +103,6 @@ Bullet::Bullet(Core::World &world,
 
     ref.set_transform(transform);
   }
-  
-  // Physics
-  {
-    Core::Box_collider collider(0.5f, 0.5f, 0.5f);
-    ref.set_collider(collider);
-  
-    // Rigidbody properties
-    Core::Rigidbody_properties rb_props;
-    rb_props.set_collision_mask(Object_tags::bullet, Object_tags::enemy);
-    ref.set_rigidbody_properties(rb_props);
-  }  
 }
 
 
