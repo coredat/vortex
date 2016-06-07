@@ -21,7 +21,6 @@
 #include <math/geometry/aabb.hpp>
 #include <utilities/directory.hpp>
 #include <utilities/optimizations.hpp>
-#include <iostream>
 
 
 namespace
@@ -99,8 +98,6 @@ Player::on_update(const float dt, World_objects &world_objs)
 {
   float movement_dt = dt;
   m_powerup_timer += dt;
-  
-  std::cout << m_powerup_timer << std::endl;
   
   if(m_powerup_timer > powerup_durration)
   {
