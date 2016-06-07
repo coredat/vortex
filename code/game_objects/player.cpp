@@ -114,6 +114,8 @@ Player::on_update(const float dt, World_objects &world_objs)
     case(Powerup::time_dialation):
       movement_dt *= powerup_time_dialation_rate;
       break;
+    case(Powerup::cross_fire):
+      
     default:
       UNREACHABLE;
       assert(false);
@@ -203,9 +205,8 @@ Player::on_update(const float dt, World_objects &world_objs)
         if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
         {
           auto bullet = new Bullet(get_world(),
-                                   m_point_on_circle,
-                                   math::vec3_get_z(pos),
-                                   -1);
+                                   math::vec2_init(m_point_on_circle, math::vec3_get_z(ref.get_transform().get_position())),
+                                   math::vec2_init(0, -1), 100);
           world_objs.push_object(bullet);
           
           m_gun_cooldown = gun_cooldown_timer;
@@ -242,7 +243,10 @@ Player::on_collision(Game_object *obj)
   
   else if(obj && obj->get_entity().has_tag(Object_tags::powerup))
   {
-    m_powerup = Powerup::time_dialation;
+    const uint32_t number_of_powerups = (uint32_t)Powerup::size;
+    const uint32_t selected_powerup = rand() % number_of_powerups;
+    
+    m_powerup = (Powerup)selected_powerup;
     m_powerup_timer = 0;
   }
 }

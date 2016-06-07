@@ -2,6 +2,7 @@
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
 #include <core/entity/entity.hpp>
+#include <core/world/world.hpp>
 #include <core/model/model.hpp>
 #include <core/transform/transform.hpp>
 #include <core/resources/texture.hpp>
@@ -9,7 +10,6 @@
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
 #include <core/physics/rigidbody_properties.hpp>
-#include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
 #include <utilities/directory.hpp>
@@ -27,10 +27,14 @@ namespace Game_object {
 
 
 Bullet::Bullet(Core::World &world,
-               const float point,
-               const float depth,
-               const uint32_t dir)
+               const math::vec2 depth_point,
+               const math::vec2 direction,
+               const float speed)
 : Game_object(world)
+, m_depth(math::vec2_get_x(depth_point))
+, m_point(math::vec2_get_y(depth_point))
+, m_direction(math::vec2_normalize(direction))
+, m_speed(speed)
 {
   // Load up missnig assets
   {
@@ -51,12 +55,6 @@ Bullet::Bullet(Core::World &world,
       const std::string orange_texture_path = util::get_resource_path() + "assets/audio/temp_shot.wav";
       gun_shot_sample = Core::Sample(orange_texture_path.c_str());
     }
-  }
-
-  // Setup Members
-  {
-    m_direction = dir;
-    m_point_on_circle = point;
   }
 
   auto ref = get_entity();
@@ -86,10 +84,10 @@ Bullet::Bullet(Core::World &world,
   
   // Transform
   {
-    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point_on_circle);
+    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point);
     math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
                                          math::vec2_get_y(new_point),
-                                         depth);
+                                         m_depth);
   
     auto scale = math::vec3_init(1.f, 0.5f, 0.5f);
 
@@ -128,15 +126,21 @@ Bullet::on_update(const float dt, World_objects &world_objs)
   
   // Move
   {
-    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point_on_circle);
-    const math::vec3 position  = trans.get_position();
+    const float dt_speed = dt * m_speed;
+    const math::vec2 velocity = math::vec2_scale(m_direction, dt_speed);
     
-    const float velocity = ((m_speed * dt) * m_direction);
-    const float depth    = math::vec3_get_z(position) + velocity;
+    m_point += math::vec2_get_x(velocity);
+    m_depth += math::vec2_get_y(velocity);
+    
+    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point);
+//    const math::vec3 position  = trans.get_position();
+//
+//    const float velocity = ((m_speed * dt) * m_direction);
+//    const float depth    = math::vec3_get_z(position) + velocity;
     
     math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
                                          math::vec2_get_y(new_point),
-                                         depth);
+                                         m_depth);
     
     trans.set_position(new_pos);
     ref.set_transform(trans);

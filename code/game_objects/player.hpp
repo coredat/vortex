@@ -44,11 +44,16 @@ private:
   {
     none,
     time_dialation,
+    cross_fire,
+    
+    size,
   };
   
-  State            m_state         = State::alive;
-  Powerup          m_powerup       = Powerup::none;
-  float            m_powerup_timer = 0.f;
+  State        m_state         = State::alive;
+  Powerup      m_powerup       = Powerup::none;
+  float        m_powerup_timer = 0.f;
+  
+  float        m_powerup_movement_multiplier = 1.f;
 
 };
 

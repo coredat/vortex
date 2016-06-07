@@ -4,6 +4,8 @@
 
 #include <game_objects/game_object.hpp>
 #include <game_objects/game_objects_fwd.hpp>
+#include <core/world/world_fwd.hpp>
+#include <math/vec/vec2.hpp>
 #include <stdint.h>
 
 
@@ -15,18 +17,18 @@ class Bullet : public Game_object
 public:
 
   explicit          Bullet(Core::World &world,
-                           const float point,
-                           const float depth,
-                           const uint32_t direction);
+                           const math::vec2 depth_point,
+                           const math::vec2 direction,
+                           const float speed = 10.f);
   
   bool              on_update(const float dt, World_objects &world_objs) override;
 
 private:
 
-  int32_t           m_direction         = -1;
-  float             m_speed             = 100.5f;
-  float             m_point_on_circle   = 1;
-  Core::Entity_ref  m_owner;
+  float             m_depth     = 0.f;
+  float             m_point     = 0.f;
+  const math::vec2  m_direction = math::vec2_init(0.f, 1.f);
+  const float       m_speed     = 10.f;
 
 };
 
