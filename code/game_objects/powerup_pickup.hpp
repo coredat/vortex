@@ -2,47 +2,31 @@
 #define POWERUP_PICKUP_INCLUDED_2CCA1A14_6DA1_497E_A3D9_1C1DFCA16DF9
 
 
+#include <game_objects/game_object.hpp>
 #include <core/world/world_fwd.hpp>
-#include <core/entity/entity.hpp>
-#include <math/vec/vec_types.hpp>
-#include <stdint.h>
 
 
-struct Powerups_container {
+namespace Game_object {
 
-  struct Powerup
-  {
-    Core::Entity entity;
-  };
+
+class Powerup_pickup : public Game_object
+{
+public:
+
+  explicit              Powerup_pickup(Core::World &world,
+                                       const float point_on_cirlce,
+                                       const float depth);
   
-  Powerup powerup[8];
-  const uint32_t size = 8;
+  void                  on_start() override;
+  bool                  on_update(const float dt, World_objects &objs) override;
+  void                  on_collision(Game_object *obj) override;
+  
+private:
+
+  float                 m_point_on_circle = 0.f;
+  float                 m_depth = 0.f;
 
 };
-
-
-namespace Powerup_utils {
-
-
-void
-init_powerups(Core::World &world,
-              Powerups_container &powerups_container);
-
-
-void
-update_powerups(Core::World &world,
-                const float dt,
-                Powerups_container &powerups_container);
-
-void
-create_powerup(Core::World &world,
-               const math::vec3 position,
-               Powerups_container &powerups_container);
-
-
-void
-destroy_powerup(Core::World &world,
-                Powerups_container &powerups_container);
 
 
 } // ns

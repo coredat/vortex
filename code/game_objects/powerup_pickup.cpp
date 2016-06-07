@@ -5,112 +5,115 @@
 #include <core/model/model.hpp>
 #include <core/resources/texture.hpp>
 #include <core/transform/transform.hpp>
+#include <core/physics/collider.hpp>
+#include <core/physics/box_collider.hpp>
+#include <core/physics/box_collider_utils.hpp>
+#include <core/physics/rigidbody_properties.hpp>
 #include <math/vec/vec3.hpp>
+#include <math/quat/quat.hpp>
 #include <utilities/directory.hpp>
 #include <random>
 
 
 namespace
 {
-  Core::Model model;
-  Core::Texture texture;
+  constexpr float powerup_climb_speed = 10.f;
 }
 
 
-namespace Powerup_utils {
+namespace Game_object {
 
 
-void
-init_powerups(Core::World &world,
-              Powerups_container &powerups_container)
+Powerup_pickup::Powerup_pickup(Core::World &world,
+                               const float point_on_circle,
+                               const float depth)
+: Game_object(world)
+, m_point_on_circle(point_on_circle)
+, m_depth(depth)
 {
+  Core::Entity_ref ref = get_entity();
+  
   const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
-  model = Core::Model(unit_cube_path.c_str());
+  Core::Model model(unit_cube_path.c_str());
 
-  const std::string texture_path = util::get_resource_path() + "assets/textures/dev_squares_512.png";
-  texture = Core::Texture(texture_path.c_str());
+  const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
+  Core::Texture texture(green_texture_path.c_str());
+
+  Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());
+  
+  Core::Rigidbody_properties rb_props;
+  rb_props.set_collision_mask(Object_tags::powerup, Object_tags::player);
+  
+  ref.set_name("Powerup");
+  ref.set_tags(Object_tags::powerup);
+  ref.set_model(model);
+  ref.set_material_id(texture.get_id());
+  ref.set_collider(collider);
+  ref.set_rigidbody_properties(rb_props);
+  
+  uint32_t i = 0;
+
+  Core::Transform trans(
+    math::vec3_init(-4.f + (i * (8.f / 4.f)), 0, 0),
+    math::vec3_one(),
+    math::quat_init()
+  );
+  
+  ref.set_transform(trans);
 }
 
 
 void
-update_powerups(Core::World &world,
-                const float dt,
-                Powerups_container &powerups_container)
+Powerup_pickup::on_start()
 {
-  for(uint32_t i = 0; i < powerups_container.size; ++i)
-  {
-    auto &powerup = powerups_container.powerup[i];
-    
-    if(powerup.entity)
-    {
-      // Depth
-      {
-        const float delta_depth = (10.f * dt);
-        
-        Core::Transform trans = powerup.entity.get_transform();
-        const math::vec3 old_pos = trans.get_position();
-        
-        const math::vec3 new_pos = math::vec3_init(
-          math::vec3_get_x(old_pos),
-          math::vec3_get_y(old_pos),
-          math::vec3_get_z(old_pos) + delta_depth
-        );
-        
-        trans.set_position(new_pos);
-        powerup.entity.set_transform(trans);
-        
-        if(math::vec3_get_z(new_pos) > Level_funcs::get_near_death_zone())
-        {
-          powerup.entity.destroy();
-        }
-      }
-    }
-  }
 }
 
 
-void
-create_powerup(Core::World &world,
-               const math::vec3 position,
-               Powerups_container &powerups_container)
+bool
+Powerup_pickup::on_update(const float dt, World_objects &objs)
 {
-  // Do we create a powerup?
-  {
-    const uint32_t dice_roll = rand() % 5;
-    
-    if(dice_roll != 0)
-    {
-      return; // No dice!
-    }
-  }
+  auto ref = get_entity();
 
-  // Create if we have a free slot
-  for(uint32_t i = 0; i < powerups_container.size; ++i)
+  Core::Transform trans = ref.get_transform();
+  
+  // Point on circle
   {
-    auto &powerup = powerups_container.powerup[i];
+    math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point_on_circle);
     
-    if(!powerup.entity)
-    {
-      powerup.entity = Core::Entity(world);
-      powerup.entity.set_name("Powerup");
-      powerup.entity.set_tags(Object_tags::powerup);
-      powerup.entity.set_model(model);
-      powerup.entity.set_material_id(texture.get_id());
-      
-      Core::Transform trans = powerup.entity.get_transform();
-      trans.set_position(position);
-      
-      powerup.entity.set_transform(trans);
-      
-      return; // Created
-    }
+    const math::vec3 position = trans.get_position();
+    
+    math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                         math::vec2_get_y(new_point),
+                                         math::vec3_get_z(position));
+    trans.set_position(new_pos);
   }
+  
+  // Depth
+  {
+    m_depth += (powerup_climb_speed * dt);
+    
+    if(m_depth > Level_funcs::get_near_death_zone())
+    {
+      should_destroy();
+    }
+    
+    const math::vec3 pos = trans.get_position();
+    const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos),
+                                               math::vec3_get_y(pos),
+                                               m_depth);
+    
+    trans.set_position(new_pos);
+  }
+  
+  ref.set_transform(trans);
+
+
+  return true;
 }
 
 
 void
-destroy_powerup(Core::World &world,
-                Powerups_container &powerups_container)
+Powerup_pickup::on_collision(Game_object::Game_object *obj)
 {
 }
 

@@ -20,6 +20,8 @@
 #include <math/quat/quat.hpp>
 #include <math/geometry/aabb.hpp>
 #include <utilities/directory.hpp>
+#include <utilities/optimizations.hpp>
+#include <iostream>
 
 
 namespace
@@ -27,6 +29,9 @@ namespace
   constexpr float gun_cooldown_timer = 0.1f;
   constexpr float move_speed_base    = 5.f;
   constexpr float momentum_falloff   = 0.95f;
+  
+  constexpr float powerup_durration  = 3.f;
+  constexpr float powerup_time_dialation_rate = 0.1f;
 }
 
 
@@ -43,7 +48,7 @@ Player::Player(Core::World &world,
 , m_gun_cooldown(0.f)
 , m_jump_speed(0.f)
 , m_jump_time(0.f)
-, m_power_up_timer(0.f)
+, m_powerup_timer(0.f)
 , m_momentum(0.f)
 {
   Core::Entity_ref ref = get_entity();
@@ -57,7 +62,7 @@ Player::Player(Core::World &world,
   Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());
   
   Core::Rigidbody_properties rb_props;
-  rb_props.set_collision_mask(Object_tags::player, Object_tags::enemy);
+  rb_props.set_collision_mask(Object_tags::player, Object_tags::enemy | Object_tags::powerup);
   
   ref.set_name("Player");
   ref.set_tags(Object_tags::player);
@@ -92,20 +97,43 @@ Player::on_start()
 bool
 Player::on_update(const float dt, World_objects &world_objs)
 {
+  float movement_dt = dt;
+  m_powerup_timer += dt;
+  
+  std::cout << m_powerup_timer << std::endl;
+  
+  if(m_powerup_timer > powerup_durration)
+  {
+    m_powerup = Powerup::none;
+  }
+  
+  switch(m_powerup)
+  {
+    case(Powerup::none):
+      break;
+    case(Powerup::time_dialation):
+      movement_dt *= powerup_time_dialation_rate;
+      break;
+    default:
+      UNREACHABLE;
+      assert(false);
+  }
+  
+  
+
   switch(m_state)
   {
     case(State::alive):
     {
       Core::Entity_ref ref = get_entity();
 
-      m_power_up_timer -= dt;
       m_gun_cooldown -= dt;
       
       Core::Input::Controller controller = Core::Input::Controller(m_context, m_controller_id);
       
       // Lateral Movement
       {
-        const float move_speed = (controller.get_axis(0).x * move_speed_base) * dt;
+        const float move_speed = (controller.get_axis(0).x * move_speed_base) * movement_dt;
         
         if(move_speed)
         {
@@ -144,8 +172,8 @@ Player::on_update(const float dt, World_objects &world_objs)
       // Jump movement
       if(m_jump_speed)
       {
-        m_jump_time += (dt * 7.f);
-        float offset = (m_jump_speed + (-m_jump_time * m_jump_time * m_jump_time)) * (dt);
+        m_jump_time += (movement_dt * 7.f);
+        float offset = (m_jump_speed + (-m_jump_time * m_jump_time * m_jump_time)) * (movement_dt);
 
         Core::Transform trans = ref.get_transform();
         const math::vec3 pos = trans.get_position();
@@ -169,7 +197,7 @@ Player::on_update(const float dt, World_objects &world_objs)
       {
         const math::vec3 pos = ref.get_transform().get_position();
       
-        const float multipler = m_power_up_timer > 0 ? dt * 15.f : 0.f;
+        const float multipler = dt * 1.f;
         const float timer = m_gun_cooldown;
         
         if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
@@ -207,7 +235,16 @@ Player::on_update(const float dt, World_objects &world_objs)
 void
 Player::on_collision(Game_object *obj)
 {
-  m_state = State::dying;
+  if(obj && obj->get_entity().has_tag(Object_tags::enemy))
+  {
+    m_state = State::dying;
+  }
+  
+  else if(obj && obj->get_entity().has_tag(Object_tags::powerup))
+  {
+    m_powerup = Powerup::time_dialation;
+    m_powerup_timer = 0;
+  }
 }
 
 

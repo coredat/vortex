@@ -21,9 +21,12 @@
 
 namespace
 {
+  // Save so we don't have to keep loading up.
   Core::Model   model;
   Core::Texture texture_orange;
   Core::Texture texture_magenta;
+  
+  constexpr uint32_t chances_of_powerup = 10; // to 1
 }
 
 
@@ -190,6 +193,15 @@ Enemy::on_update(const float dt, World_objects &objs)
       destroy();
       objs.push_object(new Explosion(get_world(),
                                      get_entity().get_transform().get_position()));
+      
+      // Roll dice to see if we drop a power up.
+      if(!(rand() % chances_of_powerup))
+      {
+        objs.push_object(new Powerup_pickup(get_world(),
+                                            m_point_on_circle,
+                                            m_depth));
+      }
+        
       m_state = State::dead;
       break;
       

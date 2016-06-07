@@ -31,7 +31,6 @@ private:
   float             m_gun_cooldown      = 0.f;
   float             m_jump_speed        = 0.f;
   float             m_jump_time         = 0.f;
-  float             m_power_up_timer    = 0.f;
   float             m_momentum          = 0.f;
   
   enum class State
@@ -41,7 +40,15 @@ private:
     dead,
   };
   
-  State             m_state = State::alive;
+  enum class Powerup
+  {
+    none,
+    time_dialation,
+  };
+  
+  State            m_state         = State::alive;
+  Powerup          m_powerup       = Powerup::none;
+  float            m_powerup_timer = 0.f;
 
 };
 

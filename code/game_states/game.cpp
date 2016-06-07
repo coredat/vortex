@@ -111,7 +111,19 @@ game_update(Core::Context &context,
         
         if(ref_b.has_tag(Object_tags::powerup))
         {
-
+          Game_object::Game_object *this_obj = reinterpret_cast<Game_object::Game_object*>(ref_a.get_user_data());
+          Game_object::Game_object *that_obj = reinterpret_cast<Game_object::Game_object*>(ref_b.get_user_data());
+          assert(this_obj);
+          
+          if(this_obj)
+          {
+            this_obj->on_collision(that_obj);
+          }
+          
+          if(that_obj)
+          {
+            that_obj->on_collision(this_obj);
+          }
         }
       }
     }
