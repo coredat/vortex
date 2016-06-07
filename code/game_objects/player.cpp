@@ -205,7 +205,7 @@ Player::on_update(const float dt, World_objects &world_objs)
         if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
         {
           auto bullet = new Bullet(get_world(),
-                                   math::vec2_init(m_point_on_circle, math::vec3_get_z(ref.get_transform().get_position())),
+                                   math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
                                    math::vec2_init(0, -1), 100);
           world_objs.push_object(bullet);
           
