@@ -21,7 +21,7 @@ public:
   explicit          Main_camera(Core::World &world, Core::Context &ctx);
   
   void              on_start() override;
-  bool              on_update(const float dt, World_objects &world_objs) override;
+  void              on_update(const float dt, World_objects &world_objs) override;
 
 public:
 

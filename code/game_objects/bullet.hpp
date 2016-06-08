@@ -21,7 +21,7 @@ public:
                            const math::vec2 direction,
                            const float speed = 100.f);
   
-  bool              on_update(const float dt,
+  void              on_update(const float dt,
                               World_objects &world_objs) override;
 
 private:
@@ -29,7 +29,7 @@ private:
   float             m_depth     = 0.f;
   float             m_point     = 0.f;
   const math::vec2  m_direction = math::vec2_init(0.f, 1.f);
-  const float       m_speed     = 100.f;
+  const float       m_speed     = 0.f;
 
 };
 

@@ -13,18 +13,18 @@ class Powerup_pickup : public Game_object
 {
 public:
 
-  explicit              Powerup_pickup(Core::World &world,
-                                       const float point_on_cirlce,
-                                       const float depth);
+  explicit        Powerup_pickup(Core::World &world,
+                                 const float point_on_cirlce,
+                                 const float depth);
   
-  void                  on_start() override;
-  bool                  on_update(const float dt, World_objects &objs) override;
-  void                  on_collision(Game_object *obj) override;
+  void            on_start() override;
+  void            on_update(const float dt, World_objects &objs) override;
+  void            on_collision(Game_object *obj) override;
   
 private:
 
-  float                 m_point_on_circle = 0.f;
-  float                 m_depth = 0.f;
+  const float     m_point_on_circle = 0.f;
+  float           m_depth = 0.f;
 
 };
 

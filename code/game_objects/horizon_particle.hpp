@@ -18,11 +18,11 @@ public:
   explicit            Horizon_particle(Core::World &world);
 
   void                on_start() override;
-  bool                on_update(const float dt, World_objects &objs) override;
+  void                on_update(const float dt, World_objects &objs) override;
 
 private:
 
-  float               m_horizon_speed = 100.f;
+  const float         m_horizon_speed = 0.f;
 
 };
 

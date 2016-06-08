@@ -180,7 +180,7 @@ Enemy::on_start()
 }
 
 
-bool
+void
 Enemy::on_update(const float dt, World_objects &objs)
 {
   switch(m_state)
@@ -207,8 +207,6 @@ Enemy::on_update(const float dt, World_objects &objs)
       
     default: ;
   }
-
-  return false;
 }
 
 

@@ -61,7 +61,7 @@ Explosion::Explosion(Core::World &world, const math::vec3 position)
 }
 
 
-bool
+void
 Explosion::on_update(const float dt, World_objects &objs)
 {
   m_time += dt * 10.f;
@@ -71,7 +71,6 @@ Explosion::on_update(const float dt, World_objects &objs)
   if(new_scale < 0)
   {
     destroy();
-    return false;
   }
   
   // Update the scale.
@@ -84,8 +83,6 @@ Explosion::on_update(const float dt, World_objects &objs)
     
     ref.set_transform(trans);
   }
-
-  return false;
 }
 
 

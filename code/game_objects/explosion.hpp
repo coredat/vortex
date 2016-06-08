@@ -14,7 +14,7 @@ class Explosion : public Game_object
 public:
   
   explicit        Explosion(Core::World &world, const math::vec3 position);
-  bool            on_update(const float dt, World_objects &objs) override;
+  void            on_update(const float dt, World_objects &objs) override;
 
 private:
 

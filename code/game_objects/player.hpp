@@ -20,7 +20,8 @@ public:
                            const uint32_t controller_id);
   
   void              on_start() override;
-  bool              on_update(const float dt, World_objects &world_objs) override;
+  void              on_update(const float dt,
+                              World_objects &world_objs) override;
   void              on_collision(Game_object *obj) override;
 
 private:
@@ -52,9 +53,6 @@ private:
   State        m_state         = State::alive;
   Powerup      m_powerup       = Powerup::none;
   float        m_powerup_timer = 0.f;
-  
-  float        m_powerup_movement_multiplier = 1.f;
-
 };
 
 

@@ -39,7 +39,7 @@ Level::Level(Core::World &world)
 }
 
 
-bool
+void
 Level::on_update(const float dt, World_objects &objs)
 {
   m_curr_horz_timer += dt;
@@ -103,8 +103,6 @@ Level::on_update(const float dt, World_objects &objs)
       objs.push_object(particle);
     }
   }
-
-  return true;
 }
 
 

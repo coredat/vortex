@@ -20,6 +20,7 @@ namespace
   Core::Model   model; // Nice to be able to load this at global init.
   Core::Texture texture;
   Core::Sample  gun_shot_sample;
+
 }
 
 
@@ -104,7 +105,7 @@ Bullet::Bullet(Core::World &world,
 }
 
 
-bool
+void
 Bullet::on_update(const float dt, World_objects &world_objs)
 {
   Core::Entity_ref ref = get_entity();
@@ -120,7 +121,6 @@ Bullet::on_update(const float dt, World_objects &world_objs)
                          Level_funcs::get_far_death_zone()))
     {
       destroy();
-      return false;
     }
   }
   
@@ -145,8 +145,6 @@ Bullet::on_update(const float dt, World_objects &world_objs)
     trans.set_position(new_pos);
     ref.set_transform(trans);
   }
-  
-  return true;
 }
 
 

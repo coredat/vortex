@@ -43,7 +43,7 @@ Main_camera::on_start()
 }
 
 
-bool
+void
 Main_camera::on_update(const float dt, World_objects &world_objs)
 {
   Core::Entity_ref ref = get_entity();
@@ -128,8 +128,6 @@ Main_camera::on_update(const float dt, World_objects &world_objs)
   this_trans.set_position(new_pos);
   
   ref.set_transform(this_trans);
-  
-  return true;
 }
 
 

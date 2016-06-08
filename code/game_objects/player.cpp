@@ -25,11 +25,11 @@
 
 namespace
 {
-  constexpr float gun_cooldown_timer = 0.1f;
-  constexpr float move_speed_base    = 5.f;
-  constexpr float momentum_falloff   = 0.95f;
-  
-  constexpr float powerup_durration  = 3.f;
+  // General settings.
+  constexpr float gun_cooldown_timer          = 0.1f;
+  constexpr float move_speed_base             = 5.f;
+  constexpr float momentum_falloff            = 0.95f;
+  constexpr float powerup_durration           = 3.f;
   constexpr float powerup_time_dialation_rate = 0.1f;
 }
 
@@ -50,8 +50,6 @@ Player::Player(Core::World &world,
 , m_powerup_timer(0.f)
 , m_momentum(0.f)
 {
-  Core::Entity_ref ref = get_entity();
-  
   const std::string unit_cube_path = util::get_resource_path() + "assets/models/ship_01.obj";
   Core::Model model(unit_cube_path.c_str());
 
@@ -63,26 +61,16 @@ Player::Player(Core::World &world,
   Core::Rigidbody_properties rb_props;
   rb_props.set_collision_mask(Object_tags::player, Object_tags::enemy | Object_tags::powerup);
   
-  ref.set_name("Player");
-  ref.set_tags(Object_tags::player);
-  ref.set_model(model);
-  ref.set_material_id(texture.get_id());
-  ref.set_collider(collider);
-  ref.set_rigidbody_properties(rb_props);
-  
-  const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
-  const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, -1, math::quart_tau());
-  const math::quat rot = math::quat_multiply(y_rot, z_rot);
-
-  uint32_t i = 0;
-
-  Core::Transform trans(
-    math::vec3_init(-4.f + (i * (8.f / 4.f)), 0, 0),
-    math::vec3_one(),
-    rot
-  );
-  
-  ref.set_transform(trans);
+  // Setup entity.
+  Core::Entity_ref ref = get_entity();
+  {
+    ref.set_name("Player");
+    ref.set_tags(Object_tags::player);
+    ref.set_model(model);
+    ref.set_material_id(texture.get_id());
+    ref.set_collider(collider);
+    ref.set_rigidbody_properties(rb_props);
+  }
 }
 
 
@@ -93,32 +81,35 @@ Player::on_start()
 }
 
 
-bool
+void
 Player::on_update(const float dt, World_objects &world_objs)
 {
-  float movement_dt = dt;
+  float move_multiplier = 1.f;
+
+  // Update powerups
+  switch(m_powerup)
+  {
+    case(Powerup::time_dialation):
+    {
+      const float norm_time = m_powerup_timer / powerup_durration;
+      const float radians   = math::half_tau() * norm_time;
+      const float offset    = math::sin(radians);
+      move_multiplier       -= (offset * 7.f);
+      
+      printf("Time %f Mul %f Offset: %f \n", norm_time, offset * 7.f, offset);
+      
+      break;
+    }
+  }
+
+  const float movement_dt = dt * 1.f;
   m_powerup_timer += dt;
   
+  // End the powerup.
   if(m_powerup_timer > powerup_durration)
   {
     m_powerup = Powerup::none;
   }
-  
-  switch(m_powerup)
-  {
-    case(Powerup::none):
-      break;
-    case(Powerup::time_dialation):
-      movement_dt *= powerup_time_dialation_rate;
-      break;
-    case(Powerup::cross_fire):
-      
-    default:
-      UNREACHABLE;
-      assert(false);
-  }
-  
-  
 
   switch(m_state)
   {
@@ -132,7 +123,8 @@ Player::on_update(const float dt, World_objects &world_objs)
       
       // Lateral Movement
       {
-        const float move_speed = (controller.get_axis(0).x * move_speed_base) * movement_dt;
+        const float move_axis  = controller.get_axis(0).x * move_speed_base;
+        const float move_speed = move_axis * movement_dt;
         
         if(move_speed)
         {
@@ -161,32 +153,32 @@ Player::on_update(const float dt, World_objects &world_objs)
         ref.set_transform(trans);
       }
       
-      // Jump
+      // New Jump
       if(controller.is_button_down(Core::Input::Button::button_0) && m_jump_speed == 0.f)
       {
         m_jump_speed = 50.5f;
         m_jump_time = 0.f;
       }
       
-      // Jump movement
+      // Jump Movement
       if(m_jump_speed)
       {
         m_jump_time += (movement_dt * 7.f);
-        float offset = (m_jump_speed + (-m_jump_time * m_jump_time * m_jump_time)) * (movement_dt);
+        const float jump_velocity = (m_jump_speed + (-m_jump_time * m_jump_time * m_jump_time)) * (movement_dt);
 
         Core::Transform trans = ref.get_transform();
-        const math::vec3 pos = trans.get_position();
+        const math::vec3 pos  = trans.get_position();
         
-        float new_depth = math::vec3_get_z(pos) + offset;
+        const float new_depth   = math::vec3_get_z(pos) + jump_velocity;
+        const float final_depth = math::max(new_depth, Level_funcs::get_top_of_level());
         
         if(new_depth < Level_funcs::get_top_of_level())
         {
-          new_depth = Level_funcs::get_top_of_level();
           m_jump_speed = 0.f;
-          m_jump_time = 0.f;
+          m_jump_time  = 0.f;
         }
         
-        const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos), math::vec3_get_y(pos), new_depth);
+        const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos), math::vec3_get_y(pos), final_depth);
         trans.set_position(new_pos);
         
         ref.set_transform(trans);
@@ -194,16 +186,17 @@ Player::on_update(const float dt, World_objects &world_objs)
       
       // Fire
       {
-        const math::vec3 pos = ref.get_transform().get_position();
-      
         const float multipler = dt * 1.f;
-        const float timer = m_gun_cooldown;
+        const float timer     = m_gun_cooldown;
         
-        if(timer < (0.f + multipler) && (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
+        if(timer < (0.f + multipler) &&
+           (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
         {
           auto bullet = new Bullet(get_world(),
                                    math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
-                                   math::vec2_init(0, -1), 100);
+                                   math::vec2_init(0, -1),
+                                   100);
+          
           world_objs.push_object(bullet);
           
           m_gun_cooldown = gun_cooldown_timer;
@@ -222,11 +215,9 @@ Player::on_update(const float dt, World_objects &world_objs)
       break;
     }
     
-    default: ;
-    
+    default:
+      break;
   }
-
-  return true;
 }
 
 
@@ -240,11 +231,20 @@ Player::on_collision(Game_object *obj)
   
   else if(obj && obj->get_entity().has_tag(Object_tags::powerup))
   {
+    obj->destroy();
+    
     const uint32_t number_of_powerups = (uint32_t)Powerup::size;
-    const uint32_t selected_powerup = rand() % number_of_powerups;
+    const uint32_t selected_powerup   = rand() % number_of_powerups;
     
     m_powerup = (Powerup)selected_powerup;
     m_powerup_timer = 0;
+    
+    // Setup powerup
+    switch(m_powerup)
+    {
+      case(Powerup::time_dialation):
+        break;
+    }
   }
 }
 

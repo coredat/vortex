@@ -14,7 +14,7 @@ public:
 
   explicit        Level(Core::World &world);
   
-  bool            on_update(const float dt, World_objects &objs) override;
+  void            on_update(const float dt, World_objects &objs) override;
 
 private:
 

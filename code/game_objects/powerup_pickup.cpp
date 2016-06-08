@@ -31,8 +31,6 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
 , m_point_on_circle(point_on_circle)
 , m_depth(depth)
 {
-  Core::Entity_ref ref = get_entity();
-  
   const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
   Core::Model model(unit_cube_path.c_str());
 
@@ -43,23 +41,17 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
   
   Core::Rigidbody_properties rb_props;
   rb_props.set_collision_mask(Object_tags::powerup, Object_tags::player);
-  
-  ref.set_name("Powerup");
-  ref.set_tags(Object_tags::powerup);
-  ref.set_model(model);
-  ref.set_material_id(texture.get_id());
-  ref.set_collider(collider);
-  ref.set_rigidbody_properties(rb_props);
-  
-  uint32_t i = 0;
-
-  Core::Transform trans(
-    math::vec3_init(-4.f + (i * (8.f / 4.f)), 0, 0),
-    math::vec3_one(),
-    math::quat_init()
-  );
-  
-  ref.set_transform(trans);
+ 
+  // Setup entity.
+  Core::Entity_ref ref = get_entity();
+  {
+    ref.set_name("Powerup");
+    ref.set_tags(Object_tags::powerup);
+    ref.set_model(model);
+    ref.set_material_id(texture.get_id());
+    ref.set_collider(collider);
+    ref.set_rigidbody_properties(rb_props);
+  }
 }
 
 
@@ -69,7 +61,7 @@ Powerup_pickup::on_start()
 }
 
 
-bool
+void
 Powerup_pickup::on_update(const float dt, World_objects &objs)
 {
   auto ref = get_entity();
@@ -97,7 +89,7 @@ Powerup_pickup::on_update(const float dt, World_objects &objs)
       should_destroy();
     }
     
-    const math::vec3 pos = trans.get_position();
+    const math::vec3 pos     = trans.get_position();
     const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos),
                                                math::vec3_get_y(pos),
                                                m_depth);
@@ -106,9 +98,6 @@ Powerup_pickup::on_update(const float dt, World_objects &objs)
   }
   
   ref.set_transform(trans);
-
-
-  return true;
 }
 
 

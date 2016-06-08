@@ -19,7 +19,7 @@ public:
   virtual             ~Game_object();
   
   virtual void        on_start()                                      {}
-  virtual bool        on_update(const float dt, World_objects &world) { return false; }
+  virtual void        on_update(const float dt, World_objects &world) {}
   virtual void        on_end()                                        {}
   virtual void        on_collision(Game_object *other)                {}
   virtual void        on_message(const uint32_t id, void *data)       {}
@@ -28,9 +28,10 @@ public:
   
   Core::Entity_ref    get_entity() const;
   
+  void                destroy();  
+  
 protected:
 
-  void                destroy();
   Core::World         &get_world() const;
   
 private:

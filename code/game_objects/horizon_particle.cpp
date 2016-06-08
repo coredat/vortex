@@ -5,11 +5,19 @@
 #include <math/vec/vec3.hpp>
 
 
+namespace
+{
+  constexpr float default_horz_speed = 100.f;
+}
+
+
+
 namespace Game_object {
 
 
 Horizon_particle::Horizon_particle(Core::World &world)
 : Game_object(world)
+, m_horizon_speed(100.f)
 {
   get_entity().set_name("Horizon-Particle");
 }
@@ -21,7 +29,7 @@ Horizon_particle::on_start()
 }
 
 
-bool
+void
 Horizon_particle::on_update(const float dt, World_objects &objs)
 {
   auto ref = get_entity();
@@ -42,8 +50,6 @@ Horizon_particle::on_update(const float dt, World_objects &objs)
   {
     destroy();
   }
-  
-  return false;
 }
 
 
