@@ -47,8 +47,10 @@ Player::Player(Core::World &world,
 , m_gun_cooldown(0.f)
 , m_jump_speed(0.f)
 , m_jump_time(0.f)
-, m_powerup_timer(0.f)
 , m_momentum(0.f)
+, m_state(State::alive)
+, m_powerup(Powerup::none)
+, m_powerup_timer(0.f)
 {
   const std::string unit_cube_path = util::get_resource_path() + "assets/models/ship_01.obj";
   Core::Model model(unit_cube_path.c_str());
