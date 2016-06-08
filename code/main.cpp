@@ -5,6 +5,7 @@
 #include <game_objects/enemy.hpp>
 #include <game_objects/main_camera.hpp>
 #include <game_objects/level.hpp>
+#include <game_objects/horizon.hpp>
 #include <game_objects/explosion.hpp>
 #include <game_objects/powerup_pickup.hpp>
 #include <game_objects/world_objects.hpp>
@@ -14,6 +15,7 @@
 #include <game_states/game.hpp>
 #include <game_states/selection.hpp>
 #include <game_states/game_over.hpp>
+#include <game_states/title_screen.hpp>
 
 // Core
 #include <core/context/context.hpp>
@@ -54,6 +56,8 @@ main()
   Game_object::World_objects objs;
   Game_object::Main_camera *go_cam = new Game_object::Main_camera(world, context);;
   
+  objs.push_object(new Game_object::Horizon(world));
+  
   bool first_load = true;
   
   // Game state
@@ -73,6 +77,12 @@ main()
       {
         case(Game_state::null):
           loading_init(context, world);
+          break;
+          
+        case(Game_state::title_screen):
+          title_screen_init(context,
+                            world,
+                            go_cam->m_camera);
           break;
 
         case(Game_state::selection):
@@ -117,6 +127,20 @@ main()
       }
 
       /*
+        Title screen
+      */
+      case(Game_state::title_screen):
+      {
+        next_state = title_screen_update(context,
+                                         world,
+                                         go_cam->m_camera,
+                                         objs,
+                                         dt);
+        
+        break;
+      }
+
+      /*
         Player selection screen.
         Displays the screen where players can join a game.
       */
@@ -129,7 +153,7 @@ main()
                                       dt);
         break;
       }
-    
+      
       /*
         Main game screen.
         This is the active game that is being played.

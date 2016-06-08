@@ -7,6 +7,7 @@ namespace Game_object {
 
 class World_objects;
 class Level;
+class Horizon;
 class Horizon_particle;
 class Player;
 class Bullet;

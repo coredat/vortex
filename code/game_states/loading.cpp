@@ -69,7 +69,7 @@ loading_update(Core::Context &context, Core::World &world)
   
   if(curr_timer > max_timer)
   {
-    return Game_state::selection;
+    return Game_state::title_screen;
   }
   
   return Game_state::null;
