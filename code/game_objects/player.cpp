@@ -29,8 +29,8 @@ namespace
   constexpr float gun_cooldown_timer          = 0.1f;
   constexpr float move_speed_base             = 5.f;
   constexpr float momentum_falloff            = 0.95f;
-  constexpr float powerup_durration           = 3.f;
-  constexpr float powerup_time_dialation_rate = 0.1f;
+  constexpr float powerup_durration           = 5.f;
+  constexpr float powerup_time_dialation_rate = 0.9f;
 }
 
 
@@ -94,20 +94,18 @@ Player::on_update(const float dt, World_objects &world_objs)
       const float norm_time = m_powerup_timer / powerup_durration;
       const float radians   = math::half_tau() * norm_time;
       const float offset    = math::sin(radians);
-      move_multiplier       -= (offset * 7.f);
-      
-      printf("Time %f Mul %f Offset: %f \n", norm_time, offset * 7.f, offset);
-      
+      move_multiplier       -= (offset * powerup_time_dialation_rate);
       break;
     }
   }
 
-  const float movement_dt = dt * 1.f;
+  const float movement_dt = dt * move_multiplier;
   m_powerup_timer += dt;
   
   // End the powerup.
   if(m_powerup_timer > powerup_durration)
   {
+    m_powerup_timer = 0;
     m_powerup = Powerup::none;
   }
 
@@ -231,19 +229,22 @@ Player::on_collision(Game_object *obj)
   
   else if(obj && obj->get_entity().has_tag(Object_tags::powerup))
   {
-    obj->destroy();
-    
-    const uint32_t number_of_powerups = (uint32_t)Powerup::size;
-    const uint32_t selected_powerup   = rand() % number_of_powerups;
-    
-    m_powerup = (Powerup)selected_powerup;
-    m_powerup_timer = 0;
-    
-    // Setup powerup
-    switch(m_powerup)
+    if(m_powerup == Powerup::none)
     {
-      case(Powerup::time_dialation):
-        break;
+      obj->destroy();
+      
+      const uint32_t number_of_powerups = (uint32_t)Powerup::size;
+      const uint32_t selected_powerup   = rand() % number_of_powerups;
+      
+      m_powerup = (Powerup)selected_powerup;
+      m_powerup_timer = 0;
+      
+      // Setup powerup
+      switch(m_powerup)
+      {
+        default:
+          break;
+      }
     }
   }
 }
