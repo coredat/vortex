@@ -46,6 +46,7 @@ private:
     none,
     time_dialation,
     cross_fire,
+    sidewinder,
     
     size,
   };

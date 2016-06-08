@@ -192,13 +192,40 @@ Player::on_update(const float dt, World_objects &world_objs)
         if(timer < (0.f + multipler) &&
            (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
         {
-          auto bullet = new Bullet(get_world(),
-                                   math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
-                                   math::vec2_init(0, -1),
-                                   100);
-          
-          world_objs.push_object(bullet);
-          
+          if(m_powerup == Powerup::cross_fire)
+          {
+            auto bullet1 = new Bullet(get_world(),
+                                     math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
+                                     math::vec2_init(+1, -1),
+                                     70.7f);
+            
+            auto bullet2 = new Bullet(get_world(),
+                                     math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
+                                     math::vec2_init(-1, -1),
+                                     70.7f);
+            
+            world_objs.push_object(bullet1);
+            world_objs.push_object(bullet2);
+          }
+          else if(m_powerup == Powerup::sidewinder)
+          {
+            auto bullet = new Bullet(get_world(),
+                                     math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
+                                     math::vec2_init(-1, -0.25),
+                                     70);
+            
+            world_objs.push_object(bullet);
+          }
+          else
+          {
+            auto bullet = new Bullet(get_world(),
+                                     math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
+                                     math::vec2_init(0, -1),
+                                     100);
+            
+            world_objs.push_object(bullet);
+          }
+
           m_gun_cooldown = gun_cooldown_timer;
         }
       }
@@ -235,10 +262,12 @@ Player::on_collision(Game_object *obj)
     {
       obj->destroy();
       
-      const uint32_t number_of_powerups = (uint32_t)Powerup::size;
+      // 1 offsets so we don't get Powerup::none;
+      
+      const uint32_t number_of_powerups = (uint32_t)Powerup::size - 1;
       const uint32_t selected_powerup   = rand() % number_of_powerups;
       
-      m_powerup = (Powerup)selected_powerup;
+      m_powerup = (Powerup)(1 + selected_powerup);
       m_powerup_timer = 0;
       
       // Setup powerup

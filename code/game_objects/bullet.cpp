@@ -129,7 +129,7 @@ Bullet::on_update(const float dt, World_objects &world_objs)
     const float dt_speed = dt * m_speed;
     const math::vec2 velocity = math::vec2_scale(m_direction, dt_speed);
     
-    m_point += math::vec2_get_x(velocity);
+    m_point += math::degrees_to_radians(math::vec2_get_x(velocity) * math::half_tau());
     m_depth += math::vec2_get_y(velocity);
     
     const math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point);
