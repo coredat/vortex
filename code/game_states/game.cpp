@@ -49,6 +49,7 @@ spawn_enemies(Core::World &world,
     {
       case(Enemy_type::climber):
       case(Enemy_type::breeder):
+      case(Enemy_type::shooter):
         objs.push_object(new Game_object::Enemy(world, what_to_spawn));
         break;
         
