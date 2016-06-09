@@ -26,7 +26,8 @@ namespace
   Core::Texture texture_orange;
   Core::Texture texture_magenta;
   
-  constexpr uint32_t chances_of_powerup = 10; // to 1
+  constexpr uint32_t  chances_of_powerup = 10; // to 1
+  constexpr float     climber_speed      = 40.f;
 }
 
 
@@ -55,7 +56,7 @@ update_climber(Game_object::Enemy &enemy, const float dt)
   
   // Depth
   {
-    enemy.m_depth += (20.f * dt * static_cast<float>(enemy.m_direction));
+    enemy.m_depth += (climber_speed * dt * static_cast<float>(enemy.m_direction));
     
     if(!math::is_between(enemy.m_depth, Level_funcs::get_bottom_of_level(), Level_funcs::get_top_of_level()))
     {
@@ -79,10 +80,7 @@ update_climber(Game_object::Enemy &enemy, const float dt)
   Breaders climb to the top then start to bread.
 */
 void
-update_breeder(Core::World &world,
-               Game_object::World_objects &enemies_container,
-               Game_object::Enemy &enemy,
-               const float dt)
+update_breeder(Game_object::Enemy &enemy, const float dt, Game_object::World_objects &objs)
 {
   Core::Transform trans = enemy.get_entity().get_transform();
   
@@ -107,8 +105,7 @@ update_breeder(Core::World &world,
       const float new_point = enemy.m_point_on_circle + ((static_cast<float>(rand() % 100) / 250.f) - 0.2f);
       const float new_depth = math::min(enemy.m_depth + ((static_cast<float>(rand() % 100) / 50.f) - 0.75f), Level_funcs::get_top_of_level());
     
-      //Enemy_utils::spawn_egg(world, enemies_container, new_point, new_depth);
-      enemies_container.push_object(new Game_object::Enemy(world, Game_object::Enemy::Type::egg));
+      objs.push_object(new Game_object::Enemy(enemy.get_world(), Game_object::Enemy::Type::egg));
     }
   }
   
@@ -133,6 +130,29 @@ update_breeder(Core::World &world,
   
   enemy.get_entity().set_transform(trans);
 }
+
+
+/*
+  Choose update logic.
+*/
+void
+update(Game_object::Enemy &enemy, const float dt, Game_object::World_objects &objs)
+{
+  switch(enemy.m_type)
+  {
+    case(Game_object::Enemy::Type::climber):
+      update_climber(enemy, dt);
+      break;
+      
+    case(Game_object::Enemy::Type::breeder):
+      update_breeder(enemy, dt, objs);
+      break;
+      
+    default:
+      break;
+  }
+}
+
 
 } // anon ns
 
@@ -186,7 +206,7 @@ Enemy::on_update(const float dt, World_objects &objs)
   switch(m_state)
   {
     case(State::alive):
-      update_climber(*this, dt);
+      update(*this, dt, objs);
       break;
       
     case(State::dying):

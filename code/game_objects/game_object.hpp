@@ -28,10 +28,7 @@ public:
   
   Core::Entity_ref    get_entity() const;
   
-  void                destroy();  
-  
-protected:
-
+  void                destroy();
   Core::World         &get_world() const;
   
 private:

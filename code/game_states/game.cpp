@@ -53,6 +53,7 @@ spawn_enemies(Core::World &world,
         break;
         
       case(Enemy_type::egg):
+        objs.push_object(new Game_object::Enemy(world, Enemy_type::breeder));
         break;
       
       default:

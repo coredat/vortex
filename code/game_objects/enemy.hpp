@@ -36,7 +36,7 @@ public:
   float           m_depth = 0;
   float           m_lifetime = 0;
   int32_t         m_direction = 1;
-  Type            m_type = Type::climber;
+  const Type      m_type = Type::climber;
   
   enum class State
   {

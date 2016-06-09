@@ -25,5 +25,5 @@ title_screen_update(Core::Context &ctx,
                     Game_object::World_objects &objects,
                     const float dt)
 {
-  return Game_state::title_screen;
+  return Game_state::selection;
 }

@@ -12,6 +12,7 @@ class Horizon_particle;
 class Player;
 class Bullet;
 class Main_camera;
+class Enemy;
 
 
 } // ns
