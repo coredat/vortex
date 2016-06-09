@@ -17,6 +17,7 @@ namespace
 {
   Core::Model         model;
   Core::Texture       texture;
+  constexpr float     climber_speed      = 40.f;
 }
 
 
@@ -67,14 +68,25 @@ breeder_update(Game_object::Enemy &enemy,
   
   // Should breed
   {
-    if(enemy.m_direction == 0 && enemy.m_lifetime > 0.4f)
+    if(enemy.m_direction == 0 && enemy.m_lifetime > 2.f)
     {
-      enemy.m_lifetime = 0.f; // Need to fix this.
+      enemy.m_lifetime = 0;
       
+      ++enemy.m_user_data;
+    
       const float new_point = enemy.m_point_on_circle + ((static_cast<float>(rand() % 100) / 250.f) - 0.2f);
       const float new_depth = math::min(enemy.m_depth + ((static_cast<float>(rand() % 100) / 50.f) - 0.75f), Level_funcs::get_top_of_level());
+      
+      Game_object::Enemy *egg1 = new Game_object::Enemy(enemy.get_world(), Game_object::Enemy::Type::egg);
+      egg1->m_point_on_circle = enemy.m_point_on_circle + (0.1f * enemy.m_user_data);
+      egg1->m_depth = enemy.m_depth;
+
+      Game_object::Enemy *egg2 = new Game_object::Enemy(enemy.get_world(), Game_object::Enemy::Type::egg);
+      egg2->m_point_on_circle = enemy.m_point_on_circle - (0.1f * enemy.m_user_data);
+      egg2->m_depth = enemy.m_depth;
     
-      objs.push_object(new Game_object::Enemy(enemy.get_world(), Game_object::Enemy::Type::egg));
+      objs.push_object(egg1);
+      objs.push_object(egg2);
     }
   }
   

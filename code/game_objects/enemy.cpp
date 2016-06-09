@@ -53,6 +53,10 @@ update(Game_object::Enemy &enemy, const float dt, Game_object::World_objects &ob
       Enemy_logic::breeder_update(enemy, dt, objs);
       break;
       
+    case(Game_object::Enemy::Type::egg):
+      Enemy_logic::egg_update(enemy, dt, objs);
+      break;
+      
     default:
       break;
   }
@@ -76,6 +80,11 @@ Enemy::Enemy(Core::World &world, Type type)
 
   const std::string magenta_texture_path = util::get_resource_path() + "assets/textures/dev_grid_magenta_512.png";
   texture_magenta = Core::Texture(magenta_texture_path.c_str());
+  
+  m_direction = 1;
+  m_lifetime = 0;
+  m_point_on_circle = static_cast<float>(rand() % 1000) / 10;
+  m_depth = Level_funcs::get_bottom_of_level();
 }
 
 
@@ -84,7 +93,7 @@ Enemy::on_start()
 {
   Core::Entity_ref ref = get_entity();
   
-  ref.set_name("Enemy");
+  ref.set_name("Enemy-Unkown");
   ref.set_tags(Object_tags::enemy);
   ref.set_model(model);
   ref.set_material_id(texture_magenta.get_id());
@@ -97,19 +106,20 @@ Enemy::on_start()
   
   ref.set_rigidbody_properties(rb_props);
   
-  m_direction = 1;
-  m_lifetime = 0;
-  m_point_on_circle = static_cast<float>(rand() % 1000) / 10;
-  m_depth = Level_funcs::get_bottom_of_level();
-  
   switch(m_type)
   {
+    case(Enemy::Type::shooter):
+      Enemy_logic::shooter_setup(*this);
+      break;
+  
     case(Enemy::Type::climber):
       Enemy_logic::climber_setup(*this);
       break;
+      
     case(Enemy::Type::breeder):
       Enemy_logic::breeder_setup(*this);
       break;
+      
     case(Enemy::Type::egg):
       Enemy_logic::egg_setup(*this);
       break;
@@ -123,6 +133,8 @@ Enemy::on_start()
 void
 Enemy::on_update(const float dt, World_objects &objs)
 {
+  m_lifetime += dt;
+
   switch(m_state)
   {
     case(State::alive):

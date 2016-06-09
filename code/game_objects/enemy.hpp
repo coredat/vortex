@@ -18,6 +18,7 @@ public:
 
   enum class Type
   {
+    shooter,  // Stays at the bottom and shoots up.
     climber,  // Climbs up and down.
     breeder,  // Climbs to the top and drops eggs.
     egg,      // Spaned by the breader.
@@ -36,6 +37,7 @@ public:
   float           m_depth = 0;
   float           m_lifetime = 0;
   int32_t         m_direction = 1;
+  int32_t         m_user_data = 0;
   const Type      m_type = Type::climber;
   
   enum class State
