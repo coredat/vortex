@@ -31,7 +31,6 @@ namespace
   Core::Texture texture_magenta;
   
   constexpr uint32_t  chances_of_powerup = 10; // to 1
-  constexpr float     climber_speed      = 40.f;
 }
 
 
@@ -39,105 +38,7 @@ namespace
 {
 
 /*
-  Climber will crawel up and down the tube.
-*/
-void
-update_climber(Game_object::Enemy &enemy, const float dt)
-{
-  Core::Transform trans = enemy.get_entity().get_transform();
-  
-  // Point on circle
-  {
-    math::vec2 new_point = Level_funcs::get_point_on_cirlce(enemy.m_point_on_circle);
-    
-    const math::vec3 position = trans.get_position();
-    
-    math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
-                                         math::vec2_get_y(new_point),
-                                         math::vec3_get_z(position));
-    trans.set_position(new_pos);
-  }
-  
-  // Depth
-  {
-    enemy.m_depth += (climber_speed * dt * static_cast<float>(enemy.m_direction));
-    
-    if(!math::is_between(enemy.m_depth, Level_funcs::get_bottom_of_level(), Level_funcs::get_top_of_level()))
-    {
-      enemy.m_depth = math::clamp(enemy.m_depth, Level_funcs::get_bottom_of_level(), Level_funcs::get_top_of_level());
-      enemy.m_direction *= -1;
-    }
-    
-    const math::vec3 pos = trans.get_position();
-    const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos),
-                                               math::vec3_get_y(pos),
-                                               enemy.m_depth);
-    
-    trans.set_position(new_pos);
-  }
-  
-  enemy.get_entity().set_transform(trans);
-}
-
-
-/*
-  Breaders climb to the top then start to bread.
-*/
-void
-update_breeder(Game_object::Enemy &enemy, const float dt, Game_object::World_objects &objs)
-{
-  Core::Transform trans = enemy.get_entity().get_transform();
-  
-  // Point on circle
-  {
-    math::vec2 new_point = Level_funcs::get_point_on_cirlce(enemy.m_point_on_circle);
-    
-    const math::vec3 position = trans.get_position();
-    
-    math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
-                                         math::vec2_get_y(new_point),
-                                         math::vec3_get_z(position));
-    trans.set_position(new_pos);
-  }
-  
-  // Should breed
-  {
-    if(enemy.m_direction == 0 && enemy.m_lifetime > 0.4f)
-    {
-      enemy.m_lifetime = 0.f; // Need to fix this.
-      
-      const float new_point = enemy.m_point_on_circle + ((static_cast<float>(rand() % 100) / 250.f) - 0.2f);
-      const float new_depth = math::min(enemy.m_depth + ((static_cast<float>(rand() % 100) / 50.f) - 0.75f), Level_funcs::get_top_of_level());
-    
-      objs.push_object(new Game_object::Enemy(enemy.get_world(), Game_object::Enemy::Type::egg));
-    }
-  }
-  
-  // Depth
-  if(enemy.m_direction != 0);
-  {
-    enemy.m_depth += (20.f * dt * static_cast<float>(enemy.m_direction));
-    
-    if(enemy.m_depth > Level_funcs::get_top_of_level())
-    {
-      enemy.m_direction = 0;
-//        enemy.lifetime = 0;
-    }
-    
-    const math::vec3 pos = trans.get_position();
-    const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos),
-                                               math::vec3_get_y(pos),
-                                               enemy.m_depth);
-    
-    trans.set_position(new_pos);
-  }
-  
-  enemy.get_entity().set_transform(trans);
-}
-
-
-/*
-  Choose update logic.
+  Choose update logic for type.
 */
 void
 update(Game_object::Enemy &enemy, const float dt, Game_object::World_objects &objs)
@@ -145,18 +46,17 @@ update(Game_object::Enemy &enemy, const float dt, Game_object::World_objects &ob
   switch(enemy.m_type)
   {
     case(Game_object::Enemy::Type::climber):
-      update_climber(enemy, dt);
+      Enemy_logic::climber_update(enemy, dt, objs);
       break;
       
     case(Game_object::Enemy::Type::breeder):
-      update_breeder(enemy, dt, objs);
+      Enemy_logic::breeder_update(enemy, dt, objs);
       break;
       
     default:
       break;
   }
 }
-
 
 } // anon ns
 
