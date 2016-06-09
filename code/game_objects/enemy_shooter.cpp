@@ -3,7 +3,7 @@
 #include <game_objects/world_objects.hpp>
 
 
-namespace Enemy {
+namespace Enemy_logic {
 
 
 void

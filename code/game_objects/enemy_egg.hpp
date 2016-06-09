@@ -5,7 +5,7 @@
 #include <game_objects/game_objects_fwd.hpp>
 
 
-namespace Enemy {
+namespace Enemy_logic {
 
 
 void egg_setup(Game_object::Enemy &enemy_to_setup);

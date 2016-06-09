@@ -2,6 +2,10 @@
 #include <game_objects/world_objects.hpp>
 #include <game_objects/explosion.hpp>
 #include <game_objects/powerup_pickup.hpp>
+#include <game_objects/enemy_egg.hpp>
+#include <game_objects/enemy_breeder.hpp>
+#include <game_objects/enemy_climber.hpp>
+#include <game_objects/enemy_shooter.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
 #include <core/model/model.hpp>
@@ -197,6 +201,22 @@ Enemy::on_start()
   m_lifetime = 0;
   m_point_on_circle = static_cast<float>(rand() % 1000) / 10;
   m_depth = Level_funcs::get_bottom_of_level();
+  
+  switch(m_type)
+  {
+    case(Enemy::Type::climber):
+      Enemy_logic::climber_setup(*this);
+      break;
+    case(Enemy::Type::breeder):
+      Enemy_logic::breeder_setup(*this);
+      break;
+    case(Enemy::Type::egg):
+      Enemy_logic::egg_setup(*this);
+      break;
+      
+    default:
+      assert(false);
+  }
 }
 
 
