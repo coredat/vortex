@@ -33,7 +33,7 @@ namespace
   constexpr uint32_t  chances_of_powerup = 10; // to 1
 }
 
-d
+
 namespace
 {
 

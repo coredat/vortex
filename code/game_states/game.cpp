@@ -39,9 +39,6 @@ spawn_enemies(Core::World &world,
   {
     spawn_timer = 0;
     
-    const float point = static_cast<float>(rand() % 1000) / 10.f;
-    const float depth = Level_funcs::get_bottom_of_level();
-    
     using Enemy_type = Game_object::Enemy::Type;
     Enemy_type what_to_spawn = (Enemy_type)(rand() % (uint32_t)Enemy_type::size);
     

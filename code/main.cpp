@@ -60,8 +60,17 @@ main()
   
   bool first_load = true;
   
-  // Game state
   
+  
+  // ** Testings ** //
+  {
+    const std::string file = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+    Core::Shader shader(file.c_str());
+  }
+  
+  
+  
+  // Game state
   
   while(context.is_open())
   {
