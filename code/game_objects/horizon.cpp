@@ -4,12 +4,22 @@
 #include <common/level_functions.hpp>
 #include <core/world/world.hpp>
 #include <core/resources/texture.hpp>
+#include <core/resources/material.hpp>
+#include <core/resources/shader.hpp>
 #include <core/model/model.hpp>
 #include <core/transform/transform.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
 #include <math/general/general.hpp>
 #include <utilities/directory.hpp>
+
+
+namespace
+{
+  Core::Material  horizon_material_top;
+  Core::Material  horizon_material_bottom;
+  Core::Model     horizon_model;
+}
 
 
 namespace Game_object {
@@ -19,6 +29,42 @@ Horizon::Horizon(Core::World &world)
 : Game_object(world)
 {
   Core::Entity_ref ref = get_entity();
+  
+  if(!horizon_model)
+  {
+    const std::string path = util::get_resource_path() + "assets/models/unit_plane.obj";
+    Core::Model model(path.c_str());
+    
+    horizon_model = model;
+  }
+  
+  if(!horizon_material_top)
+  {
+    horizon_material_top = Core::Material("Horizon-top");
+  
+    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+    Core::Shader shader(shader_path.c_str());
+  
+    const std::string tex_path2 = util::get_resource_path() + "assets/textures/dev_grid_orange_512.png";
+    Core::Texture texture_top(tex_path2.c_str());
+    
+    horizon_material_top.set_shader(shader);
+    horizon_material_top.set_map_01(texture_top);
+  }
+  
+  if(!horizon_material_bottom)
+  {
+    horizon_material_bottom = Core::Material("Horizon-bottom");
+  
+    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+    Core::Shader shader(shader_path.c_str());
+  
+    const std::string tex_path = util::get_resource_path() + "assets/textures/dev_grid_magenta_512.png";
+    Core::Texture texture_bot(tex_path.c_str());
+    
+    horizon_material_bottom.set_shader(shader);
+    horizon_material_bottom.set_map_01(texture_bot);
+  }
 
   ref.set_name("Horizon Particle Factory");
 }
@@ -32,16 +78,6 @@ Horizon::on_update(const float dt, World_objects &objs)
   if (m_curr_horz_timer > m_horizon_timer)
   {
     m_curr_horz_timer = 0;
-    
-    
-    const std::string path = util::get_resource_path() + "assets/models/unit_plane.obj";
-    Core::Model model(path.c_str());
-    
-    const std::string tex_path = util::get_resource_path() + "assets/textures/dev_grid_magenta_512.png";
-    Core::Texture texture_bot(tex_path.c_str());
-    
-    const std::string tex_path2 = util::get_resource_path() + "assets/textures/dev_grid_orange_512.png";
-    Core::Texture texture_top(tex_path2.c_str());
     
     constexpr uint32_t number_to_spawn = 10;
     constexpr float horz_offset = 15;
@@ -58,9 +94,8 @@ Horizon::on_update(const float dt, World_objects &objs)
       trans.set_scale(math::vec3_init(10.f, 10.f, 10.f));
       ref.set_transform(trans);
 
-      ref.set_model(model);
-      
-      ref.set_material_id(texture_bot.get_id());
+      ref.set_model(horizon_model);
+      ref.set_material(horizon_material_bottom);
       
       objs.push_object(particle);
     }
@@ -81,9 +116,8 @@ Horizon::on_update(const float dt, World_objects &objs)
       
       ref.set_transform(trans);
 
-      ref.set_model(model);
-      
-      ref.set_material_id(texture_top.get_id());
+      ref.set_model(horizon_model);
+      ref.set_material(horizon_material_top);
       
       objs.push_object(particle);
     }

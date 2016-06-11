@@ -4,6 +4,8 @@
 #include <core/world/world.hpp>
 #include <core/model/model.hpp>
 #include <core/resources/texture.hpp>
+#include <core/resources/material.hpp>
+#include <core/resources/shader.hpp>
 #include <core/transform/transform.hpp>
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
@@ -17,6 +19,8 @@
 
 namespace
 {
+  Core::Material power_up_material;
+
   constexpr float powerup_climb_speed = 10.f;
 }
 
@@ -31,6 +35,11 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
 , m_point_on_circle(point_on_circle)
 , m_depth(depth)
 {
+  if(!power_up_material)
+  {
+    assert(false);
+  }
+
   const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
   Core::Model model(unit_cube_path.c_str());
 

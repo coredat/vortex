@@ -11,6 +11,8 @@
 #include <core/model/model.hpp>
 #include <core/transform/transform.hpp>
 #include <core/resources/texture.hpp>
+#include <core/resources/material.hpp>
+#include <core/resources/shader.hpp>
 #include <core/world/world.hpp>
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
@@ -25,10 +27,8 @@
 
 namespace
 {
-  // Save so we don't have to keep loading up.
   Core::Model   model;
-  Core::Texture texture_orange;
-  Core::Texture texture_magenta;
+  Core::Material generic_material;
   
   constexpr uint32_t  chances_of_powerup = 10; // to 1
 }
@@ -72,14 +72,22 @@ Enemy::Enemy(Core::World &world, Type type)
 : Game_object(world)
 , m_type(type)
 {
+  if(!generic_material)
+  {
+    generic_material = Core::Material("Enemy-generic");
+    
+    const std::string orange_texture_path = util::get_resource_path() + "assets/textures/dev_grid_orange_512.png";
+    Core::Texture texture(Core::Texture(orange_texture_path.c_str()));
+    
+    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+    Core::Shader shader(shader_path.c_str());
+    
+    generic_material.set_shader(shader);
+    generic_material.set_map_01(texture);
+  }
+
   const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
   model = Core::Model(unit_cube_path.c_str());
-
-  const std::string orange_texture_path = util::get_resource_path() + "assets/textures/dev_grid_orange_512.png";
-  texture_orange  = Core::Texture(orange_texture_path.c_str());
-
-  const std::string magenta_texture_path = util::get_resource_path() + "assets/textures/dev_grid_magenta_512.png";
-  texture_magenta = Core::Texture(magenta_texture_path.c_str());
   
   m_direction = 1;
   m_lifetime = 0;
@@ -96,7 +104,7 @@ Enemy::on_start()
   ref.set_name("Enemy-Unkown");
   ref.set_tags(Object_tags::enemy);
   ref.set_model(model);
-  ref.set_material_id(texture_magenta.get_id());
+  ref.set_material(generic_material);
   
   Core::Box_collider coll = Core::Box_collider_utils::create_with_half_extents(math::aabb_get_half_extents(model.get_model_aabb()));
   ref.set_collider(coll);

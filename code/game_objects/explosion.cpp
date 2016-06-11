@@ -2,6 +2,8 @@
 #include <common/object_tags.hpp>
 #include <core/model/model.hpp>
 #include <core/resources/texture.hpp>
+#include <core/resources/material.hpp>
+#include <core/resources/shader.hpp>
 #include <core/transform/transform.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
@@ -13,6 +15,8 @@ namespace
 {
   Core::Model model;
   Core::Texture texture;
+  
+  Core::Material material;
 }
 
 
@@ -24,16 +28,23 @@ Explosion::Explosion(Core::World &world, const math::vec3 position)
 {
   // Load missing assets
   {
+    if(!material)
+    {
+      const std::string grid_texture_path = util::get_resource_path() + "assets/textures/dev_colored_squares_512.png";
+      Core::Texture texture(grid_texture_path.c_str());
+      
+      const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+      Core::Shader shader(shader_path.c_str());
+      
+      material = Core::Material("Explosion");
+      material.set_shader(shader);
+      material.set_map_01(texture);
+    }
+  
     if(!model)
     {
       const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
       model = Core::Model(unit_cube_path.c_str());
-    }
-
-    if(!texture)
-    {
-      const std::string grid_texture_path = util::get_resource_path() + "assets/textures/dev_colored_squares_512.png";
-      texture = Core::Texture(grid_texture_path.c_str());
     }
   }
 
@@ -45,7 +56,7 @@ Explosion::Explosion(Core::World &world, const math::vec3 position)
     ref.add_tag(Object_tags::explosion);
     
     ref.set_model(model);
-    ref.set_material_id(texture.get_id());
+    ref.set_material(material);
 
     const Core::Transform transform(
       position,

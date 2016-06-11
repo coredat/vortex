@@ -30,6 +30,7 @@
 // Testing
 #include <core/resources/material.hpp>
 #include <core/resources/shader.hpp>
+#include <core/resources/texture.hpp>
 #include <core/camera/camera_utils.hpp>
 #include <core/transform/transform.hpp>
 #include <math/vec/vec4.hpp>
@@ -64,8 +65,18 @@ main()
   
   // ** Testings ** //
   {
-    const std::string file = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
-    Core::Shader shader(file.c_str());
+    const std::string shd_file = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+    Core::Shader shader(shd_file.c_str());
+    assert(shader.is_valid());
+    
+    const std::string tex_file = util::get_resource_path() + "assets/textures/dev_squares_512.png";
+    
+    Core::Texture tex(tex_file.c_str());
+    assert(tex.exists());
+    
+    Core::Material fullbright("fullbright-squares");
+    fullbright.set_shader(shader);
+    fullbright.set_map_01(tex);
   }
   
   

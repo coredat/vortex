@@ -3,6 +3,8 @@
 #include <common/game_state.hpp>
 #include <core/input/controller.hpp>
 #include <core/resources/texture.hpp>
+#include <core/resources/shader.hpp>
+#include <core/resources/material.hpp>
 #include <core/transform/transform.hpp>
 #include <core/camera/camera.hpp>
 #include <core/camera/camera_utils.hpp>
@@ -15,9 +17,9 @@
 
 namespace
 {
-  constexpr uint32_t number_of_textures = 4;
-  Core::Texture textures[number_of_textures];
-  
+  constexpr uint32_t number_of_materials = 4;
+  Core::Material materials[number_of_materials];
+
   Core::Texture no_selection_texture;
   
   constexpr uint32_t number_of_models = 4;
@@ -50,24 +52,41 @@ selection_init(Core::Context &ctx,
     no_selection_texture = Core::Texture(tex.c_str());
   }
 
-  // Load textures
-  if(!textures[0])
+  // Load materials
+  if(!materials[0])
   {
-    uint32_t load_texture = 0;
+    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+    Core::Shader shader(shader_path.c_str());
+  
+    uint32_t load_material = 0;
     
     const std::string tex_01 = asset_path + "textures/ship_01.png";
-    textures[load_texture++] = Core::Texture(tex_01.c_str());
+    materials[load_material] = Core::Material("Player-mat-01");
+    materials[load_material].set_shader(shader);
+    materials[load_material].set_map_01(Core::Texture(tex_01.c_str()));
+    
+    ++load_material;
     
     const std::string tex_02 = asset_path + "textures/ship_02.png";
-    textures[load_texture++] = Core::Texture(tex_02.c_str());
+    materials[load_material] = Core::Material("Player-mat-02");
+    materials[load_material].set_shader(shader);
+    materials[load_material].set_map_01(Core::Texture(tex_02.c_str()));
+    
+    ++load_material;
     
     const std::string tex_03 = asset_path + "textures/ship_03.png";
-    textures[load_texture++] = Core::Texture(tex_03.c_str());
+    materials[load_material] = Core::Material("Player-mat-03");
+    materials[load_material].set_shader(shader);
+    materials[load_material].set_map_01(Core::Texture(tex_03.c_str()));
+    
+    ++load_material;
     
     const std::string tex_04 = asset_path + "textures/ship_04.png";
-    textures[load_texture++] = Core::Texture(tex_04.c_str());
+    materials[load_material] = Core::Material("Player-mat-04");
+    materials[load_material].set_shader(shader);
+    materials[load_material].set_map_01(Core::Texture(tex_04.c_str()));
   }
-  
+
   // Load models
   if(!models[0])
   {
@@ -238,15 +257,15 @@ selection_update(Core::Context &context,
     
     if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
     {
-      current_player_selection[i] = (current_player_selection[i] + 1) % number_of_textures;
+      current_player_selection[i] = (current_player_selection[i] + 1) % number_of_materials;
       const uint32_t selection = current_player_selection[i];
       
       signed_in_players[i].set_model(models[selection]);
-      signed_in_players[i].set_material_id(textures[selection].get_id());
+      signed_in_players[i].set_material(materials[selection]);
 
       // Add selection screen.
       selection_screens[i].set_model(plane);
-      selection_screens[i].set_material_id(textures[selection].get_id());
+      selection_screens[i].set_material(materials[selection]);
     }
   }
   
