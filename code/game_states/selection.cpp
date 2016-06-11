@@ -19,9 +19,9 @@ namespace
 {
   constexpr uint32_t number_of_materials = 4;
   Core::Material materials[number_of_materials];
-
-  Core::Texture no_selection_texture;
   
+  Core::Material no_selection_material;
+
   constexpr uint32_t number_of_models = 4;
   Core::Model models[number_of_models];
   
@@ -46,10 +46,17 @@ selection_init(Core::Context &ctx,
   const std::string asset_path = util::get_resource_path() + "assets/";
 
   // No selection texture
-  if(!no_selection_texture)
+  if(!no_selection_material)
   {
+    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+    Core::Shader shader(shader_path.c_str());
+    
     const std::string tex = asset_path + "textures/no_ship.png";
-    no_selection_texture = Core::Texture(tex.c_str());
+    Core::Texture no_selection_texture(tex.c_str());
+    
+    no_selection_material = Core::Material("selection-none");
+    no_selection_material.set_shader(shader);
+    no_selection_material.set_map_01(no_selection_texture);
   }
 
   // Load materials
@@ -127,7 +134,7 @@ selection_init(Core::Context &ctx,
       sel = Core::Entity(world);
       sel.set_name("Selection screen");
       sel.set_model(plane);
-      sel.set_material_id(no_selection_texture.get_id());
+      sel.set_material(no_selection_material);
     }
   }
 }

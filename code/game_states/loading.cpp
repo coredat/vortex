@@ -47,7 +47,6 @@ loading_init(Core::Context &context, Core::World &world)
     loading_entity = Core::Entity(world);
     loading_entity.set_name("Loading Screen Logo");
     loading_entity.set_model(model);
-    loading_entity.set_material_id(texture.get_id());
     
     // Rotate towards the screen.
     {

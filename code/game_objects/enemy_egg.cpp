@@ -42,7 +42,6 @@ egg_setup(Game_object::Enemy &enemy_to_setup)
   
   ref.set_name("Enemy-Egg");
   ref.set_model(model);
-  ref.set_material_id(texture.get_id());
   
   enemy_to_setup.m_direction = 0;
 }

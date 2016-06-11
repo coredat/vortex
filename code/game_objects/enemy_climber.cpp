@@ -42,7 +42,6 @@ climber_setup(Game_object::Enemy &enemy_to_setup)
   
   ref.set_name("Enemy-Climber");
   ref.set_model(model);
-  ref.set_material_id(texture.get_id());
 }
 
 

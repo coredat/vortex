@@ -37,14 +37,19 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
 {
   if(!power_up_material)
   {
-    assert(false);
+    const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
+    Core::Texture texture(green_texture_path.c_str());
+    
+    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+    Core::Shader shader(shader_path.c_str());
+    
+    power_up_material = Core::Material("Powerup");
+    power_up_material.set_shader(shader);
+    power_up_material.set_map_01(texture);
   }
 
   const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
   Core::Model model(unit_cube_path.c_str());
-
-  const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
-  Core::Texture texture(green_texture_path.c_str());
 
   Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());
   
@@ -57,7 +62,7 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
     ref.set_name("Powerup");
     ref.set_tags(Object_tags::powerup);
     ref.set_model(model);
-    ref.set_material_id(texture.get_id());
+    ref.set_material(power_up_material);
     ref.set_collider(collider);
     ref.set_rigidbody_properties(rb_props);
   }

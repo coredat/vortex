@@ -69,7 +69,6 @@ Player::Player(Core::World &world,
     ref.set_name("Player");
     ref.set_tags(Object_tags::player);
     ref.set_model(model);
-    ref.set_material_id(texture.get_id());
     ref.set_collider(collider);
     ref.set_rigidbody_properties(rb_props);
   }

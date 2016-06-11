@@ -6,6 +6,8 @@
 #include <core/model/model.hpp>
 #include <core/transform/transform.hpp>
 #include <core/resources/texture.hpp>
+#include <core/resources/shader.hpp>
+#include <core/resources/material.hpp>
 #include <core/audio/sample.hpp>
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
@@ -17,10 +19,10 @@
 
 namespace
 {
-  Core::Model   model; // Nice to be able to load this at global init.
-  Core::Texture texture;
+  Core::Model   model;
   Core::Sample  gun_shot_sample;
-
+  
+  Core::Material bullet_material;
 }
 
 
@@ -45,10 +47,18 @@ Bullet::Bullet(Core::World &world,
       model = Core::Model(unit_cube_path.c_str());
     }
 
-    if(!texture)
+    if(!bullet_material)
     {
+      bullet_material = Core::Material("Bullet");
+    
       const std::string texture_path = util::get_resource_path() + "assets/textures/dev_grid_red_512.png";
-      texture = Core::Texture(texture_path.c_str());
+      Core::Texture texture(texture_path.c_str());
+      
+      const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+      Core::Shader shader(shader_path.c_str());
+      
+      bullet_material.set_map_01(texture);
+      bullet_material.set_shader(shader);
     }
 
     if(!gun_shot_sample)
@@ -69,7 +79,7 @@ Bullet::Bullet(Core::World &world,
   // Model and texture
   {
     ref.set_model(model);
-    ref.set_material_id(texture.get_id());
+    ref.set_material(bullet_material);
   }
   
   // Physics
