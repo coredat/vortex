@@ -37,7 +37,7 @@ Level::Level(Core::World &world)
     const std::string grey_texture_path = util::get_resource_path() + "assets/textures/dev_grid_grey_512.png";
     Core::Texture texture(grey_texture_path.c_str());
 
-    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_dir_light.ogl";
     Core::Shader shader(shader_path.c_str());
     
     level_material.set_shader(shader);
