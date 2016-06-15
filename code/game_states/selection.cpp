@@ -33,7 +33,7 @@ namespace
   
   Core::Model plane;
   
-  Core::Entity_ref signed_in_selections[4];
+  Core::Entity *signed_in_selections[4];
   
   Core::Entity_ref signed_in_players[4];
   
@@ -189,6 +189,18 @@ selection_update(Core::Context &context,
           sel.destroy();
         }
       }
+      
+      // Remove player selection screens
+      {
+        for(auto &sel : signed_in_selections)
+        {
+          if(sel)
+          {
+            sel->destroy();
+            delete sel;
+          }
+        }
+      }
     
       return Game_state::game_mode;
     }
@@ -256,6 +268,14 @@ selection_update(Core::Context &context,
         trans.set_rotation(math::quat_init_with_axis_angle(1, 0, 0, -math::quart_tau()));
         
         sel.set_transform(trans);
+        
+        if(signed_in_selections[i])
+        {
+          auto sel_trans = selection_screens[i].get_transform();
+          sel_trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
+          signed_in_selections[i]->set_transform(sel_trans);
+          
+        }
       }
     }
   
@@ -273,6 +293,12 @@ selection_update(Core::Context &context,
         
         objects.push_object(new_player);
         
+        signed_in_selections[i] = new Core::Entity(world);
+        signed_in_selections[i]->set_name("selection-entity");
+        signed_in_selections[i]->set_model(models[0]);
+        signed_in_selections[i]->set_material(materials[0]);
+        signed_in_selections[i]->set_transform(selection_screens[i].get_transform());
+        
         ++players_signed_in;
       }
     }
@@ -288,6 +314,8 @@ selection_update(Core::Context &context,
       // Add selection screen.
       selection_screens[i].set_model(plane);
       selection_screens[i].set_material(selection_material);
+      
+      signed_in_selections[i]->set_material(materials[selection]);
     }
   }
   
