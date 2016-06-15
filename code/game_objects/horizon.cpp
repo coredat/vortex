@@ -94,8 +94,8 @@ Horizon::on_update(const float dt, World_objects &objs)
       trans.set_scale(math::vec3_init(10.f, 10.f, 10.f));
       ref.set_transform(trans);
 
-      ref.set_model(horizon_model);
       ref.set_material(horizon_material_bottom);
+      ref.set_model(horizon_model);
       
       objs.push_object(particle);
     }
@@ -116,8 +116,8 @@ Horizon::on_update(const float dt, World_objects &objs)
       
       ref.set_transform(trans);
 
-      ref.set_model(horizon_model);
       ref.set_material(horizon_material_top);
+      ref.set_model(horizon_model);      
       
       objs.push_object(particle);
     }

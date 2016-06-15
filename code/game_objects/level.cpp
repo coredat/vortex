@@ -6,6 +6,8 @@
 #include <core/resources/material.hpp>
 #include <core/resources/shader.hpp>
 #include <core/model/model.hpp>
+#include <core/color/color.hpp>
+#include <core/color/color_predefined.hpp>
 #include <core/transform/transform.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
@@ -23,12 +25,12 @@ Level::Level(Core::World &world)
 
   ref.set_name("Level");
   
-  const std::string level_path = util::get_resource_path() + "assets/models/unit_tube.obj";
+  const std::string level_path = util::get_resource_path() + "assets/models/level.obj";
   Core::Model model(level_path.c_str());
 
   const float depth = Level_funcs::get_top_of_level() - Level_funcs::get_bottom_of_level();
-  Core::Transform trans(math::vec3_init(0, 0, -depth * 0.5f),
-                        math::vec3_init(Level_funcs::get_radius() * 2.1f, Level_funcs::get_radius() * 2.1f, math::abs(depth) * 0.9f),
+  Core::Transform trans(math::vec3_init(0.f, 0.f, -70.f),
+                        math::vec3_init(22.f,22.f,60.f),
                         math::quat_init());
 
   // Create a material
@@ -37,15 +39,16 @@ Level::Level(Core::World &world)
     const std::string grey_texture_path = util::get_resource_path() + "assets/textures/dev_grid_grey_512.png";
     Core::Texture texture(grey_texture_path.c_str());
 
-    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_dir_light.ogl";
+    const std::string shader_path = util::get_resource_path() + "assets/shaders/vortex_level.ogl";
     Core::Shader shader(shader_path.c_str());
     
     level_material.set_shader(shader);
     level_material.set_map_01(texture);
+    level_material.set_color(Core::Color_utils::magenta());
   }
 
-  ref.set_model(model);
   ref.set_material(level_material);
+  ref.set_model(model);
   ref.set_transform(trans);
 }
 

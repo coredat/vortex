@@ -133,8 +133,8 @@ selection_init(Core::Context &ctx,
       
       sel = Core::Entity(world);
       sel.set_name("Selection screen");
-      sel.set_model(plane);
       sel.set_material(no_selection_material);
+      sel.set_model(plane);
     }
   }
 }
