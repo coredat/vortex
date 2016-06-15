@@ -21,6 +21,7 @@ namespace
   Core::Material materials[number_of_materials];
   
   Core::Material no_selection_material;
+  Core::Material selection_material;
 
   constexpr uint32_t number_of_models = 4;
   Core::Model models[number_of_models];
@@ -57,6 +58,19 @@ selection_init(Core::Context &ctx,
     no_selection_material = Core::Material("selection-none");
     no_selection_material.set_shader(shader);
     no_selection_material.set_map_01(no_selection_texture);
+  }
+
+  // Selection material
+  {
+    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+    Core::Shader shader(shader_path.c_str());
+    
+    const std::string tex = asset_path + "textures/choose_ship.png";
+    Core::Texture no_selection_texture(tex.c_str());
+    
+    selection_material = Core::Material("selection");
+    selection_material.set_shader(shader);
+    selection_material.set_map_01(no_selection_texture);
   }
 
   // Load materials
@@ -236,7 +250,7 @@ selection_update(Core::Context &context,
         Core::Transform trans;
         trans.set_position(math::vec3_init(math::vec3_get_x(final_pos), math::vec3_get_y(final_pos), math::vec3_get_z(final_pos)));
         constexpr float scale = 0.05f;
-        trans.set_scale(math::vec3_init(scale, 1, scale * math::g_ratio()));
+        trans.set_scale(math::vec3_init(scale, 1, scale));
         trans.set_rotation(math::quat_init_with_axis_angle(1, 0, 0, -math::quart_tau()));
         
         sel.set_transform(trans);
@@ -272,7 +286,7 @@ selection_update(Core::Context &context,
 
       // Add selection screen.
       selection_screens[i].set_model(plane);
-      selection_screens[i].set_material(materials[selection]);
+      selection_screens[i].set_material(selection_material);
     }
   }
   
