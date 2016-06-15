@@ -33,6 +33,8 @@ namespace
   
   Core::Model plane;
   
+  Core::Entity_ref signed_in_selections[4];
+  
   Core::Entity_ref signed_in_players[4];
   
   uint32_t players_signed_in = 0;
@@ -262,7 +264,6 @@ selection_update(Core::Context &context,
   */
   for(uint32_t i = 0; i < number_of_controllers; ++i)
   {
-  
     if(!signed_in_players[i].is_valid())
     {
       if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
