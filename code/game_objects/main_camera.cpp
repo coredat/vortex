@@ -18,6 +18,7 @@ namespace Game_object {
 
 Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
 : Game_object(world)
+, m_camera(world)
 {
   Core::Entity_ref ref = get_entity();
   

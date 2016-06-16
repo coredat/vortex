@@ -153,6 +153,11 @@ selection_init(Core::Context &ctx,
       sel.set_model(plane);
     }
   }
+  
+  for(auto &sel : signed_in_selections)
+  {
+    sel = nullptr;
+  }
 }
 
 
@@ -198,6 +203,7 @@ selection_update(Core::Context &context,
           {
             sel->destroy();
             delete sel;
+            sel = nullptr;
           }
         }
       }
@@ -220,8 +226,7 @@ selection_update(Core::Context &context,
       const float offset = -3.f + (i * 2.f);
       
       math::vec4 screen_pos = math::vec4_init(offset, 0.f, -1.f, 1.f);
-      math::vec4 world_pos  = math::mat4_multiply(screen_pos, inv_vp);
-      
+      math::vec4 world_pos  = math::mat4_multiply(screen_pos, inv_vp);      
       math::vec3 world_pos3 = math::vec3_init(math::vec4_get_x(world_pos), math::vec4_get_y(world_pos), math::vec4_get_z(world_pos));
       math::vec3 dir        = math::vec3_normalize(world_pos3);
       
