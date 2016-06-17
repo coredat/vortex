@@ -28,6 +28,7 @@
 #include <utilities/optimizations.hpp>
 
 // Testing
+#include <core/resources/render_target.hpp>
 #include <core/resources/material.hpp>
 #include <core/resources/shader.hpp>
 #include <core/resources/texture.hpp>
@@ -77,9 +78,11 @@ main()
     Core::Material fullbright("fullbright-squares");
     fullbright.set_shader(shader);
     fullbright.set_map_01(tex);
+    
   }
   
-  
+  Core::Render_target render_target(1200, 700, Graphics_api::Pixel_format::rgba8);
+
   
   // Game state
   
