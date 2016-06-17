@@ -1,5 +1,6 @@
 #include <game_states/selection.hpp>
 #include <game_objects/player.hpp>
+#include <common/object_tags.hpp>
 #include <common/game_state.hpp>
 #include <core/input/controller.hpp>
 #include <core/resources/texture.hpp>
@@ -149,6 +150,7 @@ selection_init(Core::Context &ctx,
       
       sel = Core::Entity(world);
       sel.set_name("Selection screen");
+      sel.set_tags(Object_tags::gui_cam);
       sel.set_material(no_selection_material);
       sel.set_model(plane);
     }
@@ -279,7 +281,6 @@ selection_update(Core::Context &context,
           auto sel_trans = selection_screens[i].get_transform();
           sel_trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
           signed_in_selections[i]->set_transform(sel_trans);
-          
         }
       }
     }
@@ -300,6 +301,7 @@ selection_update(Core::Context &context,
         
         signed_in_selections[i] = new Core::Entity(world);
         signed_in_selections[i]->set_name("selection-entity");
+        signed_in_selections[i]->set_tags(Object_tags::gui_cam);
         signed_in_selections[i]->set_model(models[0]);
         signed_in_selections[i]->set_material(materials[0]);
         signed_in_selections[i]->set_transform(selection_screens[i].get_transform());

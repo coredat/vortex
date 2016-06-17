@@ -25,7 +25,9 @@ public:
 
 public:
 
-  Core::Camera      m_camera; // Currently selection screen needs to know where to place gui.
+  Core::Camera      m_world_camera;
+  Core::Camera      m_level_camera;
+  Core::Camera      m_gui_camera;
   
 private:
 

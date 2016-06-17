@@ -60,7 +60,7 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
   Core::Entity_ref ref = get_entity();
   {
     ref.set_name("Powerup");
-    ref.set_tags(Object_tags::powerup);
+    ref.set_tags(Object_tags::powerup | Object_tags::world_cam);
     ref.set_model(model);
     ref.set_material(power_up_material);
     ref.set_collider(collider);

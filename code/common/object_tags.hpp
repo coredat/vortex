@@ -18,6 +18,9 @@ enum ENUM {
   explosion  = 1 << 4,
   powerup    = 1 << 5,
   multiplier = 1 << 6,
+  gui_cam    = 1 << 7,
+  world_cam  = 1 << 8,
+  level_cam  = 1 << 9,
 
 }; // enum
 } // ns

@@ -1,6 +1,7 @@
 #include <game_objects/horizon_particle.hpp>
 #include <game_objects/world_objects.hpp>
 #include <common/level_functions.hpp>
+#include <common/object_tags.hpp>
 #include <core/transform/transform.hpp>
 #include <math/vec/vec3.hpp>
 
@@ -20,6 +21,7 @@ Horizon_particle::Horizon_particle(Core::World &world)
 , m_horizon_speed(100.f)
 {
   get_entity().set_name("Horizon-Particle");
+  get_entity().set_tags(Object_tags::level_cam);
 }
 
 

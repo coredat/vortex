@@ -18,7 +18,9 @@ namespace Game_object {
 
 Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
 : Game_object(world)
-, m_camera(world)
+, m_world_camera(world)
+, m_level_camera(world)
+, m_gui_camera(world)
 {
   Core::Entity_ref ref = get_entity();
   
@@ -28,13 +30,36 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   curr_trans.set_position(math::vec3_init(0.f, 0.f, 12.f));
   ref.set_transform(curr_trans);
   
-  m_camera.set_width(ctx.get_width());
-  m_camera.set_height(ctx.get_height());
+  m_world_camera.set_attached_entity(ref);
+  m_world_camera.set_width(ctx.get_width());
+  m_world_camera.set_height(ctx.get_height());
+  m_world_camera.set_type(Core::Camera_type::perspective);
+  m_world_camera.set_clear_flags(Core::Camera_clear::color | Core::Camera_clear::depth);
+  m_world_camera.set_clear_color(Core::Color_utils::purple());
+  m_world_camera.set_tags_to_render(Object_tags::world_cam);
+  m_world_camera.set_priority(3);
+ 
+  m_level_camera.set_attached_entity(ref);
+  m_level_camera.set_width(m_world_camera.get_width());
+  m_level_camera.set_height(m_world_camera.get_height());
+  m_level_camera.set_feild_of_view(m_world_camera.get_field_of_view());
+  m_level_camera.set_near_plane(m_world_camera.get_near_plane());
+  m_level_camera.set_far_plane(m_world_camera.get_far_plane());
+  m_level_camera.set_type(m_world_camera.get_type());
+  m_level_camera.set_clear_flags(0);
+  m_level_camera.set_tags_to_render(Object_tags::level_cam);
+  m_level_camera.set_priority(2);
   
-  m_camera.set_attached_entity(ref);
-  m_camera.set_type(Core::Camera_type::perspective);
-  m_camera.set_clear_flags(Core::Camera_clear::color | Core::Camera_clear::depth);
-  m_camera.set_clear_color(Core::Color_utils::purple());
+  m_gui_camera.set_attached_entity(ref);
+  m_gui_camera.set_width(m_world_camera.get_width());
+  m_gui_camera.set_height(m_world_camera.get_height());
+  m_gui_camera.set_feild_of_view(m_world_camera.get_field_of_view());
+  m_gui_camera.set_near_plane(m_world_camera.get_near_plane());
+  m_gui_camera.set_far_plane(m_world_camera.get_far_plane());
+  m_gui_camera.set_type(m_world_camera.get_type());
+  m_gui_camera.set_clear_flags(Core::Camera_clear::depth);
+  m_gui_camera.set_tags_to_render(Object_tags::gui_cam);
+  m_gui_camera.set_priority(1);
 }
 
 

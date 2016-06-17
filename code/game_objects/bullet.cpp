@@ -73,7 +73,7 @@ Bullet::Bullet(Core::World &world,
   // General settings
   {
     ref.set_name("Bullet");
-    ref.add_tag(Object_tags::bullet);
+    ref.add_tag(Object_tags::bullet | Object_tags::world_cam);
   }
   
   // Model and texture

@@ -1,6 +1,7 @@
 #include <game_objects/level.hpp>
 #include <game_objects/world_objects.hpp>
 #include <common/level_functions.hpp>
+#include <common/object_tags.hpp>
 #include <core/world/world.hpp>
 #include <core/resources/texture.hpp>
 #include <core/resources/material.hpp>
@@ -50,6 +51,7 @@ Level::Level(Core::World &world)
   ref.set_material(level_material);
   ref.set_model(model);
   ref.set_transform(trans);
+  ref.add_tag(Object_tags::world_cam);
 }
 
 

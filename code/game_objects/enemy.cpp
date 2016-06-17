@@ -102,7 +102,7 @@ Enemy::on_start()
   Core::Entity_ref ref = get_entity();
   
   ref.set_name("Enemy-Unkown");
-  ref.set_tags(Object_tags::enemy);
+  ref.set_tags(Object_tags::enemy | Object_tags::world_cam);
   ref.set_model(model);
   ref.set_material(generic_material);
   

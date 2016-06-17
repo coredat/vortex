@@ -53,7 +53,7 @@ Explosion::Explosion(Core::World &world, const math::vec3 position)
     Core::Entity_ref ref = get_entity();
 
     ref.set_name("Explosion");
-    ref.add_tag(Object_tags::explosion);
+    ref.add_tag(Object_tags::explosion | Object_tags::world_cam);
     
     ref.set_model(model);
     ref.set_material(material);

@@ -102,7 +102,7 @@ main()
         case(Game_state::title_screen):
           title_screen_init(context,
                             world,
-                            go_cam->m_camera);
+                            go_cam->m_world_camera);
           break;
 
         case(Game_state::selection):
@@ -115,7 +115,7 @@ main()
             objs.push_object(new Game_object::Level(world));
           }
         
-          selection_init(context, world, go_cam->m_camera);
+          selection_init(context, world, go_cam->m_world_camera);
           break;
         }
         
@@ -153,7 +153,7 @@ main()
       {
         next_state = title_screen_update(context,
                                          world,
-                                         go_cam->m_camera,
+                                         go_cam->m_world_camera,
                                          objs,
                                          dt);
         
@@ -168,7 +168,7 @@ main()
       {
         next_state = selection_update(context,
                                       world,
-                                      go_cam->m_camera,
+                                      go_cam->m_world_camera,
                                       objs,
                                       dt);
         break;

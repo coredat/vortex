@@ -67,7 +67,7 @@ Player::Player(Core::World &world,
   Core::Entity_ref ref = get_entity();
   {
     ref.set_name("Player");
-    ref.set_tags(Object_tags::player);
+    ref.set_tags(Object_tags::player | Object_tags::world_cam);
     ref.set_model(model);
     ref.set_collider(collider);
     ref.set_rigidbody_properties(rb_props);
