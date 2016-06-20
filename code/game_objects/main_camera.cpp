@@ -48,7 +48,7 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   Core::Post_process post("post-process");
   post.set_shader(post_shader);
   post.set_input_01(render_target.get_texture());
-  post.set_input_02(bayer);
+//  post.set_input_02(bayer);
   
   m_world_camera.set_attached_entity(ref);
   m_world_camera.set_width(ctx.get_width());
