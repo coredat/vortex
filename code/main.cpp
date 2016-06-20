@@ -62,8 +62,6 @@ main()
   
   bool first_load = true;
   
-  
-  
   // ** Testings ** //
   {
     const std::string shd_file = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
@@ -78,11 +76,8 @@ main()
     Core::Material fullbright("fullbright-squares");
     fullbright.set_shader(shader);
     fullbright.set_map_01(tex);
-    
   }
   
-  Core::Render_target render_target(1200, 700, Graphics_api::Pixel_format::rgba8);
-
   
   // Game state
   

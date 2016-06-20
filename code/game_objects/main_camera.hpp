@@ -28,6 +28,7 @@ public:
   Core::Camera      m_world_camera;
   Core::Camera      m_level_camera;
   Core::Camera      m_gui_camera;
+  Core::Camera      m_final_post_camera;
   
 private:
 

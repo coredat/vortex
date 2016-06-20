@@ -32,7 +32,7 @@ Horizon::Horizon(Core::World &world)
   
   if(!horizon_model)
   {
-    const std::string path = util::get_resource_path() + "assets/models/unit_plane.obj";
+    const std::string path = util::get_resource_path() + "assets/models/ring.obj";
     Core::Model model(path.c_str());
     
     horizon_model = model;
@@ -79,7 +79,7 @@ Horizon::on_update(const float dt, World_objects &objs)
   {
     m_curr_horz_timer = 0;
     
-    constexpr uint32_t number_to_spawn = 10;
+    constexpr uint32_t number_to_spawn = 1;
     constexpr float horz_offset = 15;
     
     for(uint32_t i = 0; i < number_to_spawn; ++i)
@@ -87,37 +87,17 @@ Horizon::on_update(const float dt, World_objects &objs)
       Horizon_particle *particle = new Horizon_particle(get_world());
       Core::Entity_ref ref = particle->get_entity();
       
-      const float x_pos = static_cast<float>(rand() % 200) - 100.f;
+//      const float x_pos = static_cast<float>(rand() % 200) - 100.f;
+      const float x_pos = 0;
+      const float scale = 15.f;
       
       Core::Transform trans;
-      trans.set_position(math::vec3_init(x_pos, -horz_offset, Level_funcs::get_far_death_zone() * 2.5f));
-      trans.set_scale(math::vec3_init(10.f, 10.f, 10.f));
+      trans.set_position(math::vec3_init(x_pos, x_pos, Level_funcs::get_far_death_zone() * 2.5f));
+      trans.set_scale(math::vec3_init(scale));
       ref.set_transform(trans);
 
       ref.set_material(horizon_material_bottom);
       ref.set_model(horizon_model);
-      
-      objs.push_object(particle);
-    }
-    
-    for(uint32_t i = 0; i < number_to_spawn; ++i)
-    {
-      Horizon_particle *particle = new Horizon_particle(get_world());
-      Core::Entity_ref ref = particle->get_entity();
-      
-      const float x_pos = static_cast<float>(rand() % 200) - 100.f;
-      
-      Core::Transform trans;
-      trans.set_position(math::vec3_init(x_pos, +horz_offset, Level_funcs::get_far_death_zone() * 2.5f));
-      trans.set_scale(math::vec3_init(10.f, 10.f, 10.f));
-      
-      const math::quat rot = math::quat_init_with_axis_angle(0, 0, 1, math::half_tau());
-      trans.set_rotation(rot);
-      
-      ref.set_transform(trans);
-
-      ref.set_material(horizon_material_top);
-      ref.set_model(horizon_model);      
       
       objs.push_object(particle);
     }
