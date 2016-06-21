@@ -29,9 +29,10 @@ Level::Level(Core::World &world)
   const std::string level_path = util::get_resource_path() + "assets/models/level_tube.obj";
   Core::Model model(level_path.c_str());
 
-  const float depth = Level_funcs::get_top_of_level() - Level_funcs::get_bottom_of_level();
-  Core::Transform trans(math::vec3_init(0.f, 0.f, -100.f),
-                        math::vec3_init(20.f),
+  constexpr float scale = 7.5f;
+  
+  Core::Transform trans(math::vec3_init(0.f, 0.f, -50.f),
+                        math::vec3_init(scale, scale, scale * 2.f),
                         math::quat_init());
 
   // Create a material

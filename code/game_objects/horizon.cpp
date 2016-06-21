@@ -79,8 +79,8 @@ Horizon::on_update(const float dt, World_objects &objs)
   {
     m_curr_horz_timer = 0;
     
-    constexpr uint32_t number_to_spawn = 1;
-    constexpr float horz_offset = 15;
+    constexpr uint32_t  number_to_spawn = 0;
+    constexpr float     horz_offset = 15;
     
     for(uint32_t i = 0; i < number_to_spawn; ++i)
     {
@@ -92,7 +92,7 @@ Horizon::on_update(const float dt, World_objects &objs)
       const float scale = 15.f;
       
       Core::Transform trans;
-      trans.set_position(math::vec3_init(x_pos, x_pos, Level_funcs::get_far_death_zone() * 2.5f));
+      trans.set_position(math::vec3_init(x_pos, x_pos, Level_funcs::get_far_death_zone() * 10.5f));
       trans.set_scale(math::vec3_init(scale));
       ref.set_transform(trans);
 

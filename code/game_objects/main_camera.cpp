@@ -54,11 +54,11 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   m_world_camera.set_width(ctx.get_width());
   m_world_camera.set_height(ctx.get_height());
   m_world_camera.set_type(Core::Camera_type::perspective);
-  m_world_camera.set_clear_flags(Core::Camera_clear::color | Core::Camera_clear::depth);
+  m_world_camera.set_clear_flags(0);
   m_world_camera.set_clear_color(Core::Color_utils::purple());
   m_world_camera.set_tags_to_render(Object_tags::world_cam);
   m_world_camera.set_render_target(render_target);
-  m_world_camera.set_priority(5);
+  m_world_camera.set_priority(4);
  
   m_level_camera.set_attached_entity(ref);
   m_level_camera.set_width(m_world_camera.get_width());
@@ -68,9 +68,9 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   m_level_camera.set_far_plane(m_world_camera.get_far_plane());
   m_level_camera.set_type(m_world_camera.get_type());
   m_level_camera.set_render_target(render_target);
-  m_level_camera.set_clear_flags(0);
+  m_level_camera.set_clear_flags(Core::Camera_clear::color | Core::Camera_clear::depth);
   m_level_camera.set_tags_to_render(Object_tags::level_cam);
-  m_level_camera.set_priority(4);
+  m_level_camera.set_priority(5);
   
   m_gui_camera.set_attached_entity(ref);
   m_gui_camera.set_width(m_world_camera.get_width());
