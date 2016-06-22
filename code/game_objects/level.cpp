@@ -38,7 +38,7 @@ Level::Level(Core::World &world)
     const std::string grey_texture_path = util::get_resource_path() + "assets/textures/dev_grid_grey_512.png";
     Core::Texture texture(grey_texture_path.c_str());
 
-    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
+    const std::string shader_path = util::get_resource_path() + "assets/shaders/vortex_level.ogl";
     Core::Shader shader(shader_path.c_str());
     
     level_material.set_shader(shader);
@@ -90,9 +90,9 @@ Level::Level(Core::World &world)
     const std::string level_path = util::get_resource_path() + "assets/models/outter_level_" + level_number + ".obj";
     Core::Model model(level_path.c_str());
 
-    constexpr float scale = 25.5f;
+    constexpr float scale = 45.5f;
     
-    Core::Transform trans(math::vec3_init(0.f, 0.f, -50.f),
+    Core::Transform trans(math::vec3_init(0.f, 0.f, -70.f),
                           math::vec3_init(scale, scale, scale * 2.f),
                           math::quat_init());
     

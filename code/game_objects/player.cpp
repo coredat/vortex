@@ -27,8 +27,8 @@ namespace
 {
   // General settings.
   constexpr float gun_cooldown_timer          = 0.1f;
-  constexpr float move_speed_base             = 5.f;
-  constexpr float momentum_falloff            = 0.95f;
+  constexpr float move_speed_base             = 4.f;
+  constexpr float momentum_falloff            = 0.90f;
   constexpr float powerup_durration           = 5.f;
   constexpr float powerup_time_dialation_rate = 0.9f;
 }
@@ -127,7 +127,8 @@ Player::on_update(const float dt, World_objects &world_objs)
         
         if(move_speed)
         {
-          m_momentum += (move_speed * 5.f);
+          m_momentum += (move_speed * 500.f * dt);
+          m_momentum = math::clamp(m_momentum, -0.75f, +0.75f);
         }
         
         m_momentum *= momentum_falloff;

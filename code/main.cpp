@@ -46,7 +46,7 @@ main()
 {
   // ** Setup Core ** //
   Core::Context_setup context_setup;
-  context_setup.vsync = false;
+  context_setup.vsync = true;
 
   Core::Context context(1200, 700, false, "Vortex Defender 2099", context_setup);
   Core::World   world(context, Core::World_setup{});
