@@ -19,6 +19,17 @@
 
 namespace
 {
+  struct Slider
+  {
+    Core::Entity entity;
+    float velocity = 1.f;
+    float spin_mul = 1.f;
+    float spin_offset = 1.f;
+  };
+  
+  constexpr uint32_t number_of_sliders = 18;
+  Slider inner_sliders[number_of_sliders];
+
   Core::Entity level_slider[18];
   Core::Entity outter_level_sliders[4];
 }
@@ -47,16 +58,17 @@ Level::Level(Core::World &world)
   }
   
   // Create the level bits
-  for(uint32_t i = 0; i < 18; ++i)
+  for(uint32_t i = 0; i < number_of_sliders; ++i)
   {
-    level_slider[i] = Core::Entity(world);
-    
-//    Core::Entity_ref slider_ref = level_slider[i];
+    auto &slider = inner_sliders[i];
   
-    level_slider[i].set_name("Level");
+    slider.entity = Core::Entity(world);
+    slider.entity.set_name("Level Inner Slider");
+    
+    slider.spin_mul = static_cast<float>(rand() % 50) / 100.f + 1.f;
+    slider.spin_offset = static_cast<float>(rand() % 100);
     
     char level_number[2];
-    
     sprintf(level_number, "%02d", i + 1);
     
     const std::string level_path = util::get_resource_path() + "assets/models/inner_level_" + level_number + ".obj";
@@ -68,38 +80,10 @@ Level::Level(Core::World &world)
                           math::vec3_init(scale, scale, scale * 2.f),
                           math::quat_init());
     
-    level_slider[i].set_material(level_material);
-    level_slider[i].set_model(model);
-    level_slider[i].set_transform(trans);
-    level_slider[i].add_tag(Object_tags::world_cam);
-  }
-  
-  // Create the level bits
-  for(uint32_t i = 0; i < 4; ++i)
-  {
-    outter_level_sliders[i] = Core::Entity(world);
-    
-//    Core::Entity_ref slider_ref = level_slider[i];
-  
-    outter_level_sliders[i].set_name("Level");
-    
-    char level_number[2];
-    
-    sprintf(level_number, "%02d", i + 1);
-    
-    const std::string level_path = util::get_resource_path() + "assets/models/outter_level_" + level_number + ".obj";
-    Core::Model model(level_path.c_str());
-
-    constexpr float scale = 45.5f;
-    
-    Core::Transform trans(math::vec3_init(0.f, 0.f, -70.f),
-                          math::vec3_init(scale, scale, scale * 2.f),
-                          math::quat_init());
-    
-    outter_level_sliders[i].set_material(level_material);
-    outter_level_sliders[i].set_model(model);
-    outter_level_sliders[i].set_transform(trans);
-    outter_level_sliders[i].add_tag(Object_tags::world_cam);
+    slider.entity.set_material(level_material);
+    slider.entity.set_model(model);
+    slider.entity.set_transform(trans);
+    slider.entity.add_tag(Object_tags::world_cam);
   }
 }
 
@@ -110,33 +94,19 @@ Level::on_update(const float dt, World_objects &objs)
   static float total_time = 0;
   total_time += dt;
 
-  for(uint32_t i = 0; i < 18; ++i)
+  for(uint32_t i = 0; i < number_of_sliders; ++i)
   {
-    Core::Transform trans = level_slider[i].get_transform();
+    auto &slider = inner_sliders[i];
+  
+    Core::Transform trans = slider.entity.get_transform();
     
-    srand(i);
-    const float vel = static_cast<float>((rand() % 100) - 50) * total_time * 0.04f;
+    const float final_vel = slider.spin_mul * math::sin(slider.spin_offset + total_time * slider.velocity);
     
-    math::quat rot = math::quat_init_with_axis_angle(0, 0, 1, vel);
+    math::quat rot = math::quat_init_with_axis_angle(0, 0, 1, final_vel);
     trans.set_rotation(rot);
     
-    level_slider[i].set_transform(trans);
+    slider.entity.set_transform(trans);
   }
-  
-  for(uint32_t i = 0; i < 4; ++i)
-  {
-    Core::Transform trans = outter_level_sliders[i].get_transform();
-    
-    srand(i);
-    const float vel = static_cast<float>((rand() % 100) - 50) * total_time * 0.01f;
-    
-    math::quat rot = math::quat_init_with_axis_angle(0, 0, 1, vel);
-    trans.set_rotation(rot);
-    
-    outter_level_sliders[i].set_transform(trans);
-  }
-  
-  srand(total_time);
 }
 
 

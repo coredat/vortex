@@ -91,6 +91,7 @@ Enemy::Enemy(Core::World &world, Type type)
   
   m_direction = 1;
   m_lifetime = 0;
+  srand((unsigned int)world.get_time_running());
   m_point_on_circle = static_cast<float>(rand() % 1000) / 10;
   m_depth = Level_funcs::get_bottom_of_level();
 }

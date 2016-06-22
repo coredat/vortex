@@ -59,7 +59,7 @@ Horizon::Horizon(Core::World &world)
     const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
     Core::Shader shader(shader_path.c_str());
   
-    const std::string tex_path = util::get_resource_path() + "assets/textures/dev_grid_magenta_512.png";
+    const std::string tex_path = util::get_resource_path() + "assets/textures/dev_grid_blue_512.png";
     Core::Texture texture_bot(tex_path.c_str());
     
     horizon_material_bottom.set_shader(shader);
@@ -89,7 +89,7 @@ Horizon::on_update(const float dt, World_objects &objs)
       
 //      const float x_pos = static_cast<float>(rand() % 200) - 100.f;
       const float x_pos = 0;
-      const float scale = 15.f;
+      const float scale = 100.f;
       
       Core::Transform trans;
       trans.set_position(math::vec3_init(x_pos, x_pos, Level_funcs::get_far_death_zone() * 10.5f));
