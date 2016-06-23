@@ -7,6 +7,7 @@
 #include <game_objects/enemy_climber.hpp>
 #include <game_objects/enemy_shooter.hpp>
 #include <common/level_functions.hpp>
+#include <common/event_ids.hpp>
 #include <common/object_tags.hpp>
 #include <core/model/model.hpp>
 #include <core/transform/transform.hpp>
@@ -149,12 +150,8 @@ Enemy::on_update(const float dt, World_objects &objs)
     case(State::alive):
       update(*this, dt, objs);
       break;
-      
-    case(State::dying):
-      destroy();
-      objs.push_object(new Explosion(get_world(),
-                                     get_entity().get_transform().get_position()));
-      
+    
+    case(State::dying_with_powerup_chance):
       // Roll dice to see if we drop a power up.
       if(!(rand() % chances_of_powerup))
       {
@@ -162,7 +159,14 @@ Enemy::on_update(const float dt, World_objects &objs)
                                             m_point_on_circle,
                                             m_depth));
       }
-        
+    
+    // Fall through on purpose here!
+    case(State::dying):
+      destroy();
+          objs.push_object(new Explosion(get_world(),
+                                         get_entity().get_transform().get_position()));
+          
+          
       m_state = State::dead;
       break;
       
@@ -174,7 +178,17 @@ Enemy::on_update(const float dt, World_objects &objs)
 void
 Enemy::on_collision(Game_object *other)
 {
-  m_state = State::dying;
+  m_state = State::dying_with_powerup_chance;
+}
+
+
+void
+Enemy::on_message(const uint32_t id, void *data)
+{
+  if(id == Event_id::destroy_all_enemies)
+  {
+    m_state = State::dying;
+  }
 }
 
 

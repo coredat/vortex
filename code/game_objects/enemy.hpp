@@ -30,6 +30,7 @@ public:
   void            on_start() override;
   void            on_update(const float dt, World_objects &objs) override;
   void            on_collision(Game_object *other) override;
+  void            on_message(const uint32_t id, void *data) override;
 
 //private:
 
@@ -44,6 +45,7 @@ public:
   {
     alive,
     dying,
+    dying_with_powerup_chance,
     dead,
   };
   

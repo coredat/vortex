@@ -40,6 +40,8 @@
 #include <utilities/directory.hpp>
 #include <vector>
 
+#include <common/event_ids.hpp>
+
 
 int
 main()
@@ -123,6 +125,7 @@ main()
           
         case(Game_state::game_over):
           game_over_init(context, world);
+          objs.send_event(Event_id::destroy_all_enemies);
           break;
           
         default:

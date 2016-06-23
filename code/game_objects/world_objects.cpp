@@ -76,4 +76,14 @@ World_objects::on_destroy()
 }
 
 
+void
+World_objects::send_event(const uint32_t evt_id, void *data)
+{
+  for(auto &obj : m_update_objects)
+  {
+    obj->on_message(evt_id, data);
+  }
+}
+
+
 } // ns

@@ -27,7 +27,7 @@ namespace
 {
   // General settings.
   constexpr float gun_cooldown_timer          = 0.1f;
-  constexpr float move_speed_base             = 4.f;
+  constexpr float move_speed_base             = 5.f;
   constexpr float momentum_falloff            = 0.90f;
   constexpr float powerup_durration           = 5.f;
   constexpr float powerup_time_dialation_rate = 0.9f;
