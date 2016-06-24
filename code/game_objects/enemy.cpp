@@ -170,7 +170,8 @@ Enemy::on_update(const float dt, World_objects &objs)
       m_state = State::dead;
       break;
       
-    default: ;
+    default:
+      break;
   }
 }
 
