@@ -50,7 +50,7 @@ main()
   Core::Context_setup context_setup;
   context_setup.vsync = true;
 
-  Core::Context context(1200, 700, false, "Vortex Defender 2099", context_setup);
+  Core::Context context(800, 480, false, "Vortex Defender 2099", context_setup);
   Core::World   world(context, Core::World_setup{});
   
   // ** Start Game ** //

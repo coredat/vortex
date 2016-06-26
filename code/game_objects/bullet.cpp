@@ -99,11 +99,11 @@ Bullet::Bullet(Core::World &world,
     math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
                                          math::vec2_get_y(new_point),
                                          m_depth);
-  
-    auto scale = math::vec3_init(1.f, 0.5f, 0.5f);
-
+    
+    auto scale = math::vec3_init(0.9f, 0.75f, 0.75f);
+    
     const math::quat rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
-  
+    
     const Core::Transform transform(
       new_pos,
       scale,

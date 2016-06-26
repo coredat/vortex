@@ -163,8 +163,8 @@ Player::on_update(const float dt, World_objects &world_objs)
       // Jump Movement
       if(m_jump_speed)
       {
-        m_jump_time += (movement_dt * 7.f);
-        const float jump_velocity = (m_jump_speed + (-m_jump_time * m_jump_time * m_jump_time)) * (movement_dt);
+        m_jump_time += (movement_dt * 13.f);
+        const float jump_velocity = (m_jump_speed + (-m_jump_time * m_jump_time)) * (movement_dt);
 
         Core::Transform trans = ref.get_transform();
         const math::vec3 pos  = trans.get_position();
