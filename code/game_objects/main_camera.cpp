@@ -48,14 +48,13 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   Core::Post_process post("post-process");
   post.set_shader(post_shader);
   post.set_input_01(render_target.get_texture());
-//  post.set_input_02(bayer);
   
   m_world_camera.set_attached_entity(ref);
   m_world_camera.set_width(ctx.get_width());
   m_world_camera.set_height(ctx.get_height());
   m_world_camera.set_type(Core::Camera_type::perspective);
   m_world_camera.set_clear_flags(Core::Camera_clear::color | Core::Camera_clear::depth);
-  m_world_camera.set_clear_color(Core::Color_utils::black());
+  m_world_camera.set_clear_color(0x222222FF);
   m_world_camera.set_tags_to_render(Object_tags::world_cam);
   m_world_camera.set_render_target(render_target);
   m_world_camera.set_priority(4);

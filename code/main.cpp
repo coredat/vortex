@@ -78,6 +78,9 @@ main()
       switch(next_state)
       {
         case(Game_state::null):
+          break;
+      
+        case(Game_state::loading):
           loading_init(context, world);
           break;
           
@@ -123,8 +126,12 @@ main()
         Loading
       */
       case(Game_state::null):
+        next_state = Game_state::loading;
+        break;
+      
+      case(Game_state::loading):
       {
-        next_state = loading_update(context, world);
+        next_state = loading_update(context, world, go_cam->m_world_camera);
         
         break;
       }

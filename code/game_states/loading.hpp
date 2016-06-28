@@ -3,7 +3,7 @@
 
 
 #include <common/game_state.hpp>
-#include <core/context/context_fwd.hpp>
+#include <core/common/core_fwd.hpp>
 #include <core/world/world_fwd.hpp>
 
 
@@ -12,7 +12,7 @@ loading_init(Core::Context &context, Core::World &world);
 
 
 Game_state
-loading_update(Core::Context &context, Core::World &world);
+loading_update(Core::Context &context, Core::World &world, Core::Camera &cam);
 
 
 #endif // inc guard

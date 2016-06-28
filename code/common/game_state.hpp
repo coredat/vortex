@@ -5,6 +5,7 @@
 enum class Game_state
 {
   null,
+  loading,
   title_screen,
   selection,
   game_mode,
