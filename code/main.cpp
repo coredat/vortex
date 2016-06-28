@@ -64,9 +64,7 @@ main()
   
   bool first_load = true;
   
-  
   // Game state
-  
   while(context.is_open())
   {
     const float dt = world.get_delta_time();

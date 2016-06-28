@@ -14,6 +14,8 @@
 #include <math/quat/quat.hpp>
 #include <math/general/general.hpp>
 #include <utilities/directory.hpp>
+#include <core/renderer/renderer.hpp>
+#include <core/renderer/material_renderer.hpp>
 #include <stdio.h>
 
 
@@ -80,8 +82,15 @@ Level::Level(Core::World &world)
                           math::vec3_init(Level_funcs::get_radius() * offset, Level_funcs::get_radius() * offset, 20.f),
                           math::quat_init());
     
-    slider.entity.set_material(level_material);
-    slider.entity.set_model(model);
+//    slider.entity.set_material(level_material);
+//    slider.entity.set_model(model);
+  
+    Core::Material_renderer mat_renderer;
+    mat_renderer.set_material(level_material);
+    mat_renderer.set_model(model);
+    
+    slider.entity.set_renderer(mat_renderer);
+  
     slider.entity.set_transform(trans);
     slider.entity.add_tag(Object_tags::world_cam);
   }

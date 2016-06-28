@@ -13,6 +13,8 @@
 #include <core/physics/box_collider.hpp>
 #include <core/physics/rigidbody_properties.hpp>
 #include <math/vec/vec3.hpp>
+#include <core/renderer/renderer.hpp>
+#include <core/renderer/material_renderer.hpp>
 #include <math/quat/quat.hpp>
 #include <utilities/directory.hpp>
 
@@ -78,8 +80,11 @@ Bullet::Bullet(Core::World &world,
   
   // Model and texture
   {
-    ref.set_model(model);
-    ref.set_material(bullet_material);
+    Core::Material_renderer mat_renderer;
+    mat_renderer.set_model(model);
+    mat_renderer.set_material(bullet_material);
+    
+    ref.set_renderer(mat_renderer);
   }
   
   // Physics

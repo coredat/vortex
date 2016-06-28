@@ -12,6 +12,8 @@
 #include <math/quat/quat.hpp>
 #include <math/general/general.hpp>
 #include <utilities/directory.hpp>
+#include <core/renderer/renderer.hpp>
+#include <core/renderer/material_renderer.hpp>
 
 
 namespace
@@ -96,9 +98,11 @@ Horizon::on_update(const float dt, World_objects &objs)
       trans.set_scale(math::vec3_init(scale));
       ref.set_transform(trans);
 
-      ref.set_material(horizon_material_bottom);
-      ref.set_model(horizon_model);
-      
+      Core::Material_renderer mat_renderer;
+      mat_renderer.set_material(horizon_material_bottom);
+      mat_renderer.set_model(horizon_model);
+      ref.set_renderer(mat_renderer);
+
       objs.push_object(particle);
     }
   }

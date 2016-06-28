@@ -5,6 +5,8 @@
 #include <core/resources/material.hpp>
 #include <core/resources/shader.hpp>
 #include <core/transform/transform.hpp>
+#include <core/renderer/renderer.hpp>
+#include <core/renderer/material_renderer.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
 #include <math/general/general.hpp>
@@ -55,9 +57,12 @@ Explosion::Explosion(Core::World &world, const math::vec3 position)
     ref.set_name("Explosion");
     ref.add_tag(Object_tags::explosion | Object_tags::world_cam);
     
-    ref.set_model(model);
-    ref.set_material(material);
-
+    Core::Material_renderer mat_renderer;
+    mat_renderer.set_model(model);
+    mat_renderer.set_material(material);
+    
+    ref.set_renderer(mat_renderer);
+    
     const Core::Transform transform(
       position,
       math::vec3_zero(),

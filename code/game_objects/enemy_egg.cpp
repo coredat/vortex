@@ -41,7 +41,7 @@ egg_setup(Game_object::Enemy &enemy_to_setup)
   auto ref = enemy_to_setup.get_entity();
   
   ref.set_name("Enemy-Egg");
-  ref.set_model(model);
+  
   
   enemy_to_setup.m_direction = 0;
 }

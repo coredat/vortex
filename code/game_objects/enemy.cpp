@@ -19,6 +19,8 @@
 #include <core/physics/box_collider.hpp>
 #include <core/physics/box_collider_utils.hpp>
 #include <core/physics/rigidbody_properties.hpp>
+#include <core/renderer/renderer.hpp>
+#include <core/renderer/material_renderer.hpp>
 #include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/geometry/aabb.hpp>
@@ -105,8 +107,10 @@ Enemy::on_start()
   
   ref.set_name("Enemy-Unkown");
   ref.set_tags(Object_tags::enemy | Object_tags::world_cam);
-  ref.set_model(model);
-  ref.set_material(generic_material);
+
+  Core::Material_renderer mat_renderer;
+  mat_renderer.set_model(model);
+  mat_renderer.set_material(generic_material);
   
   Core::Box_collider coll = Core::Box_collider_utils::create_with_half_extents(math::aabb_get_half_extents(model.get_model_aabb()));
   ref.set_collider(coll);

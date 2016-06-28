@@ -46,7 +46,7 @@ loading_init(Core::Context &context, Core::World &world)
   {
     loading_entity = Core::Entity(world);
     loading_entity.set_name("Loading Screen Logo");
-    loading_entity.set_model(model);
+//    loading_entity.set_model(model);
     
     // Rotate towards the screen.
     {

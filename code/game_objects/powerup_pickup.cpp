@@ -11,6 +11,8 @@
 #include <core/physics/box_collider.hpp>
 #include <core/physics/box_collider_utils.hpp>
 #include <core/physics/rigidbody_properties.hpp>
+#include <core/renderer/renderer.hpp>
+#include <core/renderer/material_renderer.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
 #include <utilities/directory.hpp>
@@ -61,8 +63,13 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
   {
     ref.set_name("Powerup");
     ref.set_tags(Object_tags::powerup | Object_tags::world_cam);
-    ref.set_model(model);
-    ref.set_material(power_up_material);
+    
+    Core::Material_renderer mat_renderer;
+    mat_renderer.set_model(model);
+    mat_renderer.set_material(power_up_material);
+    
+    ref.set_renderer(mat_renderer);
+    
     ref.set_collider(collider);
     ref.set_rigidbody_properties(rb_props);
   }

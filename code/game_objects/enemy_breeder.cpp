@@ -6,6 +6,8 @@
 #include <core/entity/entity_ref.hpp>
 #include <core/model/model.hpp>
 #include <core/resources/texture.hpp>
+#include <core/renderer/renderer.hpp>
+#include <core/renderer/material_renderer.hpp>
 #include <utilities/directory.hpp>
 #include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
@@ -42,7 +44,6 @@ breeder_setup(Game_object::Enemy &enemy_to_setup)
   auto ref = enemy_to_setup.get_entity();
   
   ref.set_name("Enemy-Breeder");
-  ref.set_model(model);
 }
 
 

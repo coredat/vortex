@@ -10,6 +10,8 @@
 #include <core/camera/camera.hpp>
 #include <core/camera/camera_utils.hpp>
 #include <core/model/model.hpp>
+#include <core/renderer/renderer.hpp>
+#include <core/renderer/material_renderer.hpp>
 #include <utilities/directory.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
@@ -151,8 +153,12 @@ selection_init(Core::Context &ctx,
       sel = Core::Entity(world);
       sel.set_name("Selection screen");
       sel.set_tags(Object_tags::gui_cam);
-      sel.set_material(no_selection_material);
-      sel.set_model(plane);
+      
+      Core::Material_renderer mat_renderer;
+      mat_renderer.set_material(no_selection_material);
+      mat_renderer.set_model(plane);
+      
+      sel.set_renderer(mat_renderer);
     }
   }
   
@@ -299,11 +305,14 @@ selection_update(Core::Context &context,
         
         objects.push_object(new_player);
         
+        Core::Material_renderer mat_renderer;
+        mat_renderer.set_model(models[0]);
+        mat_renderer.set_material(materials[0]);
+        
         signed_in_selections[i] = new Core::Entity(world);
         signed_in_selections[i]->set_name("selection-entity");
         signed_in_selections[i]->set_tags(Object_tags::gui_cam);
-        signed_in_selections[i]->set_model(models[0]);
-        signed_in_selections[i]->set_material(materials[0]);
+        signed_in_selections[i]->set_renderer(mat_renderer);
         signed_in_selections[i]->set_transform(selection_screens[i].get_transform());
         
         ++players_signed_in;
@@ -314,15 +323,21 @@ selection_update(Core::Context &context,
     {
       current_player_selection[i] = (current_player_selection[i] + 1) % number_of_materials;
       const uint32_t selection = current_player_selection[i];
+     
+      Core::Material_renderer player_renderer;
+      player_renderer.set_model(models[selection]);
+      player_renderer.set_material(materials[selection]);
       
-      signed_in_players[i].set_model(models[selection]);
-      signed_in_players[i].set_material(materials[selection]);
+      signed_in_players[i].set_renderer(player_renderer);
+      
+      Core::Material_renderer sel_renderer;
+      sel_renderer.set_model(plane);
+      sel_renderer.set_material(selection_material);
 
       // Add selection screen.
-      selection_screens[i].set_model(plane);
-      selection_screens[i].set_material(selection_material);
+      selection_screens[i].set_renderer(sel_renderer);
       
-      signed_in_selections[i]->set_material(materials[selection]);
+//      signed_in_selections[i]->set_material(materials[selection]);
     }
   }
   
