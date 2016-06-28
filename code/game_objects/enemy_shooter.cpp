@@ -57,7 +57,7 @@ shooter_update(Game_object::Enemy &enemy,
   }
   
   // Rand shoot
-  if((rand() % 100) == 0)
+  if((rand() % 1000) == 0)
   {
     auto bullet = new Game_object::Bullet(enemy.get_world(),
                                           math::vec2_init(math::vec3_get_z(enemy.get_entity().get_transform().get_position()), enemy.m_point_on_circle),

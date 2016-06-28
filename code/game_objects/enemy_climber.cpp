@@ -54,8 +54,6 @@ climber_update(Game_object::Enemy &enemy,
   
   // Point on circle
   {
-    enemy.m_point_on_circle += dt;
-  
     const math::vec3 position = trans.get_position();
     const math::vec2 new_point = Level_funcs::get_point_on_cirlce(enemy.m_point_on_circle);
     const math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
