@@ -48,7 +48,7 @@ main()
 {
   // ** Setup Core ** //
   Core::Context_setup context_setup;
-  context_setup.vsync = true;
+  context_setup.vsync = false;
 
   Core::Context context(800, 480, false, "Vortex Defender 2099", context_setup);
   Core::World   world(context, Core::World_setup{});
@@ -63,22 +63,6 @@ main()
   objs.push_object(new Game_object::Horizon(world));
   
   bool first_load = true;
-  
-  // ** Testings ** //
-  {
-    const std::string shd_file = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
-    Core::Shader shader(shd_file.c_str());
-    assert(shader.is_valid());
-    
-    const std::string tex_file = util::get_resource_path() + "assets/textures/dev_squares_512.png";
-    
-    Core::Texture tex(tex_file.c_str());
-    assert(tex.exists());
-    
-    Core::Material fullbright("fullbright-squares");
-    fullbright.set_shader(shader);
-    fullbright.set_map_01(tex);
-  }
   
   
   // Game state

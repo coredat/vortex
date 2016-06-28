@@ -16,7 +16,7 @@ namespace
   Core::Model       model;
   Core::Entity      loading_entity;
   
-  const float       max_timer = 0.f; // Min time loading screen stays up
+  const float       max_timer = 1.f;  // Min time loading screen stays up
   float             curr_timer = 0.f;
 }
 
