@@ -337,7 +337,7 @@ selection_update(Core::Context &context,
       // Add selection screen.
       selection_screens[i].set_renderer(sel_renderer);
       
-//      signed_in_selections[i]->set_material(materials[selection]);
+      signed_in_selections[i]->set_renderer(player_renderer);
     }
   }
   

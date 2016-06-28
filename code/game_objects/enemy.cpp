@@ -112,6 +112,8 @@ Enemy::on_start()
   mat_renderer.set_model(model);
   mat_renderer.set_material(generic_material);
   
+  ref.set_renderer(mat_renderer);
+  
   Core::Box_collider coll = Core::Box_collider_utils::create_with_half_extents(math::aabb_get_half_extents(model.get_model_aabb()));
   ref.set_collider(coll);
   
