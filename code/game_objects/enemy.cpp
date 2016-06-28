@@ -60,6 +60,10 @@ update(Game_object::Enemy &enemy, const float dt, Game_object::World_objects &ob
       Enemy_logic::egg_update(enemy, dt, objs);
       break;
       
+    case(Game_object::Enemy::Type::shooter):
+      Enemy_logic::shooter_update(enemy, dt, objs);
+      break;
+      
     default:
       break;
   }
