@@ -21,6 +21,7 @@ enum ENUM {
   gui_cam    = 1 << 7,
   world_cam  = 1 << 8,
   level_cam  = 1 << 9,
+  
 
 }; // enum
 } // ns

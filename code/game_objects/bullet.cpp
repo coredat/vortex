@@ -34,7 +34,8 @@ namespace Game_object {
 Bullet::Bullet(Core::World &world,
                const math::vec2 depth_point,
                const math::vec2 direction,
-               const float speed)
+               const float speed,
+               const uint32_t collision_flags)
 : Game_object(world)
 , m_depth(math::vec2_get_x(depth_point))
 , m_point(math::vec2_get_y(depth_point))
@@ -75,7 +76,7 @@ Bullet::Bullet(Core::World &world,
   // General settings
   {
     ref.set_name("Bullet");
-    ref.add_tag(Object_tags::bullet | Object_tags::world_cam);
+    ref.add_tag(Object_tags::world_cam | Object_tags::bullet);
   }
   
   // Model and texture
@@ -94,7 +95,7 @@ Bullet::Bullet(Core::World &world,
   
     // Rigidbody properties
     Core::Rigidbody_properties rb_props;
-    rb_props.set_collision_mask(Object_tags::bullet, Object_tags::enemy);
+    rb_props.set_collision_mask(Object_tags::bullet, collision_flags);
     ref.set_rigidbody_properties(rb_props);
   }
   

@@ -196,12 +196,14 @@ Player::on_update(const float dt, World_objects &world_objs)
             auto bullet1 = new Bullet(get_world(),
                                      math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
                                      math::vec2_init(+1, -1),
-                                     70.7f);
+                                     70.7f,
+                                     Object_tags::enemy);
             
             auto bullet2 = new Bullet(get_world(),
                                      math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
                                      math::vec2_init(-1, -1),
-                                     70.7f);
+                                     70.7f,
+                                     Object_tags::enemy);
             
             world_objs.push_object(bullet1);
             world_objs.push_object(bullet2);
@@ -211,7 +213,8 @@ Player::on_update(const float dt, World_objects &world_objs)
             auto bullet = new Bullet(get_world(),
                                      math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
                                      math::vec2_init(-1, -0.25),
-                                     70);
+                                     70.7f,
+                                     Object_tags::enemy);
             
             world_objs.push_object(bullet);
           }
@@ -220,7 +223,8 @@ Player::on_update(const float dt, World_objects &world_objs)
             auto bullet = new Bullet(get_world(),
                                      math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
                                      math::vec2_init(0, -1),
-                                     100);
+                                     100.7f,
+                                     Object_tags::enemy);
             
             world_objs.push_object(bullet);
           }
@@ -250,12 +254,14 @@ Player::on_update(const float dt, World_objects &world_objs)
 void
 Player::on_collision(Game_object *obj)
 {
-  if(obj && obj->get_entity().has_tag(Object_tags::enemy))
+  const auto ref = obj->get_entity();
+
+  if(obj && (ref.has_tag(Object_tags::enemy) || ref.has_tag(Object_tags::bullet)))
   {
     m_state = State::dying;
   }
   
-  else if(obj && obj->get_entity().has_tag(Object_tags::powerup))
+  else if(obj && ref.has_tag(Object_tags::powerup))
   {
     if(m_powerup == Powerup::none)
     {

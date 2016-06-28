@@ -96,7 +96,7 @@ game_update(Core::Context &context,
       
       if(ref_a.has_tag(Object_tags::player))
       {
-        if(ref_b.has_tag(Object_tags::enemy))
+        if(ref_b.has_tag(Object_tags::enemy) || ref_b.has_tag(Object_tags::bullet))
         {
           Game_object::Game_object *this_obj = reinterpret_cast<Game_object::Game_object*>(ref_a.get_user_data());
           Game_object::Game_object *that_obj = reinterpret_cast<Game_object::Game_object*>(ref_b.get_user_data());

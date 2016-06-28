@@ -19,7 +19,8 @@ public:
   explicit          Bullet(Core::World &world,
                            const math::vec2 depth_point,
                            const math::vec2 direction,
-                           const float speed = 100.f);
+                           const float speed,
+                           const uint32_t collision_flags);
   
   void              on_update(const float dt,
                               World_objects &world_objs) override;

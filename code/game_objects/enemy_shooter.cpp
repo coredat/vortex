@@ -2,6 +2,7 @@
 #include <game_objects/enemy.hpp>
 #include <game_objects/world_objects.hpp>
 #include <common/level_functions.hpp>
+#include <common/object_tags.hpp>
 #include <game_objects/bullet.hpp>
 #include <core/transform/transform.hpp>
 
@@ -29,13 +30,11 @@ shooter_update(Game_object::Enemy &enemy,
   {
     enemy.m_point_on_circle += dt;
   
-    math::vec2 new_point = Level_funcs::get_point_on_cirlce(enemy.m_point_on_circle);
-    
     const math::vec3 position = trans.get_position();
-    
-    math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
-                                         math::vec2_get_y(new_point),
-                                         math::vec3_get_z(position));
+    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(enemy.m_point_on_circle);
+    const math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                               math::vec2_get_y(new_point),
+                                               math::vec3_get_z(position));
     trans.set_position(new_pos);
   }
   
@@ -63,7 +62,8 @@ shooter_update(Game_object::Enemy &enemy,
     auto bullet = new Game_object::Bullet(enemy.get_world(),
                                           math::vec2_init(math::vec3_get_z(enemy.get_entity().get_transform().get_position()), enemy.m_point_on_circle),
                                           math::vec2_init(0, +1),
-                                          70.7f);
+                                          50.7f,
+                                          Object_tags::player);
     
     objs.push_object(bullet);
 
