@@ -10,12 +10,12 @@
 #include <core/camera/camera.hpp>
 #include <core/camera/camera_utils.hpp>
 #include <core/model/model.hpp>
+#include <core/entity/entity_ref.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <utilities/directory.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
-#include <core/entity/entity_ref.hpp>
 
 
 namespace
