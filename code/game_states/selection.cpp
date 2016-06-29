@@ -193,8 +193,6 @@ selection_update(Core::Context &context,
         
         for(auto &sel : signed_in_selections)
         {
-          ++controller_id;
-        
           if(sel)
           {
             auto new_player = new Game_object::Player(world, context, controller_id);
@@ -206,6 +204,8 @@ selection_update(Core::Context &context,
             delete sel;
             sel = nullptr;
           }
+          
+          ++controller_id;
         }
       }
     
