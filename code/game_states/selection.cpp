@@ -275,7 +275,9 @@ selection_update(Core::Context &context,
 
         // Place card
         Core::Transform trans;
-        trans.set_position(math::vec3_init(math::vec3_get_x(final_pos), math::vec3_get_y(final_pos), math::vec3_get_z(final_pos)));
+        trans.set_position(math::vec3_init(math::vec3_get_x(final_pos),
+                                           math::vec3_get_y(final_pos),
+                                           math::vec3_get_z(final_pos)));
         constexpr float scale = 0.05f;
         trans.set_scale(math::vec3_init(scale, 1, scale));
         trans.set_rotation(math::quat_init_with_axis_angle(1, 0, 0, -math::quart_tau()));

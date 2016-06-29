@@ -50,7 +50,7 @@ main()
   Core::Context_setup context_setup;
   context_setup.vsync = false;
 
-  Core::Context context(800, 480, false, "Vortex Defender 2099", context_setup);
+  Core::Context context(1200, 720, false, "Vortex Defender 2099", context_setup);
   Core::World   world(context, Core::World_setup{});
   
   // ** Start Game ** //
@@ -60,6 +60,7 @@ main()
   Game_object::World_objects objs;
   Game_object::Main_camera *go_cam = new Game_object::Main_camera(world, context);;
   
+  objs.push_object(go_cam);
   objs.push_object(new Game_object::Horizon(world));
   
   bool first_load = true;
@@ -96,7 +97,6 @@ main()
           {
             first_load = false;
             
-            objs.push_object(go_cam);
             objs.push_object(new Game_object::Level(world));
           }
         
@@ -131,7 +131,9 @@ main()
       
       case(Game_state::loading):
       {
-        next_state = loading_update(context, world, go_cam->m_world_camera);
+        next_state = loading_update(context,
+                                    world,
+                                    go_cam->m_world_camera);
         
         break;
       }

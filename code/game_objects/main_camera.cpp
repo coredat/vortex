@@ -99,6 +99,7 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
 void
 Main_camera::on_start()
 {
+  
 }
 
 
@@ -113,9 +114,9 @@ Main_camera::on_update(const float dt, World_objects &world_objs)
   
   world.find_entities_by_tag(Object_tags::player, &players, &ent_size);
 
-  if(ent_size)
+  if(!ent_size)
   {
-    int v = 0;
+    return;
   }
 
   constexpr float camera_distance_far = 20.f;

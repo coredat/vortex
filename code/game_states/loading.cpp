@@ -1,4 +1,5 @@
 #include <game_states/loading.hpp>
+#include <common/object_tags.hpp>
 #include <core/context/context.hpp>
 #include <core/world/world.hpp>
 #include <core/resources/texture.hpp>
@@ -23,7 +24,7 @@ namespace
   Core::Model       model;
   Core::Entity      loading_entity;
   
-  const float       max_timer = 10.f;  // Min time loading screen stays up
+  const float       max_timer = 2.f;  // Min time loading screen stays up
   float             curr_timer = 0.f;
 }
 
@@ -77,6 +78,7 @@ loading_init(Core::Context &context, Core::World &world)
       trans.set_rotation(rot);
       loading_entity.set_renderer(mat_renderer);
       loading_entity.set_transform(trans);
+      loading_entity.set_tags(Object_tags::gui_cam);
     }
   }
 }
@@ -107,20 +109,22 @@ loading_update(Core::Context &context,
     return false; 
   };
   
-  math::mat4 proj   = Core::Camera_utils::camera_get_projection_matrix(cam);
-  math::mat4 view   = Core::Camera_utils::camera_get_view_matrix(cam);
-  math::mat4 inv_vp = math::mat4_get_inverse(math::mat4_multiply(proj, view));
+  const math::mat4 proj   = Core::Camera_utils::camera_get_projection_matrix(cam);
+  const math::mat4 view   = Core::Camera_utils::camera_get_view_matrix(cam);
+  const math::mat4 inv_vp = math::mat4_get_inverse(math::mat4_multiply(proj, view));
   
-  const float offset = -3.f + (1 * 2.f);
+  const float offset = 0.f;
   
-  math::vec4 screen_pos = math::vec4_init(offset, 0.f, -1.f, 1.f);
-  math::vec4 world_pos  = math::mat4_multiply(screen_pos, inv_vp);      
-  math::vec3 world_pos3 = math::vec3_init(math::vec4_get_x(world_pos), math::vec4_get_y(world_pos), math::vec4_get_z(world_pos));
-  math::vec3 dir        = math::vec3_normalize(world_pos3);
+  const math::vec4 screen_pos = math::vec4_init(offset, 0.f, -1.f, 1.f);
+  const math::vec4 world_pos  = math::mat4_multiply(screen_pos, inv_vp);
+  const math::vec3 world_pos3 = math::vec3_init(math::vec4_get_x(world_pos),
+                                                math::vec4_get_y(world_pos),
+                                                math::vec4_get_z(world_pos));
+  const math::vec3 dir        = math::vec3_normalize(world_pos3);
   
   const Core::Transform cam_trans = cam.get_attached_entity().get_transform();
   
-  const math::vec3 fwd = math::vec3_scale(cam_trans.get_forward(), 0.2);
+  const math::vec3 fwd = math::vec3_scale(cam_trans.get_forward(), 0.2f);
   const math::vec3 plane_pos = math::vec3_add(cam_trans.get_position(), fwd);
   
   float time;
@@ -132,13 +136,15 @@ loading_update(Core::Context &context,
   
   if(did_intersect)
   {
-    math::vec3 final_scale = math::vec3_scale(dir, time);
+    const math::vec3 final_scale = math::vec3_scale(dir, time);
     math::vec3 final_pos = math::vec3_add(cam_trans.get_position(), final_scale);
 
     // Place card
     Core::Transform trans;
-    trans.set_position(math::vec3_init(math::vec3_get_x(final_pos), math::vec3_get_y(final_pos), math::vec3_get_z(final_pos)));
-    constexpr float scale = 1;
+    trans.set_position(math::vec3_init(math::vec3_get_x(final_pos),
+                                       math::vec3_get_y(final_pos),
+                                       math::vec3_get_z(final_pos)));
+    constexpr float scale = 0.05f;
     trans.set_scale(math::vec3_init(scale, 1, scale));
     trans.set_rotation(math::quat_init_with_axis_angle(1, 0, 0, -math::quart_tau()));
     
@@ -147,6 +153,7 @@ loading_update(Core::Context &context,
   
   if(curr_timer > max_timer)
   {
+    loading_entity.destroy();
     return Game_state::title_screen;
   }
   
