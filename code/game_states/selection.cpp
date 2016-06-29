@@ -38,8 +38,7 @@ namespace
   uint32_t            current_player_selection[max_number_of_players];
   
   Core::Entity        selection_screens[max_number_of_players];
-  Core::Entity        *signed_in_selections[4];
-  Core::Entity_ref    signed_in_players[4];
+  Core::Entity        *signed_in_selections[max_number_of_players];
 }
 
 
