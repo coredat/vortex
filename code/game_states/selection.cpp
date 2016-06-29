@@ -1,6 +1,8 @@
 #include <game_states/selection.hpp>
+#include <game_objects/world_objects.hpp>
 #include <game_objects/player.hpp>
 #include <common/object_tags.hpp>
+#include <common/screen_cast.hpp>
 #include <common/game_state.hpp>
 #include <core/input/controller.hpp>
 #include <core/resources/texture.hpp>
@@ -223,77 +225,23 @@ selection_update(Core::Context &context,
   /*
     Update sel screens
   */
-    for(uint32_t i = 0; i < 4; ++i)
+  for(uint32_t i = 0; i < 4; ++i)
+  {
+    auto &sel = selection_screens[i];
+    
+    const float offset = -3.f + (i * 2.f);
+    
+    sel.set_transform(Screen_cast::intersect_screen_plane(cam, offset, 0));
+  
+    if(signed_in_selections[i])
     {
-      auto &sel = selection_screens[i];
+      auto sel_trans = selection_screens[i].get_transform();
+      sel_trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
+      sel_trans.set_position(math::vec3_add(sel.get_transform().get_position(), math::vec3_init(0,0,0.002f)));
       
-      math::mat4 proj   = Core::Camera_utils::camera_get_projection_matrix(cam);
-      math::mat4 view   = Core::Camera_utils::camera_get_view_matrix(cam);
-      math::mat4 inv_vp = math::mat4_get_inverse(math::mat4_multiply(proj, view));
-      
-      const float offset = -3.f + (i * 2.f);
-      
-      math::vec4 screen_pos = math::vec4_init(offset, 0.f, -1.f, 1.f);
-      math::vec4 world_pos  = math::mat4_multiply(screen_pos, inv_vp);      
-      math::vec3 world_pos3 = math::vec3_init(math::vec4_get_x(world_pos), math::vec4_get_y(world_pos), math::vec4_get_z(world_pos));
-      math::vec3 dir        = math::vec3_normalize(world_pos3);
-      
-      auto intersect_plane = [](const math::vec3 plane_normal,
-                                const math::vec3 plane_position,
-                                const math::vec3 ray_start,
-                                const math::vec3 ray_dir,
-                                float &time) -> bool
-      {
-        // assuming vectors are all normalized
-        float denom = math::vec3_dot(plane_normal, ray_dir);
-        if (denom > 1e-6)
-        {
-          math::vec3 p0l0 = math::vec3_subtract(plane_position, ray_start);
-          time = math::vec3_dot(p0l0, plane_normal) / denom;
-          return (time >= 0);
-        } 
-     
-        return false; 
-      };
-      
-      const Core::Transform cam_trans = cam.get_attached_entity().get_transform();
-      
-      const math::vec3 fwd = math::vec3_scale(cam_trans.get_forward(), 0.2);
-      const math::vec3 plane_pos = math::vec3_add(cam_trans.get_position(), fwd);
-      
-      float time;
-      const bool did_intersect = intersect_plane(math::vec3_init(0, 0, -1),
-                                                 plane_pos,
-                                                 cam_trans.get_position(),
-                                                 dir,
-                                                 time);
-      
-      if(did_intersect)
-      {
-        math::vec3 final_scale = math::vec3_scale(dir, time);
-        math::vec3 final_pos = math::vec3_add(cam_trans.get_position(), final_scale);
-
-        // Place card
-        Core::Transform trans;
-        trans.set_position(math::vec3_init(math::vec3_get_x(final_pos),
-                                           math::vec3_get_y(final_pos),
-                                           math::vec3_get_z(final_pos)));
-        constexpr float scale = 0.05f;
-        trans.set_scale(math::vec3_init(scale, 1, scale));
-        trans.set_rotation(math::quat_init_with_axis_angle(1, 0, 0, -math::quart_tau()));
-        
-        sel.set_transform(trans);
-        
-        if(signed_in_selections[i])
-        {
-          auto sel_trans = selection_screens[i].get_transform();
-          sel_trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
-          sel_trans.set_position(math::vec3_add(trans.get_position(), math::vec3_init(0,0,0.002f)));
-          
-          signed_in_selections[i]->set_transform(sel_trans);
-        }
-      }
+      signed_in_selections[i]->set_transform(sel_trans);
     }
+  }
   
   /*
     Add players as the push their buttons.

@@ -1,4 +1,6 @@
 #include <game_states/loading.hpp>
+#include <common/game_state.hpp>
+#include <game_objects/world_objects.hpp>
 #include <common/object_tags.hpp>
 #include <common/screen_cast.hpp>
 #include <core/context/context.hpp>

@@ -1,4 +1,5 @@
 #include <game_states/title_screen.hpp>
+#include <common/game_state.hpp>
 #include <core/context/context.hpp>
 #include <core/world/world.hpp>
 #include <core/resources/texture.hpp>

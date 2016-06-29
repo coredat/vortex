@@ -1,4 +1,5 @@
 #include <game_states/game_over.hpp>
+#include <common/game_state.hpp>
 #include <game_objects/explosion.hpp>
 #include <game_objects/enemy.hpp>
 #include <core/input/controller.hpp>

@@ -9,7 +9,9 @@ namespace Screen_cast {
 
 
 Core::Transform
-intersect_screen_plane(const Core::Camera &cam)
+intersect_screen_plane(const Core::Camera &cam,
+                       const float ray_offset_x,
+                       const float ray_offset_y)
 {
   auto intersect_plane = [](const math::vec3 plane_normal,
                             const math::vec3 plane_position,
@@ -33,9 +35,7 @@ intersect_screen_plane(const Core::Camera &cam)
   const math::mat4 view   = Core::Camera_utils::camera_get_view_matrix(cam);
   const math::mat4 inv_vp = math::mat4_get_inverse(math::mat4_multiply(proj, view));
   
-  const float offset = 0.f;
-  
-  const math::vec4 screen_pos = math::vec4_init(offset, 0.f, -1.f, 1.f);
+  const math::vec4 screen_pos = math::vec4_init(ray_offset_x, ray_offset_y, -1.f, 1.f);
   const math::vec4 world_pos  = math::mat4_multiply(screen_pos, inv_vp);
   const math::vec3 world_pos3 = math::vec3_init(math::vec4_get_x(world_pos),
                                                 math::vec4_get_y(world_pos),
