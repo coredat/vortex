@@ -22,27 +22,24 @@
 
 namespace
 {
-  constexpr uint32_t number_of_materials = 4;
-  Core::Material materials[number_of_materials];
+  constexpr uint32_t  number_of_materials = 4;
   
-  Core::Material no_selection_material;
-  Core::Material selection_material;
+  Core::Material      materials[number_of_materials];
+  Core::Material      no_selection_material;
+  Core::Material      selection_material;
+  Core::Material      start_game_material;
 
-  constexpr uint32_t number_of_models = 4;
-  Core::Model models[number_of_models];
+  constexpr uint32_t  number_of_models = 4;
+  Core::Model         models[number_of_models];
+  Core::Model         plane;
   
-  constexpr uint32_t max_number_of_players = 4;
-  uint32_t current_player_selection[max_number_of_players];
+  constexpr uint32_t  max_number_of_players = 4;
+  uint32_t            players_signed_in = 0;
+  uint32_t            current_player_selection[max_number_of_players];
   
-  Core::Entity selection_screens[max_number_of_players];
-  
-  Core::Model plane;
-  
-  Core::Entity *signed_in_selections[4];
-  
-  Core::Entity_ref signed_in_players[4];
-  
-  uint32_t players_signed_in = 0;
+  Core::Entity        selection_screens[max_number_of_players];
+  Core::Entity        *signed_in_selections[4];
+  Core::Entity_ref    signed_in_players[4];
 }
 
 
@@ -53,31 +50,39 @@ selection_init(Core::Context &ctx,
 {
   const std::string asset_path = util::get_resource_path() + "assets/";
 
-  // No selection texture
-  if(!no_selection_material)
+  // Load materials
+  if(!no_selection_material || !selection_material || !start_game_material)
   {
     const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
     Core::Shader shader(shader_path.c_str());
     
-    const std::string tex = asset_path + "textures/no_ship.png";
-    Core::Texture no_selection_texture(tex.c_str());
+    // --
+    
+    const std::string no_ship_tex = asset_path + "textures/no_ship.png";
+    Core::Texture no_selection_texture(no_ship_tex.c_str());
     
     no_selection_material = Core::Material("selection-none");
     no_selection_material.set_shader(shader);
     no_selection_material.set_map_01(no_selection_texture);
-  }
-
-  // Selection material
-  {
-    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
-    Core::Shader shader(shader_path.c_str());
     
-    const std::string tex = asset_path + "textures/choose_ship.png";
-    Core::Texture no_selection_texture(tex.c_str());
+    // --
+    
+    const std::string choose_ship = asset_path + "textures/choose_ship.png";
+    Core::Texture choose_ship_texture(choose_ship.c_str());
     
     selection_material = Core::Material("selection");
     selection_material.set_shader(shader);
-    selection_material.set_map_01(no_selection_texture);
+    selection_material.set_map_01(choose_ship_texture);
+    
+    // --
+
+    const std::string press_start = asset_path + "textures/choose_ship.png";
+    Core::Texture press_start_texture(choose_ship.c_str());
+    
+    start_game_material = Core::Material("press-start");
+    start_game_material.set_shader(shader);
+    start_game_material.set_map_01(press_start_texture);
+    
   }
 
   // Load materials
@@ -86,50 +91,30 @@ selection_init(Core::Context &ctx,
     const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
     Core::Shader shader(shader_path.c_str());
   
-    uint32_t load_material = 0;
-    
-    const std::string tex_01 = asset_path + "textures/ship_01.png";
-    materials[load_material] = Core::Material("Player-mat-01");
-    materials[load_material].set_shader(shader);
-    materials[load_material].set_map_01(Core::Texture(tex_01.c_str()));
-    
-    ++load_material;
-    
-    const std::string tex_02 = asset_path + "textures/ship_02.png";
-    materials[load_material] = Core::Material("Player-mat-02");
-    materials[load_material].set_shader(shader);
-    materials[load_material].set_map_01(Core::Texture(tex_02.c_str()));
-    
-    ++load_material;
-    
-    const std::string tex_03 = asset_path + "textures/ship_03.png";
-    materials[load_material] = Core::Material("Player-mat-03");
-    materials[load_material].set_shader(shader);
-    materials[load_material].set_map_01(Core::Texture(tex_03.c_str()));
-    
-    ++load_material;
-    
-    const std::string tex_04 = asset_path + "textures/ship_04.png";
-    materials[load_material] = Core::Material("Player-mat-04");
-    materials[load_material].set_shader(shader);
-    materials[load_material].set_map_01(Core::Texture(tex_04.c_str()));
+    for(uint32_t i = 0; i < number_of_materials; ++i)
+    {
+      char buffer[PATH_MAX];
+      sprintf(buffer, "player-mat-%02d", i + 1);
+      materials[i] = Core::Material(buffer);
+      materials[i].set_shader(shader);
+      
+      memset(buffer, 0, sizeof(buffer));
+      sprintf(buffer, "%stextures/ship_%02d.png", asset_path.c_str(), i + 1);
+      
+      materials[i].set_map_01(Core::Texture(buffer));
+    }
   }
 
   // Load models
   if(!models[0])
   {
-    uint32_t load_model = 0;
-    const std::string model_01 = asset_path + "models/ship_01.obj";
-    models[load_model++] = Core::Model(model_01.c_str());
-    
-    const std::string model_02 = asset_path + "models/ship_02.obj";
-    models[load_model++] = Core::Model(model_02.c_str());
-    
-    const std::string model_03 = asset_path + "models/ship_03.obj";
-    models[load_model++] = Core::Model(model_03.c_str());
-    
-    const std::string model_04 = asset_path + "models/ship_04.obj";
-    models[load_model++] = Core::Model(model_04.c_str());
+    for(uint32_t i = 0; i < number_of_models; ++i)
+    {
+      char buffer[PATH_MAX];
+      sprintf(buffer, "%smodels/ship_%02d.obj", asset_path.c_str(), i + 1);
+      
+      models[i] = Core::Model(buffer);
+    }
   }
   
   // Set player selections
@@ -144,22 +129,18 @@ selection_init(Core::Context &ctx,
   
   // Selection Screens
   {
-    const std::string plane_path = asset_path + "models/unit_plane.obj";
+    char plane_path[PATH_MAX];
+    sprintf(plane_path, "%smodels/unit_plane.obj", asset_path.c_str());
     
-    plane = Core::Model(plane_path.c_str());
+    plane = Core::Model(plane_path);
     
-    for(uint32_t i = 0; i < 4; ++i)
+    for(auto &sel : selection_screens)
     {
-      auto &sel = selection_screens[i];
-      
       sel = Core::Entity(world);
       sel.set_name("Selection screen");
       sel.set_tags(Object_tags::gui_cam);
       
-      Core::Material_renderer mat_renderer;
-      mat_renderer.set_material(no_selection_material);
-      mat_renderer.set_model(plane);
-      
+      const Core::Material_renderer mat_renderer(no_selection_material, plane);
       sel.set_renderer(mat_renderer);
     }
   }
@@ -206,11 +187,21 @@ selection_update(Core::Context &context,
       }
       
       // Remove player selection screens
+      // And spawn the player.
       {
+        uint32_t controller_id = 0;
+        
         for(auto &sel : signed_in_selections)
         {
+          ++controller_id;
+        
           if(sel)
           {
+            auto new_player = new Game_object::Player(world, context, controller_id);
+            new_player->get_entity().set_renderer(sel->get_renderer());
+            
+            objects.push_object(new_player);
+          
             sel->destroy();
             delete sel;
             sel = nullptr;
@@ -248,18 +239,11 @@ selection_update(Core::Context &context,
   */
   for(uint32_t i = 0; i < number_of_controllers; ++i)
   {
-    if(!signed_in_players[i].is_valid())
+    if(!signed_in_selections[i])
     {
       if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
       {
-        auto new_player = new Game_object::Player(world, context, i);
-        signed_in_players[i] = new_player->get_entity();
-        
-        objects.push_object(new_player);
-        
-        Core::Material_renderer mat_renderer;
-        mat_renderer.set_model(models[0]);
-        mat_renderer.set_material(materials[0]);
+        const Core::Material_renderer mat_renderer(materials[0], models[0]);
         
         signed_in_selections[i] = new Core::Entity(world);
         signed_in_selections[i]->set_name("selection-entity");
@@ -276,20 +260,11 @@ selection_update(Core::Context &context,
       current_player_selection[i] = (current_player_selection[i] + 1) % number_of_materials;
       const uint32_t selection = current_player_selection[i];
      
-      Core::Material_renderer player_renderer;
-      player_renderer.set_model(models[selection]);
-      player_renderer.set_material(materials[selection]);
-      
-      signed_in_players[i].set_renderer(player_renderer);
-      
-      Core::Material_renderer sel_renderer;
-      sel_renderer.set_model(plane);
-      sel_renderer.set_material(selection_material);
-
-      // Add selection screen.
-      selection_screens[i].set_renderer(sel_renderer);
-      
+      const Core::Material_renderer player_renderer(materials[selection], models[selection]);
       signed_in_selections[i]->set_renderer(player_renderer);
+      
+      const Core::Material_renderer sel_renderer(selection_material, plane);
+      selection_screens[i].set_renderer(sel_renderer);
     }
   }
   
