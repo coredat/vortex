@@ -114,37 +114,37 @@ Main_camera::on_update(const float dt, World_objects &world_objs)
   
   world.find_entities_by_tag(Object_tags::player, &players, &ent_size);
 
-  if(!ent_size)
-  {
-    return;
-  }
-
   constexpr float camera_distance_far = 20.f;
   constexpr float camera_distance_near = 10.f;
-
-  // We set the camera origin as the first point.
-  const math::vec3 camera_origin = math::vec3_init(0,0,Level_funcs::get_top_of_level());
-  math::vec3 accum_target = camera_origin;
   
-  // Go through the players and accumulate the target point.
-  for(uint32_t i = 0; i < ent_size; ++i)
+  const math::vec3 camera_origin = math::vec3_init(0,0,Level_funcs::get_top_of_level());
+  math::vec3 avg_accum = math::vec3_init(0.f, 0.f, Level_funcs::get_top_of_level());
+  math::vec3 accum_target = avg_accum;
+
+  if(ent_size > 0)
   {
-    auto &player = players[i];
+    // We set the camera origin as the first point.
     
-    if(!player.is_valid())
+    // Go through the players and accumulate the target point.
+    for(uint32_t i = 0; i < ent_size; ++i)
     {
-      continue;
+      auto &player = players[i];
+      
+      if(!player.is_valid())
+      {
+        continue;
+      }
+      
+      // Get the difference and add it to the accum.
+      const math::vec3 player_pos  = player.get_transform().get_position();
+      const math::vec3 diff        = math::vec3_subtract(player_pos, math::vec3_zero());
+      const math::vec3 scaled_diff = math::vec3_scale(diff, 0.5f);
+      
+      accum_target = math::vec3_add(accum_target, scaled_diff);
     }
     
-    // Get the difference and add it to the accum.
-    const math::vec3 player_pos  = player.get_transform().get_position();
-    const math::vec3 diff        = math::vec3_subtract(player_pos, math::vec3_zero());
-    const math::vec3 scaled_diff = math::vec3_scale(diff, 0.5f);
-    
-    accum_target = math::vec3_add(accum_target, scaled_diff);
+    avg_accum = math::vec3_divide(accum_target, math::vec3_init(3.f));
   }
-  
-  const math::vec3 avg_accum = math::vec3_divide(accum_target, math::vec3_init(3.f));
   
   // The closer the target point is to the camera origin the
   // further we pull back because this means the players
