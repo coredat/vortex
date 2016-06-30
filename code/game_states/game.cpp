@@ -1,7 +1,7 @@
 #include <game_states/game.hpp>
 #include <common/level_functions.hpp>
 #include <game_objects/world_objects.hpp>
-#include <game_objects/player.hpp>
+#include <game_objects/player_ship.hpp>
 #include <game_objects/powerup_pickup.hpp>
 #include <game_objects/enemy.hpp>
 #include <game_objects/explosion.hpp>

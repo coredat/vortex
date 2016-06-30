@@ -1,5 +1,5 @@
 #include <game_objects/main_camera.hpp>
-#include <game_objects/player.hpp>
+#include <game_objects/player_ship.hpp>
 #include <core/world/world.hpp>
 #include <core/context/context.hpp>
 #include <core/transform/transform.hpp>

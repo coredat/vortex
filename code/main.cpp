@@ -1,7 +1,7 @@
 // Game Objects
 #include <game_objects/game_object.hpp>
 #include <game_objects/bullet.hpp>
-#include <game_objects/player.hpp>
+#include <game_objects/player_ship.hpp>
 #include <game_objects/enemy.hpp>
 #include <game_objects/main_camera.hpp>
 #include <game_objects/level.hpp>

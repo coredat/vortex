@@ -1,6 +1,6 @@
 #include <game_states/selection.hpp>
 #include <game_objects/world_objects.hpp>
-#include <game_objects/player.hpp>
+#include <game_objects/player_ship.hpp>
 #include <common/object_tags.hpp>
 #include <common/screen_cast.hpp>
 #include <common/game_state.hpp>
@@ -194,7 +194,7 @@ selection_update(Core::Context &context,
         {
           if(sel)
           {
-            auto new_player = new Game_object::Player(world, context, controller_id);
+            auto new_player = new Game_object::Player_ship(world, context, controller_id);
             new_player->get_entity().set_renderer(sel->get_renderer());
             
             objects.push_object(new_player);
