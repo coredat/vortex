@@ -62,13 +62,13 @@ Horizon::Horizon(Core::World &world)
     const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
     Core::Shader shader(shader_path.c_str());
   
-    const std::string tex_path = util::get_resource_path() + "assets/textures/dev_grid_blue_512.png";
+    const std::string tex_path = util::get_resource_path() + "assets/textures/dev_grid_cyan_512.png";
     Core::Texture texture_bot(tex_path.c_str());
     
     horizon_material_bottom.set_shader(shader);
     horizon_material_bottom.set_map_01(texture_bot);
     
-    m_curr_horz_timer = -100;
+    m_curr_horz_timer = 200;
   }
 
   ref.set_name("Horizon Particle Factory");
@@ -78,13 +78,13 @@ Horizon::Horizon(Core::World &world)
 void
 Horizon::on_update(const float dt, World_objects &objs)
 {
-  m_curr_horz_timer -= dt;
+  m_curr_horz_timer += dt;
   
-  if (m_curr_horz_timer < 60)
+  while (m_curr_horz_timer > 20)
   {
 //    m_curr_horz_timer = 0;
     
-    m_curr_horz_timer -= 60;
+    m_curr_horz_timer -= 20;
     
     constexpr uint32_t  number_to_spawn = 1;
     constexpr float     horz_offset = 15;
@@ -97,7 +97,7 @@ Horizon::on_update(const float dt, World_objects &objs)
       const float x_pos = 0;
       const float scale = Level_funcs::get_radius();
       
-      const float z_pos = (m_curr_horz_timer);
+      const float z_pos = -400 + (m_curr_horz_timer * 10);
       
       Core::Transform trans;
       trans.set_position(math::vec3_init(x_pos, x_pos, z_pos));
