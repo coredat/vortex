@@ -2,6 +2,7 @@
 #include <game_objects/horizon_particle.hpp>
 #include <game_objects/world_objects.hpp>
 #include <common/level_functions.hpp>
+#include <common/object_tags.hpp>
 #include <core/world/world.hpp>
 #include <core/resources/texture.hpp>
 #include <core/resources/material.hpp>
@@ -66,6 +67,8 @@ Horizon::Horizon(Core::World &world)
     
     horizon_material_bottom.set_shader(shader);
     horizon_material_bottom.set_map_01(texture_bot);
+    
+    m_curr_horz_timer = -100;
   }
 
   ref.set_name("Horizon Particle Factory");
@@ -75,13 +78,15 @@ Horizon::Horizon(Core::World &world)
 void
 Horizon::on_update(const float dt, World_objects &objs)
 {
-  m_curr_horz_timer += dt;
+  m_curr_horz_timer -= dt;
   
-  if (m_curr_horz_timer > m_horizon_timer)
+  if (m_curr_horz_timer < 60)
   {
-    m_curr_horz_timer = 0;
+//    m_curr_horz_timer = 0;
     
-    constexpr uint32_t  number_to_spawn = 0;
+    m_curr_horz_timer -= 60;
+    
+    constexpr uint32_t  number_to_spawn = 1;
     constexpr float     horz_offset = 15;
     
     for(uint32_t i = 0; i < number_to_spawn; ++i)
@@ -89,12 +94,13 @@ Horizon::on_update(const float dt, World_objects &objs)
       Horizon_particle *particle = new Horizon_particle(get_world());
       Core::Entity_ref ref = particle->get_entity();
       
-//      const float x_pos = static_cast<float>(rand() % 200) - 100.f;
       const float x_pos = 0;
-      const float scale = 100.f;
+      const float scale = Level_funcs::get_radius();
+      
+      const float z_pos = (m_curr_horz_timer);
       
       Core::Transform trans;
-      trans.set_position(math::vec3_init(x_pos, x_pos, Level_funcs::get_far_death_zone() * 10.5f));
+      trans.set_position(math::vec3_init(x_pos, x_pos, z_pos));
       trans.set_scale(math::vec3_init(scale));
       ref.set_transform(trans);
 
@@ -102,6 +108,7 @@ Horizon::on_update(const float dt, World_objects &objs)
       mat_renderer.set_material(horizon_material_bottom);
       mat_renderer.set_model(horizon_model);
       ref.set_renderer(mat_renderer);
+      ref.set_tags(Object_tags::world_cam);
 
       objs.push_object(particle);
     }

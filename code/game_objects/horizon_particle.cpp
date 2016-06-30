@@ -6,19 +6,12 @@
 #include <math/vec/vec3.hpp>
 
 
-namespace
-{
-  constexpr float default_horz_speed = 100.f;
-}
-
-
-
 namespace Game_object {
 
 
 Horizon_particle::Horizon_particle(Core::World &world)
 : Game_object(world)
-, m_horizon_speed(100.f)
+, m_horizon_speed(10.f)
 {
   get_entity().set_name("Horizon-Particle");
   get_entity().set_tags(Object_tags::level_cam);
