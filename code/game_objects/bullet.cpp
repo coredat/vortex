@@ -122,6 +122,24 @@ Bullet::Bullet(Core::World &world,
 
 
 void
+Bullet::on_start()
+{
+  auto ref = get_entity();
+  
+  Core::Transform trans = ref.get_transform();
+  
+  const math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point);
+  
+  math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                       math::vec2_get_y(new_point),
+                                       m_depth);
+  
+  trans.set_position(new_pos);
+  ref.set_transform(trans);
+}
+
+
+void
 Bullet::on_update(const float dt, World_objects &world_objs)
 {
   Core::Entity_ref ref = get_entity();
@@ -149,10 +167,6 @@ Bullet::on_update(const float dt, World_objects &world_objs)
     m_depth += math::vec2_get_y(velocity);
     
     const math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point);
-//    const math::vec3 position  = trans.get_position();
-//
-//    const float velocity = ((m_speed * dt) * m_direction);
-//    const float depth    = math::vec3_get_z(position) + velocity;
     
     math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
                                          math::vec2_get_y(new_point),

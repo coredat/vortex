@@ -22,6 +22,7 @@ public:
                            const float speed,
                            const uint32_t collision_flags);
   
+  void              on_start() override;
   void              on_update(const float dt,
                               World_objects &world_objs) override;
 

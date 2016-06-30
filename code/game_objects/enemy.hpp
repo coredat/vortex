@@ -54,6 +54,21 @@ public:
 };
 
 
+namespace Enemy_utils {
+
+
+/*
+  General utilitiy class to update the position of an enemy on the tube.
+*/
+void
+update_position(Core::Entity_ref ref,
+                const float position_on_circle,
+                const float depth);
+
+
+} // ns
+
+
 } // ns
 
 

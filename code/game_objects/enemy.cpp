@@ -203,5 +203,27 @@ Enemy::on_message(const uint32_t id, void *data)
 }
 
 
+namespace Enemy_utils {
+
+
+void
+update_position(Core::Entity_ref ref,
+                const float position_on_circle,
+                const float depth)
+{
+  Core::Transform trans = ref.get_transform();
+
+  const math::vec2 new_point = Level_funcs::get_point_on_cirlce(position_on_circle);
+  const math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                             math::vec2_get_y(new_point),
+                                             depth);
+  trans.set_position(new_pos);
+  
+  ref.set_transform(trans);
+}
+
+
+} // ns
+
 
 } // ns

@@ -70,7 +70,6 @@ main()
   {
     const float dt = world.get_delta_time();
     
-    objs.on_start();
     objs.on_update(dt);
     
     // ** Game State ** //
@@ -198,6 +197,8 @@ main()
     }
     
     objs.on_destroy();
+    objs.on_start(); // Needs to give chance to objects to get into the right position before they are rendererd.
+    
     world.think();
   }
 

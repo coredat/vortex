@@ -74,10 +74,40 @@ Player::Player(Core::World &world,
 }
 
 
+namespace
+{
+  /*
+    Update the position of the entity.
+  */
+  inline void
+  update_position(Core::Entity_ref ref,
+                  const float point_on_circle,
+                  const float momentum)
+  {
+    const math::vec2 new_point = Level_funcs::get_point_on_cirlce(point_on_circle);
+
+    Core::Transform trans = ref.get_transform();
+    const math::vec3 position = trans.get_position();
+
+    const math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                               math::vec2_get_y(new_point),
+                                               math::vec3_get_z(position));
+
+    const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
+    const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, -point_on_circle + math::quart_tau() - momentum);
+
+    trans.set_position(new_pos);
+    trans.set_rotation(math::quat_multiply(y_rot, z_rot));
+
+    ref.set_transform(trans);
+  }
+}
+
+
 void
 Player::on_start()
 {
-
+  update_position(get_entity(), m_point_on_circle, m_momentum);
 }
 
 
@@ -134,22 +164,7 @@ Player::on_update(const float dt, World_objects &world_objs)
         
         m_point_on_circle += move_speed;
         
-        const math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point_on_circle);
-
-        Core::Transform trans = ref.get_transform();
-        const math::vec3 position = trans.get_position();
-        
-        const math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
-                                                   math::vec2_get_y(new_point),
-                                                   math::vec3_get_z(position));
-        
-        const math::quat y_rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
-        const math::quat z_rot = math::quat_init_with_axis_angle(0, 0, 1, -m_point_on_circle + math::quart_tau() - m_momentum);
-
-        trans.set_position(new_pos);
-        trans.set_rotation(math::quat_multiply(y_rot, z_rot));
-        
-        ref.set_transform(trans);
+        update_position(get_entity(), m_point_on_circle, m_momentum);
       }
       
       // New Jump

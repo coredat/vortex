@@ -42,8 +42,10 @@ egg_setup(Game_object::Enemy &enemy_to_setup)
   
   ref.set_name("Enemy-Egg");
   
-  
   enemy_to_setup.m_direction = 0;
+  Game_object::Enemy_utils::update_position(ref,
+                                            enemy_to_setup.m_point_on_circle,
+                                            enemy_to_setup.m_depth);
 }
 
 

@@ -16,6 +16,10 @@ shooter_setup(Game_object::Enemy &enemy_to_setup)
   auto ref = enemy_to_setup.get_entity();
   
   ref.set_name("Enemy-Shooter");
+  
+  Game_object::Enemy_utils::update_position(ref,
+                                            enemy_to_setup.m_point_on_circle,
+                                            enemy_to_setup.m_depth);
 }
 
 
