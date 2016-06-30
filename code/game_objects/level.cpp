@@ -37,6 +37,31 @@ namespace
 }
 
 
+namespace
+{
+  inline void
+  update_position(const float dt)
+  {
+    static float total_time = 0;
+    total_time += dt;
+
+    for(uint32_t i = 0; i < number_of_sliders; ++i)
+    {
+      auto &slider = inner_sliders[i];
+
+      Core::Transform trans = slider.entity.get_transform();
+      
+      const float final_vel = slider.spin_mul * math::sin(slider.spin_offset + total_time * slider.velocity);
+      
+      math::quat rot = math::quat_init_with_axis_angle(0, 0, 1, final_vel);
+      trans.set_rotation(rot);
+      
+      slider.entity.set_transform(trans);
+    }
+  }
+}
+
+
 namespace Game_object {
 
 
@@ -82,9 +107,6 @@ Level::Level(Core::World &world)
                           math::vec3_init(Level_funcs::get_radius() * offset, Level_funcs::get_radius() * offset, 20.f),
                           math::quat_init());
     
-//    slider.entity.set_material(level_material);
-//    slider.entity.set_model(model);
-  
     Core::Material_renderer mat_renderer;
     mat_renderer.set_material(level_material);
     mat_renderer.set_model(model);
@@ -94,28 +116,15 @@ Level::Level(Core::World &world)
     slider.entity.set_transform(trans);
     slider.entity.add_tag(Object_tags::world_cam);
   }
+  
+  update_position(0.f);
 }
 
 
 void
 Level::on_update(const float dt, World_objects &objs)
 {
-  static float total_time = 0;
-  total_time += dt;
-
-  for(uint32_t i = 0; i < number_of_sliders; ++i)
-  {
-    auto &slider = inner_sliders[i];
-  
-    Core::Transform trans = slider.entity.get_transform();
-    
-    const float final_vel = slider.spin_mul * math::sin(slider.spin_offset + total_time * slider.velocity);
-    
-    math::quat rot = math::quat_init_with_axis_angle(0, 0, 1, final_vel);
-    trans.set_rotation(rot);
-    
-    slider.entity.set_transform(trans);
-  }
+  update_position(dt);
 }
 
 
