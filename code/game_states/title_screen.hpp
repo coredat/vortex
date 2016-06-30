@@ -6,6 +6,7 @@
 #include <common/common_fwd.hpp>
 #include <core/common/core_fwd.hpp>
 
+
 void
 title_screen_init(Core::Context &ctx,
                   Core::World &world,

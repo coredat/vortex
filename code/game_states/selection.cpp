@@ -267,5 +267,31 @@ selection_update(Core::Context &context,
     }
   }
   
+  /*
+    Update the signed in players rotation.
+  */
+  {
+    static float time = 0;
+    time += dt;
+  
+    for(uint32_t i = 0; i < number_of_controllers; ++i)
+    {
+      Core::Entity *sel = signed_in_selections[i];
+    
+      if(sel && sel->is_valid())
+      {
+        Core::Transform trans = sel->get_transform();
+
+        const math::quat spin_rot = math::quat_init_with_axis_angle(0, 1, 0, time + i);
+        const math::quat tilt_rot = math::quat_init_with_axis_angle(0, 0, 1, -0.2f);
+        const math::quat rot = math::quat_multiply(tilt_rot, spin_rot);
+    
+        trans.set_rotation(rot);
+        
+        sel->set_transform(trans);
+      }
+    }
+  }
+  
   return Game_state::selection;
 }
