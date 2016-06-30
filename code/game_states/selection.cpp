@@ -213,27 +213,6 @@ selection_update(Core::Context &context,
   }
   
   /*
-    Update sel screens
-  */
-  for(uint32_t i = 0; i < 4; ++i)
-  {
-    auto &sel = selection_screens[i];
-    
-    const float offset = -3.f + (i * 2.f);
-    
-    sel.set_transform(Screen_cast::intersect_screen_plane(cam, offset, 0));
-  
-    if(signed_in_selections[i])
-    {
-      auto sel_trans = selection_screens[i].get_transform();
-      sel_trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
-      sel_trans.set_position(math::vec3_add(sel.get_transform().get_position(), math::vec3_init(0,0,0.002f)));
-      
-      signed_in_selections[i]->set_transform(sel_trans);
-    }
-  }
-  
-  /*
     Add players as the push their buttons.
   */
   for(uint32_t i = 0; i < number_of_controllers; ++i)
@@ -264,6 +243,27 @@ selection_update(Core::Context &context,
       
       const Core::Material_renderer sel_renderer(selection_material, plane);
       selection_screens[i].set_renderer(sel_renderer);
+    }
+  }
+  
+  /*
+    Update sel screens
+  */
+  for(uint32_t i = 0; i < 4; ++i)
+  {
+    auto &sel = selection_screens[i];
+    
+    const float offset = -3.f + (i * 2.f);
+    
+    sel.set_transform(Screen_cast::intersect_screen_plane(cam, offset, 0));
+  
+    if(signed_in_selections[i])
+    {
+      auto sel_trans = selection_screens[i].get_transform();
+      sel_trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
+      sel_trans.set_position(math::vec3_add(sel.get_transform().get_position(), math::vec3_init(0,0,0.002f)));
+      
+      signed_in_selections[i]->set_transform(sel_trans);
     }
   }
   
