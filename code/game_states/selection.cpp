@@ -16,8 +16,10 @@
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <utilities/directory.hpp>
+#include <utilities/file_helpers.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
+#include <limits.h>
 
 
 namespace
@@ -92,7 +94,7 @@ selection_init(Core::Context &ctx,
   
     for(uint32_t i = 0; i < number_of_materials; ++i)
     {
-      char buffer[PATH_MAX];
+      char buffer[MAX_FILE_PATH_SIZE];
       sprintf(buffer, "player-mat-%02d", i + 1);
       materials[i] = Core::Material(buffer);
       materials[i].set_shader(shader);
@@ -109,7 +111,7 @@ selection_init(Core::Context &ctx,
   {
     for(uint32_t i = 0; i < number_of_models; ++i)
     {
-      char buffer[PATH_MAX];
+      char buffer[MAX_FILE_PATH_SIZE];
       sprintf(buffer, "%smodels/ship_%02d.obj", asset_path.c_str(), i + 1);
       
       models[i] = Core::Model(buffer);
@@ -128,7 +130,7 @@ selection_init(Core::Context &ctx,
   
   // Selection Screens
   {
-    char plane_path[PATH_MAX];
+    char plane_path[MAX_FILE_PATH_SIZE];
     sprintf(plane_path, "%smodels/unit_plane.obj", asset_path.c_str());
     
     plane = Core::Model(plane_path);

@@ -135,7 +135,7 @@ Powerup_pickup::on_update(const float dt, World_objects &objs)
 
 
 void
-Powerup_pickup::on_collision(Game_object::Game_object *obj)
+Powerup_pickup::on_collision(Game_object *obj)
 {
 }
 

@@ -10,7 +10,7 @@
 namespace Game_object {
 
 
-class Player : public Game_object::Game_object
+class Player : public Game_object
 {
 public:
 
