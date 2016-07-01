@@ -95,11 +95,10 @@ Level::Level(Core::World &world)
     slider.spin_mul = static_cast<float>(rand() % 50) / 100.f + 1.f;
     slider.spin_offset = static_cast<float>(rand() % 100);
     
-    char level_number[2];
-    sprintf(level_number, "%02d", i + 1);
-    
-    const std::string level_path = util::get_resource_path() + "assets/models/inner_level_" + level_number + ".obj";
-    Core::Model model(level_path.c_str());
+    char level_model[2048];
+    sprintf(level_model, "%sassets/models/inner_level_%02d.obj", util::get_resource_path().c_str(), i + 1);
+
+    Core::Model model(level_model);
 
     constexpr float offset = 1.1f;
     
