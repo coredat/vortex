@@ -196,8 +196,12 @@ main()
         UNREACHABLE;
     }
     
+    
     objs.on_destroy();
-    objs.on_start(); // Needs to give chance to objects to get into the right position before they are rendererd.
+    
+    // Needs to give chance to objects to get into the
+    // right position before they are rendererd.
+    objs.on_start();
     
     world.think();
   }
