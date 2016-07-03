@@ -15,6 +15,7 @@
 #include <utilities/directory.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
+#include <core/common/directory.hpp>
 
 
 namespace
@@ -35,8 +36,8 @@ Horizon::Horizon(Core::World &world)
   
   if(!horizon_model)
   {
-    const std::string path = util::get_resource_path() + "assets/models/ring.obj";
-    Core::Model model(path.c_str());
+    const char *path = Core::Directory::resource_path("assets/models/ring.obj");
+    Core::Model model(path);
     
     horizon_model = model;
   }
@@ -45,11 +46,11 @@ Horizon::Horizon(Core::World &world)
   {
     horizon_material_top = Core::Material("Horizon-top");
   
-    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
-    Core::Shader shader(shader_path.c_str());
+    const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    Core::Shader shader(shader_path);
   
-    const std::string tex_path2 = util::get_resource_path() + "assets/textures/dev_grid_orange_512.png";
-    Core::Texture texture_top(tex_path2.c_str());
+    const char *tex_path2 = Core::Directory::resource_path("assets/textures/dev_grid_orange_512.png");
+    Core::Texture texture_top(tex_path2);
     
     horizon_material_top.set_shader(shader);
     horizon_material_top.set_map_01(texture_top);
@@ -59,11 +60,11 @@ Horizon::Horizon(Core::World &world)
   {
     horizon_material_bottom = Core::Material("Horizon-bottom");
   
-    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
-    Core::Shader shader(shader_path.c_str());
+    const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    Core::Shader shader(shader_path);
   
-    const std::string tex_path = util::get_resource_path() + "assets/textures/dev_grid_cyan_512.png";
-    Core::Texture texture_bot(tex_path.c_str());
+    const char *tex_path = Core::Directory::resource_path("assets/textures/dev_grid_cyan_512.png");
+    Core::Texture texture_bot(tex_path);
     
     horizon_material_bottom.set_shader(shader);
     horizon_material_bottom.set_map_01(texture_bot);

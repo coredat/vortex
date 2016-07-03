@@ -25,8 +25,7 @@
 #include <math/vec/vec3.hpp>
 #include <math/geometry/aabb.hpp>
 #include <math/quat/quat.hpp>
-#include <utilities/directory.hpp>
-
+#include <core/common/directory.hpp>
 
 namespace
 {
@@ -83,18 +82,18 @@ Enemy::Enemy(Core::World &world, Type type)
   {
     generic_material = Core::Material("Enemy-generic");
     
-    const std::string orange_texture_path = util::get_resource_path() + "assets/textures/dev_grid_orange_512.png";
-    Core::Texture texture(Core::Texture(orange_texture_path.c_str()));
+    const char * orange_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_orange_512.png");
+    Core::Texture texture(orange_texture_path);
     
-    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
-    Core::Shader shader(shader_path.c_str());
+    const char * shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    Core::Shader shader(shader_path);
     
     generic_material.set_shader(shader);
     generic_material.set_map_01(texture);
   }
 
-  const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
-  model = Core::Model(unit_cube_path.c_str());
+  const char * unit_cube_path = Core::Directory::resource_path("assets/models/unit_cube.obj");
+  model = Core::Model(unit_cube_path);
   
   m_direction = 1;
   m_lifetime = 0;

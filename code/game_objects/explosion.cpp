@@ -10,7 +10,7 @@
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
 #include <math/general/general.hpp>
-#include <utilities/directory.hpp>
+#include <core/common/directory.hpp>
 
 
 namespace
@@ -32,11 +32,11 @@ Explosion::Explosion(Core::World &world, const math::vec3 position)
   {
     if(!material)
     {
-      const std::string grid_texture_path = util::get_resource_path() + "assets/textures/dev_colored_squares_512.png";
-      Core::Texture texture(grid_texture_path.c_str());
+      const char *grid_texture_path = Core::Directory::resource_path("assets/textures/dev_colored_squares_512.png");
+      Core::Texture texture(grid_texture_path);
       
-      const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
-      Core::Shader shader(shader_path.c_str());
+      const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+      Core::Shader shader(shader_path);
       
       material = Core::Material("Explosion");
       material.set_shader(shader);
@@ -45,8 +45,8 @@ Explosion::Explosion(Core::World &world, const math::vec3 position)
   
     if(!model)
     {
-      const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
-      model = Core::Model(unit_cube_path.c_str());
+      const char *unit_cube_path = Core::Directory::resource_path("assets/assets/models/unit_cube.obj");
+      model = Core::Model(unit_cube_path);
     }
   }
 
