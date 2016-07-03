@@ -45,7 +45,7 @@ Explosion::Explosion(Core::World &world, const math::vec3 position)
   
     if(!model)
     {
-      const char *unit_cube_path = Core::Directory::resource_path("assets/assets/models/unit_cube.obj");
+      const char *unit_cube_path = Core::Directory::resource_path("assets/models/unit_cube.obj");
       model = Core::Model(unit_cube_path);
     }
   }

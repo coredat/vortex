@@ -11,11 +11,11 @@
 #include <core/resources/texture.hpp>
 #include <core/resources/shader.hpp>
 #include <core/camera/post_process.hpp>
+#include <core/common/directory.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/vec/vec2.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
-#include <utilities/directory.hpp>
 
 
 namespace Game_object {
@@ -39,11 +39,11 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   Core::Render_target render_target(ctx.get_width(), ctx.get_height(), Graphics_api::Pixel_format::rgb8);
   Core::Render_target blur_target(ctx.get_width(), ctx.get_height(), Graphics_api::Pixel_format::rgb8);
   
-  const std::string shader_file = util::get_resource_path() + "assets/shaders/vortex_level_post.ogl";
-  Core::Shader post_shader(shader_file.c_str());
+  const char *shader_file = Core::Directory::resource_path("assets/shaders/vortex_level_post.ogl");
+  Core::Shader post_shader(shader_file);
   
-  const std::string b_mat = util::get_resource_path() + "assets/textures/bayer_mat.png";
-  Core::Texture bayer(b_mat.c_str());
+  const char *b_mat = Core::Directory::resource_path("assets/textures/bayer_mat.png");
+  Core::Texture bayer(b_mat);
   
   Core::Post_process post("post-process");
   post.set_shader(post_shader);

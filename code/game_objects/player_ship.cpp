@@ -19,7 +19,7 @@
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
 #include <math/geometry/aabb.hpp>
-#include <utilities/directory.hpp>
+#include <core/common/directory.hpp>
 #include <utilities/optimizations.hpp>
 
 
@@ -52,11 +52,11 @@ Player_ship::Player_ship(Core::World &world,
 , m_powerup(Powerup::none)
 , m_powerup_timer(0.f)
 {
-  const std::string unit_cube_path = util::get_resource_path() + "assets/models/ship_01.obj";
-  Core::Model model(unit_cube_path.c_str());
+  const char *unit_cube_path = Core::Directory::resource_path("assets/models/ship_01.obj");
+  Core::Model model(unit_cube_path);
 
-  const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
-  Core::Texture texture(green_texture_path.c_str());
+  const char *green_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_green_512.png");
+  Core::Texture texture(green_texture_path);
 
   Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());
   

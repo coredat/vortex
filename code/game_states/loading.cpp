@@ -16,7 +16,7 @@
 #include <core/renderer/material_renderer.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/transform/transform.hpp>
-#include <utilities/directory.hpp>
+#include <core/common/directory.hpp>
 #include <math/quat/quat.hpp>
 #include <utilities/logging.hpp>
 
@@ -35,7 +35,6 @@ void
 loading_init(Core::Context &context, Core::World &world)
 {
   curr_timer = 0;
-  const std::string asset_path = util::get_resource_path() + "assets/";
   
   // Create an entity for the logo.
   if(!loading_entity)
@@ -59,11 +58,11 @@ loading_init(Core::Context &context, Core::World &world)
   {
     logo_material = Core::Material("start-logo");
     
-    const std::string orange_texture_path = util::get_resource_path() + "assets/textures/dev_grid_orange_512.png";
-    Core::Texture texture(Core::Texture(orange_texture_path.c_str()));
+    const char *orange_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_orange_512.png");
+    Core::Texture texture(orange_texture_path);
     
-    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
-    Core::Shader shader(shader_path.c_str());
+    const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    Core::Shader shader(shader_path);
     
     logo_material.set_shader(shader);
     logo_material.set_map_01(texture);
@@ -71,8 +70,8 @@ loading_init(Core::Context &context, Core::World &world)
   
   // Apply a renderer to the logo.
   {
-    const std::string model_01 = asset_path + "models/unit_plane.obj";
-    Core::Model model = Core::Model(model_01.c_str());
+    const char *model_01 = Core::Directory::resource_path("assets/models/unit_plane.obj");
+    Core::Model model = Core::Model(model_01);
     
     Core::Material_renderer mat_renderer;
     mat_renderer.set_material(logo_material);

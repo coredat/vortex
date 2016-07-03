@@ -6,7 +6,7 @@
 #include <core/entity/entity_ref.hpp>
 #include <core/model/model.hpp>
 #include <core/resources/texture.hpp>
-#include <utilities/directory.hpp>
+#include <core/common/directory.hpp>
 #include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
 #include <string>
@@ -28,14 +28,14 @@ climber_setup(Game_object::Enemy &enemy_to_setup)
 {
   if(!model)
   {
-    const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
-    model = Core::Model(unit_cube_path.c_str());
+    const char *unit_cube_path = Core::Directory::resource_path("assets/models/unit_cube.obj");
+    model = Core::Model(unit_cube_path);
   }
 
   if(!texture)
   {
-    const std::string orange_texture_path = util::get_resource_path() + "assets/textures/dev_grid_orange_512.png";
-    texture  = Core::Texture(orange_texture_path.c_str());
+    const char *orange_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_orange_512.png");
+    texture  = Core::Texture(orange_texture_path);
   }
 
   auto ref = enemy_to_setup.get_entity();

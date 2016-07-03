@@ -15,6 +15,7 @@
 #include <core/entity/entity_ref.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
+#include <core/common/directory.hpp>
 #include <utilities/directory.hpp>
 #include <utilities/file_helpers.hpp>
 #include <math/vec/vec3.hpp>
@@ -49,18 +50,16 @@ selection_init(Core::Context &ctx,
                Core::World &world,
                Core::Camera &cam)
 {
-  const std::string asset_path = util::get_resource_path() + "assets/";
-
   // Load materials
   if(!no_selection_material || !selection_material || !start_game_material)
   {
-    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
-    Core::Shader shader(shader_path.c_str());
+    const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    Core::Shader shader(shader_path);
     
     // --
     
-    const std::string no_ship_tex = asset_path + "textures/no_ship.png";
-    Core::Texture no_selection_texture(no_ship_tex.c_str());
+    const char *no_ship_tex = Core::Directory::resource_path("assets/textures/no_ship.png");
+    Core::Texture no_selection_texture(no_ship_tex);
     
     no_selection_material = Core::Material("selection-none");
     no_selection_material.set_shader(shader);
@@ -68,8 +67,8 @@ selection_init(Core::Context &ctx,
     
     // --
     
-    const std::string choose_ship = asset_path + "textures/choose_ship.png";
-    Core::Texture choose_ship_texture(choose_ship.c_str());
+    const char *choose_ship = Core::Directory::resource_path("assets/textures/choose_ship.png");
+    Core::Texture choose_ship_texture(choose_ship);
     
     selection_material = Core::Material("selection");
     selection_material.set_shader(shader);
@@ -77,8 +76,8 @@ selection_init(Core::Context &ctx,
     
     // --
 
-    const std::string press_start = asset_path + "textures/choose_ship.png";
-    Core::Texture press_start_texture(choose_ship.c_str());
+    const char *press_start = Core::Directory::resource_path("assets/textures/choose_ship.png");
+    Core::Texture press_start_texture(press_start);
     
     start_game_material = Core::Material("press-start");
     start_game_material.set_shader(shader);
@@ -89,8 +88,8 @@ selection_init(Core::Context &ctx,
   // Load materials
   if(!materials[0])
   {
-    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
-    Core::Shader shader(shader_path.c_str());
+    const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    Core::Shader shader(shader_path);
   
     for(uint32_t i = 0; i < number_of_materials; ++i)
     {
@@ -100,7 +99,7 @@ selection_init(Core::Context &ctx,
       materials[i].set_shader(shader);
       
       memset(buffer, 0, sizeof(buffer));
-      sprintf(buffer, "%stextures/ship_%02d.png", asset_path.c_str(), i + 1);
+      sprintf(buffer, "%sassets/textures/ship_%02d.png", util::dir::resource_path(), i + 1);
       
       materials[i].set_map_01(Core::Texture(buffer));
     }
@@ -112,7 +111,7 @@ selection_init(Core::Context &ctx,
     for(uint32_t i = 0; i < number_of_models; ++i)
     {
       char buffer[MAX_FILE_PATH_SIZE];
-      sprintf(buffer, "%smodels/ship_%02d.obj", asset_path.c_str(), i + 1);
+      sprintf(buffer, "%sassets/models/ship_%02d.obj", util::dir::resource_path(), i + 1);
       
       models[i] = Core::Model(buffer);
     }
@@ -131,7 +130,7 @@ selection_init(Core::Context &ctx,
   // Selection Screens
   {
     char plane_path[MAX_FILE_PATH_SIZE];
-    sprintf(plane_path, "%smodels/unit_plane.obj", asset_path.c_str());
+    sprintf(plane_path, "%sassets/models/unit_plane.obj", util::dir::resource_path());
     
     plane = Core::Model(plane_path);
     

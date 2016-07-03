@@ -13,6 +13,7 @@
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
 #include <math/general/general.hpp>
+#include <core/common/directory.hpp>
 #include <utilities/directory.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
@@ -73,11 +74,11 @@ Level::Level(Core::World &world)
   // Create a material
   Core::Material level_material("Level");
   {
-    const std::string grey_texture_path = util::get_resource_path() + "assets/textures/dev_grid_grey_512.png";
-    Core::Texture texture(grey_texture_path.c_str());
+    const char * grey_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_grey_512.png");
+    Core::Texture texture(grey_texture_path);
 
-    const std::string shader_path = util::get_resource_path() + "assets/shaders/vortex_level.ogl";
-    Core::Shader shader(shader_path.c_str());
+    const char * shader_path = Core::Directory::resource_path("assets/shaders/vortex_level.ogl");
+    Core::Shader shader(shader_path);
     
     level_material.set_shader(shader);
     level_material.set_map_01(texture);
@@ -96,7 +97,7 @@ Level::Level(Core::World &world)
     slider.spin_offset = static_cast<float>(rand() % 100);
     
     char level_model[2048];
-    sprintf(level_model, "%sassets/models/inner_level_%02d.obj", util::get_resource_path().c_str(), i + 1);
+    sprintf(level_model, "%sassets/models/inner_level_%02d.obj", util::dir::resource_path(), i + 1);
 
     Core::Model model(level_model);
 

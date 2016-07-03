@@ -13,9 +13,9 @@
 #include <core/physics/rigidbody_properties.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
+#include <core/common/directory.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
-#include <utilities/directory.hpp>
 #include <random>
 
 
@@ -39,19 +39,19 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
 {
   if(!power_up_material)
   {
-    const std::string green_texture_path = util::get_resource_path() + "assets/textures/dev_grid_green_512.png";
-    Core::Texture texture(green_texture_path.c_str());
+    const char *green_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_green_512.png");
+    Core::Texture texture(green_texture_path);
     
-    const std::string shader_path = util::get_resource_path() + "assets/shaders/basic_fullbright.ogl";
-    Core::Shader shader(shader_path.c_str());
+    const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    Core::Shader shader(shader_path);
     
     power_up_material = Core::Material("Powerup");
     power_up_material.set_shader(shader);
     power_up_material.set_map_01(texture);
   }
 
-  const std::string unit_cube_path = util::get_resource_path() + "assets/models/unit_cube.obj";
-  Core::Model model(unit_cube_path.c_str());
+  const char *unit_cube_path = Core::Directory::resource_path("assets/models/unit_cube.obj");
+  Core::Model model(unit_cube_path);
 
   Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());
   
