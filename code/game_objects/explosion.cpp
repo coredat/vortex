@@ -45,7 +45,7 @@ Explosion::Explosion(Core::World &world, const math::vec3 position)
   
     if(!model)
     {
-      const char *unit_cube_path = Core::Directory::resource_path("assets/models/unit_cube.obj");
+      const char *unit_cube_path = Core::Directory::resource_path("assets/models/unit_sphere.obj");
       model = Core::Model(unit_cube_path);
     }
   }
@@ -82,7 +82,7 @@ Explosion::on_update(const float dt, World_objects &objs)
 {
   m_time += dt * 10.f;
   
-  const float new_scale = 0.5f + math::sin(m_time);
+  const float new_scale = 0.5f + (2.f * math::sin(m_time));
   
   if(new_scale < 0)
   {
