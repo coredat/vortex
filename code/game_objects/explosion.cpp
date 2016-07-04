@@ -1,4 +1,5 @@
 #include <game_objects/explosion.hpp>
+#include <game_objects/world_objects.hpp>
 #include <common/object_tags.hpp>
 #include <core/model/model.hpp>
 #include <core/resources/texture.hpp>
@@ -25,8 +26,13 @@ namespace
 namespace Game_object {
 
   
-Explosion::Explosion(Core::World &world, const math::vec3 position)
+Explosion::Explosion(Core::World &world,
+                     const math::vec3 position,
+                     const float scale_mul)
 : Game_object(world)
+, m_time(0.f)
+, m_scale_mul(scale_mul)
+, m_reproduced(m_scale_mul < 0.1f)
 {
   // Load missing assets
   {
@@ -80,9 +86,28 @@ Explosion::Explosion(Core::World &world, const math::vec3 position)
 void
 Explosion::on_update(const float dt, World_objects &objs)
 {
+  Core::Entity_ref ref = get_entity();
+
   m_time += dt * 10.f;
   
-  const float new_scale = 0.5f + (2.f * math::sin(m_time));
+  const float new_scale = 0.5f + math::sin(m_time);
+  
+  if(m_time > 0.5 && !m_reproduced)
+  {
+    const float new_scale = 0.5 * m_scale_mul;
+  
+    const math::vec3 pos = ref.get_transform().get_position();
+    
+    const float scale = m_scale_mul * 0.5f;
+    
+    const math::vec3 new_pos = math::vec3_init(math::rand_range(math::vec3_get_x(pos) - scale, math::vec3_get_x(pos) + scale),
+                                               math::rand_range(math::vec3_get_y(pos) - scale, math::vec3_get_y(pos) + scale),
+                                               math::rand_range(math::vec3_get_z(pos) - scale, math::vec3_get_z(pos) + scale));
+    
+    objs.push_object(new Explosion(get_world(), new_pos, 0.75f * m_scale_mul));
+    
+    m_reproduced = true;
+  }
   
   if(new_scale < 0)
   {
@@ -91,9 +116,7 @@ Explosion::on_update(const float dt, World_objects &objs)
   
   // Update the scale.
   {
-    Core::Entity_ref ref = get_entity();
-  
-    const math::vec3 scale = math::vec3_init(new_scale);
+    const math::vec3 scale = math::vec3_init(m_scale_mul * new_scale);
     Core::Transform trans = ref.get_transform();
     trans.set_scale(scale);
     
