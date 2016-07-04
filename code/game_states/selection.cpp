@@ -14,6 +14,7 @@
 #include <core/model/model.hpp>
 #include <core/entity/entity_ref.hpp>
 #include <core/renderer/renderer.hpp>
+#include <core/color/color.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/common/directory.hpp>
 #include <utilities/directory.hpp>
@@ -64,6 +65,8 @@ selection_init(Core::Context &ctx,
     no_selection_material = Core::Material("selection-none");
     no_selection_material.set_shader(shader);
     no_selection_material.set_map_01(no_selection_texture);
+    
+    no_selection_material.set_color(0x33333399);
     
     // --
     

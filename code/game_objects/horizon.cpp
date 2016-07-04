@@ -20,8 +20,7 @@
 
 namespace
 {
-  Core::Material  horizon_material_top;
-  Core::Material  horizon_material_bottom;
+  Core::Material  ring_material;
   Core::Model     horizon_model;
 }
 
@@ -42,34 +41,14 @@ Horizon::Horizon(Core::World &world)
     horizon_model = model;
   }
   
-  if(!horizon_material_top)
+  if(!ring_material)
   {
-    horizon_material_top = Core::Material("Horizon-top");
+    ring_material = Core::Material("outter-ring");
   
-    const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    const char *shader_path = Core::Directory::resource_path("assets/shaders/vortex_outter_level.ogl");
     Core::Shader shader(shader_path);
-  
-    const char *tex_path2 = Core::Directory::resource_path("assets/textures/dev_grid_orange_512.png");
-    Core::Texture texture_top(tex_path2);
     
-    horizon_material_top.set_shader(shader);
-    horizon_material_top.set_map_01(texture_top);
-  }
-  
-  if(!horizon_material_bottom)
-  {
-    horizon_material_bottom = Core::Material("Horizon-bottom");
-  
-    const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
-    Core::Shader shader(shader_path);
-  
-    const char *tex_path = Core::Directory::resource_path("assets/textures/dev_grid_cyan_512.png");
-    Core::Texture texture_bot(tex_path);
-    
-    horizon_material_bottom.set_shader(shader);
-    horizon_material_bottom.set_map_01(texture_bot);
-    
-    m_curr_horz_timer = 200;
+    ring_material.set_shader(shader);
   }
 
   ref.set_name("Horizon Particle Factory");
@@ -87,7 +66,7 @@ Horizon::on_update(const float dt, World_objects &objs)
     
     m_curr_horz_timer -= 20;
     
-    constexpr uint32_t  number_to_spawn = 1;
+    constexpr uint32_t  number_to_spawn = 0;
     constexpr float     horz_offset = 15;
     
     for(uint32_t i = 0; i < number_to_spawn; ++i)
@@ -106,7 +85,7 @@ Horizon::on_update(const float dt, World_objects &objs)
       ref.set_transform(trans);
 
       Core::Material_renderer mat_renderer;
-      mat_renderer.set_material(horizon_material_bottom);
+      mat_renderer.set_material(ring_material);
       mat_renderer.set_model(horizon_model);
       ref.set_renderer(mat_renderer);
       ref.set_tags(Object_tags::world_cam);

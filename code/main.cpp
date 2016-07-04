@@ -9,6 +9,8 @@
 #include <game_objects/explosion.hpp>
 #include <game_objects/powerup_pickup.hpp>
 #include <game_objects/world_objects.hpp>
+#include <game_objects/player.hpp>
+#include <common/event_ids.hpp>
 
 // Game States
 #include <game_states/loading.hpp>
@@ -27,20 +29,6 @@
 #include <utilities/logging.hpp>
 #include <utilities/optimizations.hpp>
 
-// Testing
-#include <core/resources/render_target.hpp>
-#include <core/resources/material.hpp>
-#include <core/resources/shader.hpp>
-#include <core/resources/texture.hpp>
-#include <core/camera/camera_utils.hpp>
-#include <core/transform/transform.hpp>
-#include <math/vec/vec4.hpp>
-#include <math/general/to_string.hpp>
-#include <math/mat/mat4.hpp>
-#include <utilities/directory.hpp>
-#include <vector>
-
-#include <common/event_ids.hpp>
 
 
 int

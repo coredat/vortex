@@ -9,7 +9,6 @@
 #include <core/common/directory.hpp>
 #include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
-#include <string>
 
 
 namespace
