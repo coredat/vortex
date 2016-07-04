@@ -18,7 +18,7 @@
 #include <core/renderer/material_renderer.hpp>
 #include <core/common/directory.hpp>
 #include <utilities/directory.hpp>
-#include <utilities/file_helpers.hpp>
+#include <utilities/file.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
 #include <limits.h>
