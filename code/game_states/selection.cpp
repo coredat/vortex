@@ -21,7 +21,6 @@
 #include <utilities/file.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
-#include <limits.h>
 
 
 namespace
