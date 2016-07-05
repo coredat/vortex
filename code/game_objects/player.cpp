@@ -76,5 +76,4 @@ Player::set_model(const Core::Model &model)
 }
 
 
-
 } // ns
