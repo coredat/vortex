@@ -69,10 +69,31 @@ Player::set_material(const Core::Material &mat)
 }
 
 
+Core::Material
+Player::get_material() const
+{
+  return m_curr_material;
+}
+
+
 void
 Player::set_model(const Core::Model &model)
 {
   m_curr_model = model;
+}
+
+
+Core::Model
+Player::get_model()
+{
+  return m_curr_model;
+}
+
+
+bool
+Player::is_valid() const
+{
+  return m_controller_id != UINT32_MAX;
 }
 
 

@@ -26,13 +26,19 @@ public:
   Player_ship*    spawn_ship(Core::Context &ctx) const;
   
   void            set_material(const Core::Material &mat);
+  Core::Material  get_material() const;
+  
   void            set_model(const Core::Model &model);
+  Core::Model     get_model();
+  
   void            set_controller(const uint32_t id);
+  
+  bool            is_valid() const;
   
 private:
 
   uint32_t        m_score           = 0;
-  uint32_t        m_controller_id   = 0;
+  uint32_t        m_controller_id   = UINT32_MAX;
   bool            m_is_active       = false;
   Core::Material  m_curr_material   = Core::Material("none");
   Core::Model     m_curr_model      = Core::Model();
