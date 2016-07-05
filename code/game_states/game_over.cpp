@@ -47,7 +47,6 @@ game_over_update(Core::Context &context,
         player_entities[i]->set_name("Entity Score Screen");
         player_entities[i]->set_tags(Object_tags::gui_cam);
  
-        
         Core::Material_renderer mat_renderer;
         mat_renderer.set_material(players[i]->get_material());
         mat_renderer.set_model(players[i]->get_model());
@@ -59,19 +58,28 @@ game_over_update(Core::Context &context,
   /*
     Result screens
   */
-  for(uint32_t i = 0; i < 4; ++i)
   {
-    auto &pl = player_entities[i];
-    
-    if(pl)
+    static float time = 0;
+    time += dt;
+
+    for(uint32_t i = 0; i < 4; ++i)
     {
-      const float offset = -3.f + (i * 2.f);
+      auto &pl = player_entities[i];
       
-      Core::Transform trans = Screen_cast::intersect_screen_plane(cam, offset, 1.5f);
-      trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
-//      trans.set_position(math::vec3_zero());
-      
-      pl->set_transform(trans);
+      if(pl)
+      {
+        const float offset = -3.f + (i * 2.f);
+        
+        Core::Transform trans = Screen_cast::intersect_screen_plane(cam, offset, 1.5f);
+        trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
+
+        const math::quat spin_rot = math::quat_init_with_axis_angle(0, 1, 0, time + i);
+        const math::quat tilt_rot = math::quat_init_with_axis_angle(0, 0, 1, -0.2f);
+        const math::quat rot = math::quat_multiply(tilt_rot, spin_rot);
+        trans.set_rotation(rot);
+        
+        pl->set_transform(trans);
+      }
     }
   }
 
