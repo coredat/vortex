@@ -19,7 +19,8 @@ namespace
   Core::Model model;
   Core::Texture texture;
   
-  Core::Material material;
+  Core::Material material_out;
+  Core::Material material_in;
 }
 
 
@@ -36,17 +37,24 @@ Explosion::Explosion(Core::World &world,
 {
   // Load missing assets
   {
-    if(!material)
+    if(!material_out)
     {
-      const char *grid_texture_path = Core::Directory::resource_path("assets/textures/dev_colored_squares_512.png");
+      const char *grid_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_cyan_512.png");
       Core::Texture texture(grid_texture_path);
+
+      const char *grid_texture2_path = Core::Directory::resource_path("assets/textures/dev_grid_cyan_512.png");
+      Core::Texture texture2(grid_texture2_path);
       
-      const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+      const char *shader_path = Core::Directory::resource_path("assets/shaders/vortex_explosion.ogl");
       Core::Shader shader(shader_path);
       
-      material = Core::Material("Explosion");
-      material.set_shader(shader);
-      material.set_map_01(texture);
+      material_out = Core::Material("Explosion-out");
+      material_out.set_shader(shader);
+      material_out.set_map_01(texture);
+      
+      material_in = Core::Material("Explosion-in");
+      material_in.set_shader(shader);
+      material_in.set_map_01(texture2);
     }
   
     if(!model)
@@ -65,7 +73,7 @@ Explosion::Explosion(Core::World &world,
     
     Core::Material_renderer mat_renderer;
     mat_renderer.set_model(model);
-    mat_renderer.set_material(material);
+    mat_renderer.set_material(material_out);
     
     ref.set_renderer(mat_renderer);
     
@@ -94,8 +102,6 @@ Explosion::on_update(const float dt, World_objects &objs)
   
   if(m_time > 0.5 && !m_reproduced)
   {
-    const float new_scale = 0.5 * m_scale_mul;
-  
     const math::vec3 pos = ref.get_transform().get_position();
     
     const float scale = m_scale_mul * 0.5f;
@@ -104,9 +110,18 @@ Explosion::on_update(const float dt, World_objects &objs)
                                                math::rand_range(math::vec3_get_y(pos) - scale, math::vec3_get_y(pos) + scale),
                                                math::rand_range(math::vec3_get_z(pos) - scale, math::vec3_get_z(pos) + scale));
     
-    objs.push_object(new Explosion(get_world(), new_pos, 0.75f * m_scale_mul));
+    objs.push_object(new Explosion(get_world(), new_pos, 0.8f * m_scale_mul));
     
     m_reproduced = true;
+  }
+  
+  if(new_scale < 0.75f)
+  {
+    Core::Material_renderer mat_renderer;
+    mat_renderer.set_model(model);
+    mat_renderer.set_material(material_in);
+    
+    ref.set_renderer(mat_renderer);
   }
   
   if(new_scale < 0)

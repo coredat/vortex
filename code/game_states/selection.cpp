@@ -1,5 +1,6 @@
 #include <game_states/selection.hpp>
 #include <game_objects/world_objects.hpp>
+#include <game_objects/player.hpp>
 #include <game_objects/player_ship.hpp>
 #include <common/object_tags.hpp>
 #include <common/screen_cast.hpp>
@@ -158,6 +159,8 @@ Game_state
 selection_update(Core::Context &context,
                  Core::World &world,
                  Core::Camera &cam,
+                 Game_object::Player *players[],
+                 const uint32_t player_count,
                  Game_object::World_objects &objects,
                  const float dt)
 {
@@ -191,26 +194,24 @@ selection_update(Core::Context &context,
       // Remove player selection screens
       // And spawn the player.
       {
-        uint32_t controller_id = 0;
-        
-        for(auto &sel : signed_in_selections)
+        for(uint32_t i = 0; i < 4; ++i)
         {
+          auto &sel = signed_in_selections[i];
+          
           if(sel)
           {
-            auto new_player = new Game_object::Player_ship(world, context, controller_id);
-            new_player->get_entity().set_renderer(sel->get_renderer());
+            players[i]->set_model(static_cast<Core::Material_renderer>(sel->get_renderer()).get_model());
+            players[i]->set_material(static_cast<Core::Material_renderer>(sel->get_renderer()).get_material());
+            players[i]->set_controller(i);
             
-            objects.push_object(new_player);
+            objects.push_object(players[i]->spawn_ship(context));
           
             sel->destroy();
             delete sel;
             sel = nullptr;
           }
-          
-          ++controller_id;
         }
       }
-    
       return Game_state::game_mode;
     }
   }
@@ -258,8 +259,8 @@ selection_update(Core::Context &context,
     
     const float offset = -3.f + (i * 2.f);
     
-    sel.set_transform(Screen_cast::intersect_screen_plane(cam, offset, 0));
-  
+    sel.set_transform(Screen_cast::intersect_screen_plane(cam, offset, 1.5f));
+    
     if(signed_in_selections[i])
     {
       auto sel_trans = selection_screens[i].get_transform();

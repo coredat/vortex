@@ -17,6 +17,8 @@ Game_state
 selection_update(Core::Context &ctx,
                  Core::World &world,
                  Core::Camera &camera,
+                 Game_object::Player *players[],
+                 const uint32_t player_count,
                  Game_object::World_objects &objects,
                  const float dt);
 

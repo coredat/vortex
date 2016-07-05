@@ -48,6 +48,16 @@ main()
   Game_object::World_objects objs;
   Game_object::Main_camera *go_cam = new Game_object::Main_camera(world, context);;
   
+  constexpr uint32_t player_count = 4;
+  
+  Game_object::Player *players[player_count];
+  
+  for(auto &pl : players)
+  {
+    pl = new Game_object::Player(world);
+    objs.push_object(pl);
+  }
+  
   objs.push_object(go_cam);
   objs.push_object(new Game_object::Horizon(world));
   
@@ -148,6 +158,8 @@ main()
         next_state = selection_update(context,
                                       world,
                                       go_cam->m_world_camera,
+                                      players,
+                                      player_count,
                                       objs,
                                       dt);
         break;
