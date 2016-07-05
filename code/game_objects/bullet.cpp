@@ -35,12 +35,14 @@ Bullet::Bullet(Core::World &world,
                const math::vec2 depth_point,
                const math::vec2 direction,
                const float speed,
-               const uint32_t collision_flags)
+               const uint32_t collision_flags,
+               const uint32_t owner_id)
 : Game_object(world)
 , m_depth(math::vec2_get_x(depth_point))
 , m_point(math::vec2_get_y(depth_point))
 , m_direction(math::vec2_normalize(direction))
 , m_speed(speed)
+, m_owner_id(owner_id)
 {
   // Load up missnig assets
   {
@@ -175,6 +177,13 @@ Bullet::on_update(const float dt, World_objects &world_objs)
     trans.set_position(new_pos);
     ref.set_transform(trans);
   }
+}
+
+
+uint32_t
+Bullet::get_owner_id() const
+{
+  return m_owner_id;
 }
 
 

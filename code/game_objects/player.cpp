@@ -1,5 +1,6 @@
 #include <game_objects/player.hpp>
 #include <game_objects/player_ship.hpp>
+#include <common/event_ids.hpp>
 #include <core/world/world.hpp>
 #include <core/context/context.hpp>
 #include <core/renderer/material_renderer.hpp>
@@ -24,6 +25,13 @@ Player::on_start()
 void
 Player::on_message(const uint32_t id, void *data)
 {
+  if(id == Event_id::player_destroyed_enemy)
+  {
+    if(*reinterpret_cast<uint32_t*>(data) == m_controller_id)
+    {
+      ++m_score;
+    }
+  }
 }
 
 

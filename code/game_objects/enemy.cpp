@@ -3,6 +3,7 @@
 #include <game_objects/explosion.hpp>
 #include <game_objects/powerup_pickup.hpp>
 #include <game_objects/enemy_egg.hpp>
+#include <game_objects/bullet.hpp>
 #include <game_objects/enemy_breeder.hpp>
 #include <game_objects/enemy_climber.hpp>
 #include <game_objects/enemy_shooter.hpp>
@@ -161,6 +162,12 @@ Enemy::on_update(const float dt, World_objects &objs)
       break;
     
     case(State::dying_with_powerup_chance):
+    
+      if(m_destroyed_by != UINT32_MAX)
+      {
+        objs.send_event(Event_id::player_destroyed_enemy, &m_destroyed_by);
+      }
+    
       // Roll dice to see if we drop a power up.
       if(!(rand() % chances_of_powerup))
       {
@@ -188,7 +195,15 @@ Enemy::on_update(const float dt, World_objects &objs)
 void
 Enemy::on_collision(Game_object *other)
 {
-  m_state = State::dying_with_powerup_chance;
+  if(other)
+  {
+    Bullet *bullet = reinterpret_cast<Bullet*>(other);
+    
+    const uint32_t bullet_owner = bullet->get_owner_id();
+    m_destroyed_by = bullet_owner;
+    
+    m_state = State::dying_with_powerup_chance;
+  }
 }
 
 

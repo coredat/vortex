@@ -40,6 +40,7 @@ public:
   int32_t         m_direction = 1;
   int32_t         m_user_data = 0;
   const Type      m_type = Type::climber;
+  uint32_t        m_destroyed_by = UINT32_MAX;
   
   enum class State
   {

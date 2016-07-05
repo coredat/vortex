@@ -205,7 +205,7 @@ selection_update(Core::Context &context,
             players[i]->set_controller(i);
             
             objects.push_object(players[i]->spawn_ship(context));
-          
+            
             sel->destroy();
             delete sel;
             sel = nullptr;

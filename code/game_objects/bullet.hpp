@@ -7,6 +7,7 @@
 #include <core/world/world_fwd.hpp>
 #include <math/vec/vec2.hpp>
 #include <stdint.h>
+#include <limits.h>
 
 
 namespace Game_object {
@@ -20,11 +21,14 @@ public:
                            const math::vec2 depth_point,
                            const math::vec2 direction,
                            const float speed,
-                           const uint32_t collision_flags);
+                           const uint32_t collision_flags,
+                           const uint32_t owner_id = UINT32_MAX);
   
   void              on_start() override;
   void              on_update(const float dt,
                               World_objects &world_objs) override;
+  
+  uint32_t          get_owner_id() const;
 
 private:
 
@@ -32,6 +36,7 @@ private:
   float             m_point     = 0.f;
   const math::vec2  m_direction = math::vec2_init(0.f, 1.f);
   const float       m_speed     = 0.f;
+  const uint32_t    m_owner_id  = UINT32_MAX;
 
 };
 

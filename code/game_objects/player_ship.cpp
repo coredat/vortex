@@ -212,13 +212,15 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
                                      math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
                                      math::vec2_init(+1, -1),
                                      70.7f,
-                                     Object_tags::enemy);
+                                     Object_tags::enemy,
+                                     m_controller_id);
             
             auto bullet2 = new Bullet(get_world(),
                                      math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
                                      math::vec2_init(-1, -1),
                                      70.7f,
-                                     Object_tags::enemy);
+                                     Object_tags::enemy,
+                                     m_controller_id);
             
             world_objs.push_object(bullet1);
             world_objs.push_object(bullet2);
@@ -229,7 +231,8 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
                                      math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
                                      math::vec2_init(-1, -0.25),
                                      70.7f,
-                                     Object_tags::enemy);
+                                     Object_tags::enemy,
+                                     m_controller_id);
             
             world_objs.push_object(bullet);
           }
@@ -239,7 +242,8 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
                                      math::vec2_init(math::vec3_get_z(ref.get_transform().get_position()), m_point_on_circle),
                                      math::vec2_init(0, -1),
                                      100.7f,
-                                     Object_tags::enemy);
+                                     Object_tags::enemy,
+                                     m_controller_id);
             
             world_objs.push_object(bullet);
           }
