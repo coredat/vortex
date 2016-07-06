@@ -83,7 +83,6 @@ game_over_update(Core::Context &context,
     }
   }
 
-
   Core::Input::Controller controller_1(context, 0);
   Core::Input::Controller controller_2(context, 1);
   Core::Input::Controller controller_3(context, 2);

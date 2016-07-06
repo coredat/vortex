@@ -286,8 +286,8 @@ selection_update(Core::Context &context,
       {
         Core::Transform trans = sel->get_transform();
 
-        const math::quat spin_rot = math::quat_init_with_axis_angle(0, 1, 0, time + i);
-        const math::quat tilt_rot = math::quat_init_with_axis_angle(0, 0, 1, -0.2f);
+        const math::quat spin_rot = math::quat_init_with_axis_angle(0.f, 1.f, 0.f, time + i);
+        const math::quat tilt_rot = math::quat_init_with_axis_angle(0.f, 0.f, 1.f, -0.2f);
         const math::quat rot = math::quat_multiply(tilt_rot, spin_rot);
     
         trans.set_rotation(rot);
