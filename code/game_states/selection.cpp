@@ -145,11 +145,6 @@ selection_init(Core::Context &ctx,
       sel.set_renderer(mat_renderer);
     }
   }
-  
-//  for(auto &sel : signed_in_selections)
-//  {
-//    sel = nullptr;
-//  }
 }
 
 
@@ -207,8 +202,6 @@ selection_update(Core::Context &context,
             objects.push_object(players[i]->spawn_ship(context));
             
             sel.destroy();
-//            delete sel;
-//            sel = nullptr;
           }
         }
       }

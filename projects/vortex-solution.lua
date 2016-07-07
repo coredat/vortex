@@ -39,6 +39,7 @@ project_defaults = {
 
   defines = {
     "CORE_USE_SOIL",
+    "CORE_DEBUG_MENU",
   },
 
   defines_macosx = {

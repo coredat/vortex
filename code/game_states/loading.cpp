@@ -45,11 +45,14 @@ loading_init(Core::Context &context, Core::World &world)
     
     // Rotate towards the screen.
     {
-      math::quat rot = math::quat_init_with_axis_angle(1, 0, 0, math::quart_tau());
+//      math::quat rot = math::quat_init_with_axis_angle(Core::Transform::get_world_left(), math::quart_tau());
+//      
+//      Core::Transform trans;
+//      trans.set_position(math::vec3_init(0,0,20));
+//      trans.set_scale(math::vec3_init(512.f));
+//      trans.set_rotation(rot);
       
-      Core::Transform trans;
-      trans.set_rotation(rot);
-      loading_entity.set_transform(trans);
+//      loading_entity.set_transform(trans);
     }
   }
   
@@ -58,7 +61,7 @@ loading_init(Core::Context &context, Core::World &world)
   {
     logo_material = Core::Material("start-logo");
     
-    const char *orange_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png");
+    const char *orange_texture_path = Core::Directory::volatile_resource_path("assets/textures/repofa.png");
     Core::Texture texture(orange_texture_path);
     
     const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
@@ -89,8 +92,22 @@ loading_update(Core::Context &context,
 {
   curr_timer += world.get_delta_time();
   
-  loading_entity.set_transform(Screen_cast::intersect_screen_plane(cam));
+//  Core::Transform trans = Screen_cast::intersect_screen_plane(cam);
+//  Core::Transform trans;
+//  trans.set_position(math::vec3_init(0,0,2));
+//  trans.set_scale(math::vec3_init(512.f));
   
+//  loading_entity.set_transform(trans);
+
+  const math::quat rot = math::quat_init_with_axis_angle(cam.get_attached_entity().get_transform().get_left(), -math::quart_tau());
+  
+  Core::Transform trans;
+  trans.set_position(math::vec3_init(-256, 0, 0));
+  trans.set_scale(math::vec3_init(512, 1, 256));
+  trans.set_rotation(rot);
+  
+  loading_entity.set_transform(trans);
+
   if(curr_timer > max_timer)
   {
     loading_entity.destroy();

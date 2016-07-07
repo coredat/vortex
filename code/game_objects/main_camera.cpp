@@ -72,12 +72,11 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   m_level_camera.set_priority(3);
   
   m_gui_camera.set_attached_entity(ref);
+  m_gui_camera.set_type(Core::Camera_type::orthographic);
   m_gui_camera.set_width(m_world_camera.get_width());
   m_gui_camera.set_height(m_world_camera.get_height());
-  m_gui_camera.set_feild_of_view(m_world_camera.get_field_of_view());
   m_gui_camera.set_near_plane(m_world_camera.get_near_plane());
   m_gui_camera.set_far_plane(m_world_camera.get_far_plane());
-  m_gui_camera.set_type(m_world_camera.get_type());
   m_gui_camera.set_clear_flags(Core::Camera_clear::depth);
   m_gui_camera.set_render_target(render_target);
   m_gui_camera.set_tags_to_render(Object_tags::gui_cam);
