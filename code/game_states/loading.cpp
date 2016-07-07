@@ -58,10 +58,10 @@ loading_init(Core::Context &context, Core::World &world)
   {
     logo_material = Core::Material("start-logo");
     
-    const char *orange_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_orange_512.png");
+    const char *orange_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png");
     Core::Texture texture(orange_texture_path);
     
-    const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
     Core::Shader shader(shader_path);
     
     logo_material.set_shader(shader);
@@ -70,7 +70,7 @@ loading_init(Core::Context &context, Core::World &world)
   
   // Apply a renderer to the logo.
   {
-    const char *model_01 = Core::Directory::resource_path("assets/models/unit_plane.obj");
+    const char *model_01 = Core::Directory::volatile_resource_path("assets/models/unit_plane.obj");
     Core::Model model = Core::Model(model_01);
     
     Core::Material_renderer mat_renderer;

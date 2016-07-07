@@ -74,10 +74,10 @@ Level::Level(Core::World &world)
   // Create a material
   Core::Material level_material("Level");
   {
-    const char * grey_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_grey_512.png");
+    const char * grey_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_grey_512.png");
     Core::Texture texture(grey_texture_path);
 
-    const char * shader_path = Core::Directory::resource_path("assets/shaders/vortex_level.ogl");
+    const char * shader_path = Core::Directory::volatile_resource_path("assets/shaders/vortex_level.ogl");
     Core::Shader shader(shader_path);
     
     level_material.set_shader(shader);

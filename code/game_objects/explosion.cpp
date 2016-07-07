@@ -39,13 +39,13 @@ Explosion::Explosion(Core::World &world,
   {
     if(!material_out)
     {
-      const char *grid_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_cyan_512.png");
+      const char *grid_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_cyan_512.png");
       Core::Texture texture(grid_texture_path);
 
-      const char *grid_texture2_path = Core::Directory::resource_path("assets/textures/dev_grid_cyan_512.png");
+      const char *grid_texture2_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_cyan_512.png");
       Core::Texture texture2(grid_texture2_path);
       
-      const char *shader_path = Core::Directory::resource_path("assets/shaders/vortex_explosion.ogl");
+      const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/vortex_explosion.ogl");
       Core::Shader shader(shader_path);
       
       material_out = Core::Material("Explosion-out");
@@ -59,7 +59,7 @@ Explosion::Explosion(Core::World &world,
   
     if(!model)
     {
-      const char *unit_cube_path = Core::Directory::resource_path("assets/models/unit_sphere.obj");
+      const char *unit_cube_path = Core::Directory::volatile_resource_path("assets/models/unit_sphere.obj");
       model = Core::Model(unit_cube_path);
     }
   }

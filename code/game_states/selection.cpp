@@ -55,12 +55,12 @@ selection_init(Core::Context &ctx,
   // Load materials
   if(!no_selection_material || !selection_material || !start_game_material)
   {
-    const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
     Core::Shader shader(shader_path);
     
     // --
     
-    const char *no_ship_tex = Core::Directory::resource_path("assets/textures/no_ship.png");
+    const char *no_ship_tex = Core::Directory::volatile_resource_path("assets/textures/no_ship.png");
     Core::Texture no_selection_texture(no_ship_tex);
     
     no_selection_material = Core::Material("selection-none");
@@ -71,7 +71,7 @@ selection_init(Core::Context &ctx,
     
     // --
     
-    const char *choose_ship = Core::Directory::resource_path("assets/textures/choose_ship.png");
+    const char *choose_ship = Core::Directory::volatile_resource_path("assets/textures/choose_ship.png");
     Core::Texture choose_ship_texture(choose_ship);
     
     selection_material = Core::Material("selection");
@@ -80,7 +80,7 @@ selection_init(Core::Context &ctx,
     
     // --
 
-    const char *press_start = Core::Directory::resource_path("assets/textures/choose_ship.png");
+    const char *press_start = Core::Directory::volatile_resource_path("assets/textures/choose_ship.png");
     Core::Texture press_start_texture(press_start);
     
     start_game_material = Core::Material("press-start");
@@ -92,7 +92,7 @@ selection_init(Core::Context &ctx,
   // Load materials
   if(!materials[0])
   {
-    const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
     Core::Shader shader(shader_path);
   
     for(uint32_t i = 0; i < number_of_materials; ++i)
@@ -133,7 +133,7 @@ selection_init(Core::Context &ctx,
   
   // Selection Screens
   {
-    plane = Core::Model(Core::Directory::resource_path("assets/models/unit_plane.obj"));
+    plane = Core::Model(Core::Directory::volatile_resource_path("assets/models/unit_plane.obj"));
     
     for(auto &sel : selection_screens)
     {

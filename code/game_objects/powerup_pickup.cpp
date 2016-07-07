@@ -39,10 +39,10 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
 {
   if(!power_up_material)
   {
-    const char *green_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_green_512.png");
+    const char *green_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_green_512.png");
     Core::Texture texture(green_texture_path);
     
-    const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
     Core::Shader shader(shader_path);
     
     power_up_material = Core::Material("Powerup");
@@ -50,7 +50,7 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
     power_up_material.set_map_01(texture);
   }
 
-  const char *unit_cube_path = Core::Directory::resource_path("assets/models/unit_cube.obj");
+  const char *unit_cube_path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
   Core::Model model(unit_cube_path);
 
   Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());

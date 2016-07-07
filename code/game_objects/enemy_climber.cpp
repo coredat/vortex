@@ -27,13 +27,13 @@ climber_setup(Game_object::Enemy &enemy_to_setup)
 {
   if(!model)
   {
-    const char *unit_cube_path = Core::Directory::resource_path("assets/models/unit_cube.obj");
+    const char *unit_cube_path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
     model = Core::Model(unit_cube_path);
   }
 
   if(!texture)
   {
-    const char *orange_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_orange_512.png");
+    const char *orange_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png");
     texture  = Core::Texture(orange_texture_path);
   }
 

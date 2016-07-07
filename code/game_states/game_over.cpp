@@ -62,12 +62,12 @@ game_over_update(Core::Context &context,
     
     if(!continue_material)
     {
-      const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+      const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
       Core::Shader shader(shader_path);
     
-      plane = Core::Model(Core::Directory::resource_path("assets/models/unit_plane.obj"));
+      plane = Core::Model(Core::Directory::volatile_resource_path("assets/models/unit_plane.obj"));
       
-      const char *press_start = Core::Directory::resource_path("assets/textures/choose_ship.png");
+      const char *press_start = Core::Directory::volatile_resource_path("assets/textures/choose_ship.png");
       Core::Texture continue_texture(press_start);
       
       continue_material = Core::Material("screen_game_over[continue]");

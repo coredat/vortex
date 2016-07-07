@@ -83,17 +83,17 @@ Enemy::Enemy(Core::World &world, Type type)
   {
     generic_material = Core::Material("Enemy-generic");
     
-    const char * orange_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_orange_512.png");
+    const char * orange_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png");
     Core::Texture texture(orange_texture_path);
     
-    const char * shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+    const char * shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
     Core::Shader shader(shader_path);
     
     generic_material.set_shader(shader);
     generic_material.set_map_01(texture);
   }
 
-  const char * unit_cube_path = Core::Directory::resource_path("assets/models/unit_cube.obj");
+  const char * unit_cube_path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
   model = Core::Model(unit_cube_path);
   
   m_direction = 1;

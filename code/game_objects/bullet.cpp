@@ -48,7 +48,7 @@ Bullet::Bullet(Core::World &world,
   {
     if(!model)
     {
-      const char *model_path = Core::Directory::resource_path("assets/models/bullet.obj");
+      const char *model_path = Core::Directory::volatile_resource_path("assets/models/bullet.obj");
       model = Core::Model(model_path);
     }
 
@@ -56,10 +56,10 @@ Bullet::Bullet(Core::World &world,
     {
       bullet_material = Core::Material("Bullet");
     
-      const char *texture_path = Core::Directory::resource_path("assets/textures/dev_grid_red_512.png");
+      const char *texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_red_512.png");
       Core::Texture texture(texture_path);
       
-      const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+      const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
       Core::Shader shader(shader_path);
       
       bullet_material.set_map_01(texture);
@@ -68,7 +68,7 @@ Bullet::Bullet(Core::World &world,
 
     if(!gun_shot_sample)
     {
-      const char *orange_texture_path = Core::Directory::resource_path("assets/audio/temp_shot.wav");
+      const char *orange_texture_path = Core::Directory::volatile_resource_path("assets/audio/temp_shot.wav");
       gun_shot_sample = Core::Sample(orange_texture_path);
     }
   }

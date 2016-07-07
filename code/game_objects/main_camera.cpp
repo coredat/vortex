@@ -39,10 +39,10 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   Core::Render_target render_target(ctx.get_width(), ctx.get_height(), Graphics_api::Pixel_format::rgb8);
   Core::Render_target blur_target(ctx.get_width(), ctx.get_height(), Graphics_api::Pixel_format::rgb8);
   
-  const char *shader_file = Core::Directory::resource_path("assets/shaders/vortex_level_post.ogl");
+  const char *shader_file = Core::Directory::volatile_resource_path("assets/shaders/vortex_level_post.ogl");
   Core::Shader post_shader(shader_file);
   
-  const char *b_mat = Core::Directory::resource_path("assets/textures/bayer_mat.png");
+  const char *b_mat = Core::Directory::volatile_resource_path("assets/textures/bayer_mat.png");
   Core::Texture bayer(b_mat);
   
   Core::Post_process post("post-process");

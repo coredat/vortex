@@ -35,7 +35,7 @@ Horizon::Horizon(Core::World &world)
   
   if(!horizon_model)
   {
-    const char *path = Core::Directory::resource_path("assets/models/ring.obj");
+    const char *path = Core::Directory::volatile_resource_path("assets/models/ring.obj");
     Core::Model model(path);
     
     horizon_model = model;
@@ -45,7 +45,7 @@ Horizon::Horizon(Core::World &world)
   {
     ring_material = Core::Material("outter-ring");
   
-    const char *shader_path = Core::Directory::resource_path("assets/shaders/vortex_outter_level.ogl");
+    const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/vortex_outter_level.ogl");
     Core::Shader shader(shader_path);
     
     ring_material.set_shader(shader);

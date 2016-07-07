@@ -52,10 +52,10 @@ Player_ship::Player_ship(Core::World &world,
 , m_powerup(Powerup::none)
 , m_powerup_timer(0.f)
 {
-  const char *unit_cube_path = Core::Directory::resource_path("assets/models/ship_01.obj");
+  const char *unit_cube_path = Core::Directory::volatile_resource_path("assets/models/ship_01.obj");
   Core::Model model(unit_cube_path);
 
-  const char *green_texture_path = Core::Directory::resource_path("assets/textures/dev_grid_green_512.png");
+  const char *green_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_green_512.png");
   Core::Texture texture(green_texture_path);
 
   Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());
