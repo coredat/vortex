@@ -43,6 +43,7 @@ namespace
   
   Core::Entity        selection_screens[max_number_of_players];
   Core::Entity        *signed_in_selections[max_number_of_players];
+  Core::Entity        start_screen;
 }
 
 
@@ -140,7 +141,7 @@ selection_init(Core::Context &ctx,
     for(auto &sel : selection_screens)
     {
       sel = Core::Entity(world);
-      sel.set_name("Selection screen");
+      sel.set_name("Selection[choose]");
       sel.set_tags(Object_tags::gui_cam);
       
       const Core::Material_renderer mat_renderer(no_selection_material, plane);
@@ -194,6 +195,8 @@ selection_update(Core::Context &context,
       // Remove player selection screens
       // And spawn the player.
       {
+        start_screen.destroy();
+      
         for(uint32_t i = 0; i < 4; ++i)
         {
           auto &sel = signed_in_selections[i];
@@ -239,6 +242,17 @@ selection_update(Core::Context &context,
     
     if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
     {
+      // Start screen
+      if(!start_screen)
+      {
+        start_screen = Core::Entity(world);
+        start_screen.set_name("Selection[start]");
+        start_screen.set_tags(Object_tags::gui_cam);
+        
+        const Core::Material_renderer mat_renderer(start_game_material, plane);
+        start_screen.set_renderer(mat_renderer);
+      }
+    
       current_player_selection[i] = (current_player_selection[i] + 1) % number_of_materials;
       const uint32_t selection = current_player_selection[i];
      
@@ -269,6 +283,13 @@ selection_update(Core::Context &context,
       
       signed_in_selections[i]->set_transform(sel_trans);
     }
+  }
+  
+  /*
+    Update
+  */
+  {
+    start_screen.set_transform(Screen_cast::intersect_screen_plane(cam, 0, -1.5f));
   }
   
   /*
