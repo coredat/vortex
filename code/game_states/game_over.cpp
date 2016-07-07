@@ -9,11 +9,17 @@
 #include <core/renderer/renderer.hpp>
 #include <core/input/controller.hpp>
 #include <core/transform/transform.hpp>
+#include <core/resources/shader.hpp>
+#include <core/resources/texture.hpp>
+#include <core/common/directory.hpp>
 
 
 namespace
 {
-  Core::Entity *player_entities[4] = {nullptr, nullptr, nullptr, nullptr};
+  Core::Entity player_entities[4];
+  Core::Entity continue_screen;
+  Core::Model plane;
+  Core::Material continue_material;
   bool created_screen = false;
 }
 
@@ -42,16 +48,41 @@ game_over_update(Core::Context &context,
     {
       if(players[i]->is_valid())
       {
-        player_entities[i] = new Core::Entity(world);
+        player_entities[i] = Core::Entity(world);
         
-        player_entities[i]->set_name("Entity Score Screen");
-        player_entities[i]->set_tags(Object_tags::gui_cam);
+        player_entities[i].set_name("screen_game_over[scoreboard]");
+        player_entities[i].set_tags(Object_tags::gui_cam);
  
         Core::Material_renderer mat_renderer;
         mat_renderer.set_material(players[i]->get_material());
         mat_renderer.set_model(players[i]->get_model());
-        player_entities[i]->set_renderer(mat_renderer);
+        player_entities[i].set_renderer(mat_renderer);
       }
+    }
+    
+    if(!continue_material)
+    {
+      const char *shader_path = Core::Directory::resource_path("assets/shaders/basic_fullbright.ogl");
+      Core::Shader shader(shader_path);
+    
+      plane = Core::Model(Core::Directory::resource_path("assets/models/unit_plane.obj"));
+      
+      const char *press_start = Core::Directory::resource_path("assets/textures/choose_ship.png");
+      Core::Texture continue_texture(press_start);
+      
+      continue_material = Core::Material("screen_game_over[continue]");
+      continue_material.set_shader(shader);
+      continue_material.set_map_01(continue_texture);
+    }
+    
+    if(!continue_screen)
+    {
+      continue_screen = Core::Entity(world);
+      continue_screen.set_name("screen_game_over[start]");
+      continue_screen.set_tags(Object_tags::gui_cam);
+      
+      const Core::Material_renderer mat_renderer(continue_material, plane);
+      continue_screen.set_renderer(mat_renderer);
     }
   }
 
@@ -78,8 +109,10 @@ game_over_update(Core::Context &context,
         const math::quat rot = math::quat_multiply(tilt_rot, spin_rot);
         trans.set_rotation(rot);
         
-        pl->set_transform(trans);
+        pl.set_transform(trans);
       }
+      
+      continue_screen.set_transform(Screen_cast::intersect_screen_plane(cam, 0.f, -1.5f));
     }
   }
 
@@ -97,15 +130,11 @@ game_over_update(Core::Context &context,
      controller_4.is_button_down_on_frame(Core::Input::Button::button_4))
   {
     created_screen = false;
+    continue_screen.destroy();
     
     for(auto &pl : player_entities)
     {
-      if(pl)
-      {
-        delete pl;
-      }
-      
-      pl = nullptr;
+      pl.destroy();
     }
     
     return Game_state::selection;

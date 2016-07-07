@@ -42,7 +42,7 @@ namespace
   uint32_t            current_player_selection[max_number_of_players];
   
   Core::Entity        selection_screens[max_number_of_players];
-  Core::Entity        *signed_in_selections[max_number_of_players];
+  Core::Entity        signed_in_selections[max_number_of_players];
   Core::Entity        start_screen;
 }
 
@@ -133,10 +133,7 @@ selection_init(Core::Context &ctx,
   
   // Selection Screens
   {
-    char plane_path[MAX_FILE_PATH_SIZE];
-    sprintf(plane_path, "%sassets/models/unit_plane.obj", util::dir::resource_path());
-    
-    plane = Core::Model(plane_path);
+    plane = Core::Model(Core::Directory::resource_path("assets/models/unit_plane.obj"));
     
     for(auto &sel : selection_screens)
     {
@@ -149,10 +146,10 @@ selection_init(Core::Context &ctx,
     }
   }
   
-  for(auto &sel : signed_in_selections)
-  {
-    sel = nullptr;
-  }
+//  for(auto &sel : signed_in_selections)
+//  {
+//    sel = nullptr;
+//  }
 }
 
 
@@ -203,15 +200,15 @@ selection_update(Core::Context &context,
           
           if(sel)
           {
-            players[i]->set_model(static_cast<Core::Material_renderer>(sel->get_renderer()).get_model());
-            players[i]->set_material(static_cast<Core::Material_renderer>(sel->get_renderer()).get_material());
+            players[i]->set_model(static_cast<Core::Material_renderer>(sel.get_renderer()).get_model());
+            players[i]->set_material(static_cast<Core::Material_renderer>(sel.get_renderer()).get_material());
             players[i]->set_controller(i);
             
             objects.push_object(players[i]->spawn_ship(context));
             
-            sel->destroy();
-            delete sel;
-            sel = nullptr;
+            sel.destroy();
+//            delete sel;
+//            sel = nullptr;
           }
         }
       }
@@ -230,11 +227,11 @@ selection_update(Core::Context &context,
       {
         const Core::Material_renderer mat_renderer(materials[0], models[0]);
         
-        signed_in_selections[i] = new Core::Entity(world);
-        signed_in_selections[i]->set_name("selection-entity");
-        signed_in_selections[i]->set_tags(Object_tags::gui_cam);
-        signed_in_selections[i]->set_renderer(mat_renderer);
-        signed_in_selections[i]->set_transform(selection_screens[i].get_transform());
+        signed_in_selections[i] = Core::Entity(world);
+        signed_in_selections[i].set_name("selection-entity");
+        signed_in_selections[i].set_tags(Object_tags::gui_cam);
+        signed_in_selections[i].set_renderer(mat_renderer);
+        signed_in_selections[i].set_transform(selection_screens[i].get_transform());
         
         ++players_signed_in;
       }
@@ -257,7 +254,7 @@ selection_update(Core::Context &context,
       const uint32_t selection = current_player_selection[i];
      
       const Core::Material_renderer player_renderer(materials[selection], models[selection]);
-      signed_in_selections[i]->set_renderer(player_renderer);
+      signed_in_selections[i].set_renderer(player_renderer);
       
       const Core::Material_renderer sel_renderer(selection_material, plane);
       selection_screens[i].set_renderer(sel_renderer);
@@ -281,7 +278,7 @@ selection_update(Core::Context &context,
       sel_trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
       sel_trans.set_position(math::vec3_add(sel.get_transform().get_position(), math::vec3_init(0,0,0.002f)));
       
-      signed_in_selections[i]->set_transform(sel_trans);
+      signed_in_selections[i].set_transform(sel_trans);
     }
   }
   
@@ -301,7 +298,7 @@ selection_update(Core::Context &context,
   
     for(uint32_t i = 0; i < number_of_controllers; ++i)
     {
-      Core::Entity *sel = signed_in_selections[i];
+      Core::Entity *sel = &signed_in_selections[i];
     
       if(sel && sel->is_valid())
       {
