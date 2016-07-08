@@ -262,13 +262,17 @@ selection_update(Core::Context &ctx,
   {
     auto &sel = selection_screens[i];
     
-    const float offset = -3.f + (i * 2.f);
+    const float offsets[] = {-2.5f, -0.8f, 0.8f, 2.5f};
+    
+//    const float offset = -3.f + (i * 2.f);
+    const float offset = offsets[i];
     
 //    sel.set_transform(Screen_cast::intersect_screen_plane(cam, offset, 1.5f));
+//    sel.set_transform(Screen_cast::intersect_screen_plane(cam, offset, 1.5f));
     
-    const float horz_quart_screen = math::to_float(ctx.get_width()) / 4.f;
+    const float horz_quart_screen = math::to_float(ctx.get_width()) / 6.f;
     const float horz_margin = horz_quart_screen * 0.5f;
-    const float horz_half_screen = math::to_float(ctx.get_width()) / 2.f;
+    const float horz_half_screen = math::to_float(ctx.get_width()) / 3.f;
     const float horz_pos = (i * horz_quart_screen) - horz_half_screen + horz_margin;
 
     sel.set_transform(Core::Transform(
@@ -280,7 +284,7 @@ selection_update(Core::Context &ctx,
     
     if(signed_in_selections[i])
     {
-      Core::Transform trans = Screen_cast::intersect_screen_plane(cam, offset, 1.5f);
+      Core::Transform trans = Screen_cast::intersect_screen_plane(cam, offset, 0.f);
     
       auto sel_trans = selection_screens[i].get_transform();
       sel_trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
@@ -294,11 +298,14 @@ selection_update(Core::Context &ctx,
     Update
   */
   {
-    start_screen.set_transform(Core::Transform(
-      math::vec3_init(0, math::to_float(ctx.get_height()) / -3.f, 0),
-      math::vec3_init(128.f, 1.f, 64.f),
-      math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau())
-    ));
+    if(start_screen)
+    {
+      start_screen.set_transform(Core::Transform(
+        math::vec3_init(0, math::to_float(ctx.get_height()) / -3.f, 0),
+        math::vec3_init(128.f, 1.f, 64.f),
+        math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau())
+      ));
+    }
   }
   
   /*
