@@ -53,9 +53,7 @@ game_over_update(Core::Context &context,
         player_entities[i].set_name("screen_game_over[scoreboard]");
         player_entities[i].set_tags(Object_tags::gui_cam);
  
-        Core::Material_renderer mat_renderer;
-        mat_renderer.set_material(players[i]->get_material());
-        mat_renderer.set_model(players[i]->get_model());
+        const Core::Material_renderer mat_renderer(players[i]->get_material(), players[i]->get_model());
         player_entities[i].set_renderer(mat_renderer);
       }
     }
@@ -63,12 +61,12 @@ game_over_update(Core::Context &context,
     if(!continue_material)
     {
       const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
-      Core::Shader shader(shader_path);
+      const Core::Shader shader(shader_path);
     
       plane = Core::Model(Core::Directory::volatile_resource_path("assets/models/unit_plane.obj"));
       
       const char *press_start = Core::Directory::volatile_resource_path("assets/textures/choose_ship.png");
-      Core::Texture continue_texture(press_start);
+      const Core::Texture continue_texture(press_start);
       
       continue_material = Core::Material("screen_game_over[continue]");
       continue_material.set_shader(shader);

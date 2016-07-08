@@ -26,7 +26,7 @@ namespace
   Core::Entity      loading_entity;
   Core::Material    logo_material;
   
-  const float       max_timer = 2.f;  // Min time loading screen stays up
+  const float       max_timer = 2.f; // Min time loading screen stays up
   float             curr_timer = 0.f;
 }
 
@@ -43,17 +43,11 @@ loading_init(Core::Context &context, Core::World &world)
     loading_entity.set_name("Loading Screen Logo");
     loading_entity.set_tags(Object_tags::gui_cam);
     
-    // Rotate towards the screen.
-    {
-//      math::quat rot = math::quat_init_with_axis_angle(Core::Transform::get_world_left(), math::quart_tau());
-//      
-//      Core::Transform trans;
-//      trans.set_position(math::vec3_init(0,0,20));
-//      trans.set_scale(math::vec3_init(512.f));
-//      trans.set_rotation(rot);
-      
-//      loading_entity.set_transform(trans);
-    }
+    const Core::Transform trans(math::vec3_init(0, 0, 0),
+                                math::vec3_init(512.f / 2.f, 1, 256.f / 2.f),
+                                math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau()));
+    
+    loading_entity.set_transform(trans);
   }
   
   // Create a material for the logo.
@@ -61,11 +55,8 @@ loading_init(Core::Context &context, Core::World &world)
   {
     logo_material = Core::Material("start-logo");
     
-    const char *orange_texture_path = Core::Directory::volatile_resource_path("assets/textures/repofa.png");
-    Core::Texture texture(orange_texture_path);
-    
-    const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
-    Core::Shader shader(shader_path);
+    const Core::Texture texture(Core::Directory::volatile_resource_path("assets/textures/repofa.png"));
+    const Core::Shader shader(Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl"));
     
     logo_material.set_shader(shader);
     logo_material.set_map_01(texture);
@@ -73,12 +64,8 @@ loading_init(Core::Context &context, Core::World &world)
   
   // Apply a renderer to the logo.
   {
-    const char *model_01 = Core::Directory::volatile_resource_path("assets/models/unit_plane.obj");
-    Core::Model model = Core::Model(model_01);
-    
-    Core::Material_renderer mat_renderer;
-    mat_renderer.set_material(logo_material);
-    mat_renderer.set_model(model);
+    const Core::Model model = Core::Model(Core::Directory::volatile_resource_path("assets/models/unit_plane.obj"));
+    const Core::Material_renderer mat_renderer(logo_material, model);
     
     loading_entity.set_renderer(mat_renderer);
   }
@@ -91,22 +78,6 @@ loading_update(Core::Context &context,
                Core::Camera &cam)
 {
   curr_timer += world.get_delta_time();
-  
-//  Core::Transform trans = Screen_cast::intersect_screen_plane(cam);
-//  Core::Transform trans;
-//  trans.set_position(math::vec3_init(0,0,2));
-//  trans.set_scale(math::vec3_init(512.f));
-  
-//  loading_entity.set_transform(trans);
-
-  const math::quat rot = math::quat_init_with_axis_angle(cam.get_attached_entity().get_transform().get_left(), -math::quart_tau());
-  
-  Core::Transform trans;
-  trans.set_position(math::vec3_init(-256, 0, 0));
-  trans.set_scale(math::vec3_init(512, 1, 256));
-  trans.set_rotation(rot);
-  
-  loading_entity.set_transform(trans);
 
   if(curr_timer > max_timer)
   {
