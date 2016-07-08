@@ -5,6 +5,7 @@
 #include <common/object_tags.hpp>
 #include <common/screen_cast.hpp>
 #include <common/game_state.hpp>
+#include <core/context/context.hpp>
 #include <core/input/controller.hpp>
 #include <core/resources/texture.hpp>
 #include <core/resources/shader.hpp>
@@ -80,7 +81,7 @@ selection_init(Core::Context &ctx,
     
     // --
 
-    const char *press_start = Core::Directory::volatile_resource_path("assets/textures/choose_ship.png");
+    const char *press_start = Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png");
     Core::Texture press_start_texture(press_start);
     
     start_game_material = Core::Material("press-start");
@@ -149,7 +150,7 @@ selection_init(Core::Context &ctx,
 
 
 Game_state
-selection_update(Core::Context &context,
+selection_update(Core::Context &ctx,
                  Core::World &world,
                  Core::Camera &cam,
                  Game_object::Player *players[],
@@ -161,10 +162,10 @@ selection_update(Core::Context &context,
   
   const Core::Input::Controller controllers[number_of_controllers]
   {
-    Core::Input::Controller(context, 0),
-    Core::Input::Controller(context, 1),
-    Core::Input::Controller(context, 2),
-    Core::Input::Controller(context, 3),
+    Core::Input::Controller(ctx, 0),
+    Core::Input::Controller(ctx, 1),
+    Core::Input::Controller(ctx, 2),
+    Core::Input::Controller(ctx, 3),
   };
   
   /*
@@ -199,7 +200,7 @@ selection_update(Core::Context &context,
             players[i]->set_material(static_cast<Core::Material_renderer>(sel.get_renderer()).get_material());
             players[i]->set_controller(i);
             
-            objects.push_object(players[i]->spawn_ship(context));
+            objects.push_object(players[i]->spawn_ship(ctx));
             
             sel.destroy();
           }
@@ -221,8 +222,8 @@ selection_update(Core::Context &context,
         const Core::Material_renderer mat_renderer(materials[0], models[0]);
         
         signed_in_selections[i] = Core::Entity(world);
-        signed_in_selections[i].set_name("selection-entity");
-        signed_in_selections[i].set_tags(Object_tags::gui_cam);
+        signed_in_selections[i].set_name("selection[ship-entity]");
+        signed_in_selections[i].set_tags(Object_tags::world_cam);
         signed_in_selections[i].set_renderer(mat_renderer);
         signed_in_selections[i].set_transform(selection_screens[i].get_transform());
         
@@ -263,13 +264,27 @@ selection_update(Core::Context &context,
     
     const float offset = -3.f + (i * 2.f);
     
-    sel.set_transform(Screen_cast::intersect_screen_plane(cam, offset, 1.5f));
+//    sel.set_transform(Screen_cast::intersect_screen_plane(cam, offset, 1.5f));
+    
+    const float horz_quart_screen = math::to_float(ctx.get_width()) / 4.f;
+    const float horz_margin = horz_quart_screen * 0.5f;
+    const float horz_half_screen = math::to_float(ctx.get_width()) / 2.f;
+    const float horz_pos = (i * horz_quart_screen) - horz_half_screen + horz_margin;
+
+    sel.set_transform(Core::Transform(
+      math::vec3_init(horz_pos, 0, 0),
+      math::vec3_init(128.f, 1.f, 128.f),
+      math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau())
+    ));
+
     
     if(signed_in_selections[i])
     {
+      Core::Transform trans = Screen_cast::intersect_screen_plane(cam, offset, 1.5f);
+    
       auto sel_trans = selection_screens[i].get_transform();
       sel_trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
-      sel_trans.set_position(math::vec3_add(sel.get_transform().get_position(), math::vec3_init(0,0,0.002f)));
+      sel_trans.set_position(math::vec3_add(trans.get_position(), math::vec3_init(0,0,0.002f)));
       
       signed_in_selections[i].set_transform(sel_trans);
     }
@@ -279,7 +294,11 @@ selection_update(Core::Context &context,
     Update
   */
   {
-    start_screen.set_transform(Screen_cast::intersect_screen_plane(cam, 0, -1.5f));
+    start_screen.set_transform(Core::Transform(
+      math::vec3_init(0, math::to_float(ctx.get_height()) / -3.f, 0),
+      math::vec3_init(128.f, 1.f, 64.f),
+      math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau())
+    ));
   }
   
   /*
