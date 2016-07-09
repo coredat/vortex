@@ -15,8 +15,8 @@
 #include <core/camera/camera_utils.hpp>
 #include <core/model/model.hpp>
 #include <core/entity/entity_ref.hpp>
-#include <core/renderer/renderer.hpp>
 #include <core/color/color.hpp>
+#include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/common/directory.hpp>
 #include <utilities/directory.hpp>
@@ -262,7 +262,7 @@ selection_update(Core::Context &ctx,
   {
     auto &sel = selection_screens[i];
     
-    const float offsets[] = {-2.5f, -0.8f, 0.8f, 2.5f};
+    constexpr float offsets[] = {-2.5f, -0.8f, 0.8f, 2.5f};
     
 //    const float offset = -3.f + (i * 2.f);
     const float offset = offsets[i];
