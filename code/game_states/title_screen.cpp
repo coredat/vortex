@@ -10,6 +10,7 @@
 #include <core/resources/shader.hpp>
 #include <core/transform/transform.hpp>
 #include <core/common/directory.hpp>
+#include <core/input/controller.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <utilities/directory.hpp>
@@ -72,13 +73,23 @@ title_screen_update(Core::Context &ctx,
                     Game_object::World_objects &objects,
                     const float dt)
 {
-  static float timer = 0;
-  timer += dt;
+  constexpr uint32_t number_of_controllers = 4;
   
-  if(timer > 2.f)
+  const Core::Input::Controller controllers[number_of_controllers]
   {
-    title_screen.destroy();
-    return Game_state::selection;
+    Core::Input::Controller(ctx, 0),
+    Core::Input::Controller(ctx, 1),
+    Core::Input::Controller(ctx, 2),
+    Core::Input::Controller(ctx, 3),
+  };
+
+  for(const auto &ctrl : controllers)
+  {
+    if(ctrl.is_button_up_on_frame(Core::Input::Button::button_4))
+    {
+      title_screen.destroy();
+      return Game_state::selection;
+    }
   }
 
   return Game_state::title_screen;
