@@ -29,6 +29,11 @@
 #include <utilities/logging.hpp>
 #include <utilities/optimizations.hpp>
 
+// Testing
+#include <core/renderer/text_renderer.hpp>
+#include <core/renderer/renderer.hpp>
+#include <core/font/font.hpp>
+
 
 
 int
@@ -41,6 +46,20 @@ main()
   Core::Context context(1200, 720, false, "Vortex Defender 2099", context_setup);
   Core::World   world(context, Core::World_setup{});
   
+  // ** Text Renderer Test ** //
+  Core::Entity text_entity(world);
+  text_entity.set_name("Test text entity");
+  
+  Core::Text_renderer text_renderer;
+  Core::Font font("ft");
+  {
+    text_renderer.set_text("foofy");
+    text_renderer.set_font(font);
+  }
+  
+  text_entity.set_renderer(text_renderer);
+  // ** End Text Renderer Test ** //
+  
   // ** Start Game ** //
   Game_state curr_state = Game_state::null;
   Game_state next_state = Game_state::null;
@@ -51,6 +70,7 @@ main()
   constexpr uint32_t player_count = 4;
   
   Game_object::Player *players[player_count];
+
   
   for(auto &pl : players)
   {
