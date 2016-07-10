@@ -24,6 +24,7 @@
 #include <core/world/world.hpp>
 #include <core/world/world_setup.hpp>
 #include <core/renderer/material_renderer.hpp>
+#include <core/transform/transform.hpp>
 #include <math/vec/vec3.hpp>
 #include <utilities/timer.hpp>
 #include <utilities/logging.hpp>
@@ -71,7 +72,6 @@ main()
   
   Game_object::Player *players[player_count];
 
-  
   for(auto &pl : players)
   {
     pl = new Game_object::Player(world);
@@ -115,6 +115,11 @@ main()
             first_load = false;
             
             objs.push_object(new Game_object::Level(world));
+            go_cam->get_entity().set_transform(Core::Transform(
+              math::vec3_init(0, 0, 500.f),
+              math::vec3_one(),
+              math::quat_init()
+            ));
           }
         
           selection_init(context, world, go_cam->m_world_camera);
