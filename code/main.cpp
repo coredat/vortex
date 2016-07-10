@@ -10,7 +10,6 @@
 #include <game_objects/powerup_pickup.hpp>
 #include <game_objects/world_objects.hpp>
 #include <game_objects/player.hpp>
-#include <common/event_ids.hpp>
 
 // Game States
 #include <game_states/loading.hpp>
@@ -18,6 +17,10 @@
 #include <game_states/selection.hpp>
 #include <game_states/game_over.hpp>
 #include <game_states/title_screen.hpp>
+
+// Common
+#include <common/event_ids.hpp>
+#include <common/global_vars.hpp>
 
 // Core
 #include <core/context/context.hpp>
@@ -29,6 +32,7 @@
 #include <utilities/timer.hpp>
 #include <utilities/logging.hpp>
 #include <utilities/optimizations.hpp>
+#include <3rdparty/imgui/imgui.h>
 
 // Testing
 #include <core/renderer/text_renderer.hpp>
@@ -86,6 +90,19 @@ main()
   // Game state
   while(context.is_open())
   {
+    #ifdef CORE_DEBUG_MENU
+    if (ImGui::BeginMainMenuBar())
+    {
+      if (ImGui::BeginMenu("Game Settings"))
+      {
+        ImGui::MenuItem("God mode", nullptr, &Global::g_god_mode);
+        ImGui::EndMenu();
+      }
+      
+      ImGui::EndMainMenuBar();
+    }
+    #endif
+  
     const float dt = world.get_delta_time();
     
     objs.on_update(dt);

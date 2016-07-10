@@ -4,6 +4,7 @@
 #include <game_objects/world_objects.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
+#include <common/global_vars.hpp>
 #include <core/world/world.hpp>
 #include <core/context/context.hpp>
 #include <core/entity/entity.hpp>
@@ -277,7 +278,10 @@ Player_ship::on_collision(Game_object *obj)
 
   if(obj && (ref.has_tag(Object_tags::enemy) || ref.has_tag(Object_tags::bullet)))
   {
-    m_state = State::dying;
+    if(!Global::g_god_mode)
+    {
+      m_state = State::dying;
+    }
   }
   
   else if(obj && ref.has_tag(Object_tags::powerup))
