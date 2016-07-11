@@ -65,9 +65,10 @@ Explosion::Explosion(Core::World &world,
   }
 
   // Setup entity
+  Core::Entity_ref ref = get_entity();
+  
+  if(ref)
   {
-    Core::Entity_ref ref = get_entity();
-
     ref.set_name("Explosion");
     ref.add_tag(Object_tags::explosion | Object_tags::world_cam);
     
