@@ -9,7 +9,14 @@ Game_object::Game_object(Core::World &world)
 : m_world(world)
 , m_entity(m_world)
 {
-  m_entity.set_user_data((uintptr_t)this);
+  if(m_entity)
+  {
+    m_entity.set_user_data((uintptr_t)this);
+  }
+  else
+  {
+    destroy();
+  }
 }
 
 
