@@ -22,6 +22,7 @@
 namespace
 {
   Core::Material power_up_material;
+  Core::Model model;
 
   constexpr float powerup_climb_speed = 10.f;
 }
@@ -37,6 +38,12 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
 , m_point_on_circle(point_on_circle)
 , m_depth(depth)
 {
+  if(!model)
+  {
+    const char *unit_cube_path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
+    model = Core::Model(unit_cube_path);
+  }
+
   if(!power_up_material)
   {
     const char *green_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_green_512.png");
@@ -50,9 +57,6 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
     power_up_material.set_map_01(texture);
   }
 
-  const char *unit_cube_path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
-  Core::Model model(unit_cube_path);
-
   Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());
   
   Core::Rigidbody_properties rb_props;
@@ -63,12 +67,6 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
   {
     ref.set_name("Powerup");
     ref.set_tags(Object_tags::powerup | Object_tags::world_cam);
-    
-    Core::Material_renderer mat_renderer;
-    mat_renderer.set_model(model);
-    mat_renderer.set_material(power_up_material);
-    
-    ref.set_renderer(mat_renderer);
     
     ref.set_collider(collider);
     ref.set_rigidbody_properties(rb_props);
@@ -88,21 +86,51 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
 }
 
 
+namespace
+{
+  
+}
+
+
 void
 Powerup_pickup::on_start()
 {
   auto ref = get_entity();
   Core::Transform trans = ref.get_transform();
   
-  math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point_on_circle);
+  // Point on circle
+  {
+    math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point_on_circle);
+    
+    const math::vec3 position = trans.get_position();
+    
+    math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                         math::vec2_get_y(new_point),
+                                         math::vec3_get_z(position));
+    trans.set_position(new_pos);
+  }
   
-  const math::vec3 position = trans.get_position();
+  // Depth
+  {
+    if(m_depth > Level_funcs::get_near_death_zone())
+    {
+      should_destroy();
+    }
+    
+    const math::vec3 pos     = trans.get_position();
+    const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos),
+                                               math::vec3_get_y(pos),
+                                               m_depth);
+    
+    trans.set_position(new_pos);
+  }
   
-  math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
-                                       math::vec2_get_y(new_point),
-                                       math::vec3_get_z(position));
-  trans.set_position(new_pos);
   ref.set_transform(trans);
+  
+  Core::Material_renderer mat_renderer;
+  mat_renderer.set_model(model);
+  mat_renderer.set_material(power_up_material);
+  ref.set_renderer(mat_renderer);
 }
 
 
