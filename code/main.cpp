@@ -44,6 +44,8 @@
 int
 main()
 {
+  util::log::set_output(util::log::out::file | util::log::out::console);
+
   // ** Setup Core ** //
   Core::Context_setup context_setup;
   context_setup.vsync = false;
