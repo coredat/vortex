@@ -44,7 +44,7 @@
 int
 main()
 {
-  util::log::set_output(util::log::out::file | util::log::out::console);
+  util::logging::set_output(util::logging::out::file | util::logging::out::console);
 
   // ** Setup Core ** //
   Core::Context_setup context_setup;
