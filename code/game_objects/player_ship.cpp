@@ -130,6 +130,9 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
       move_multiplier       -= (offset * powerup_time_dialation_rate);
       break;
     }
+    
+    default:
+      break;
   }
 
   const float movement_dt = dt * move_multiplier;

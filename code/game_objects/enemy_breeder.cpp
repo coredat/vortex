@@ -2,9 +2,11 @@
 #include <game_objects/enemy.hpp>
 #include <game_objects/world_objects.hpp>
 #include <common/level_functions.hpp>
+#include <common/global_vars.hpp>
 #include <core/transform/transform.hpp>
 #include <core/entity/entity_ref.hpp>
 #include <core/model/model.hpp>
+#include <core/world/world.hpp>
 #include <core/resources/texture.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
@@ -70,14 +72,16 @@ breeder_update(Game_object::Enemy &enemy,
   
   // Should breed
   {
+    if(enemy.get_world().get_entity_count_in_world() > Global::g_max_spawn_entities)
+    {
+      return;
+    }
+  
     if(enemy.m_direction == 0 && enemy.m_lifetime > 2.f)
     {
       enemy.m_lifetime = 0;
       
       ++enemy.m_user_data;
-    
-      const float new_point = enemy.m_point_on_circle + ((static_cast<float>(rand() % 100) / 250.f) - 0.2f);
-      const float new_depth = math::min(enemy.m_depth + ((static_cast<float>(rand() % 100) / 50.f) - 0.75f), Level_funcs::get_top_of_level());
       
       Game_object::Enemy *egg1 = new Game_object::Enemy(enemy.get_world(), Game_object::Enemy::Type::egg);
       egg1->m_point_on_circle = enemy.m_point_on_circle + (0.1f * enemy.m_user_data);

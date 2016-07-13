@@ -1,4 +1,5 @@
 #include <game_states/game.hpp>
+#include <common/global_vars.hpp>
 #include <common/level_functions.hpp>
 #include <game_objects/world_objects.hpp>
 #include <game_objects/player_ship.hpp>
@@ -34,6 +35,12 @@ spawn_enemies(Core::World &world,
               Game_object::World_objects &objs)
 {
   spawn_timer += dt;
+  
+  // Max out spawns.
+  if(world.get_entity_count_in_world() > Global::g_max_spawn_entities)
+  {
+    return;
+  }
 
   if(spawn_timer > spawn_rate)
   {

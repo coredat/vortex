@@ -44,7 +44,15 @@
 int
 main()
 {
-  util::logging::set_output(util::logging::out::file | util::logging::out::console);
+  #ifndef NDEBUG
+  util::logging::set_output(
+    util::logging::out::file | util::logging::out::console
+  );
+  #else
+  util::logging::set_output(util::logging::out::file);
+  #endif
+
+
 
   // ** Setup Core ** //
   Core::Context_setup context_setup;
