@@ -123,18 +123,18 @@ game_over_update(Core::Context &ctx,
     }
   }
 
-  Core::Input::Controller controller_1(ctx, 0);
-  Core::Input::Controller controller_2(ctx, 1);
-  Core::Input::Controller controller_3(ctx, 2);
-  Core::Input::Controller controller_4(ctx, 3);
+  Core::Controller controller_1(ctx, 0);
+  Core::Controller controller_2(ctx, 1);
+  Core::Controller controller_3(ctx, 2);
+  Core::Controller controller_4(ctx, 3);
 
   /*
     If any gamepad presses start we go back to the game selection screen.
   */
-  if(controller_1.is_button_down_on_frame(Core::Input::Button::button_4) ||
-     controller_2.is_button_down_on_frame(Core::Input::Button::button_4) ||
-     controller_3.is_button_down_on_frame(Core::Input::Button::button_4) ||
-     controller_4.is_button_down_on_frame(Core::Input::Button::button_4))
+  if(controller_1.is_button_down_on_frame(Core::Button::button_4) ||
+     controller_2.is_button_down_on_frame(Core::Button::button_4) ||
+     controller_3.is_button_down_on_frame(Core::Button::button_4) ||
+     controller_4.is_button_down_on_frame(Core::Button::button_4))
   {
     created_screen = false;
     continue_screen.destroy();

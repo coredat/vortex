@@ -160,12 +160,12 @@ selection_update(Core::Context &ctx,
 {
   constexpr uint32_t number_of_controllers = 4;
   
-  const Core::Input::Controller controllers[number_of_controllers]
+  const Core::Controller controllers[number_of_controllers]
   {
-    Core::Input::Controller(ctx, 0),
-    Core::Input::Controller(ctx, 1),
-    Core::Input::Controller(ctx, 2),
-    Core::Input::Controller(ctx, 3),
+    Core::Controller(ctx, 0),
+    Core::Controller(ctx, 1),
+    Core::Controller(ctx, 2),
+    Core::Controller(ctx, 3),
   };
   
   /*
@@ -173,7 +173,7 @@ selection_update(Core::Context &ctx,
   */
   for(const auto &ctrl : controllers)
   {
-    if(ctrl.is_button_up_on_frame(Core::Input::Button::button_4) && players_signed_in > 0)
+    if(ctrl.is_button_up_on_frame(Core::Button::button_4) && players_signed_in > 0)
     {
       // Reset selection screen
       {
@@ -217,7 +217,7 @@ selection_update(Core::Context &ctx,
   {
     if(!signed_in_selections[i])
     {
-      if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
+      if(controllers[i].is_button_down_on_frame(Core::Button::button_0))
       {
         const Core::Material_renderer mat_renderer(materials[0], models[0]);
         
@@ -231,7 +231,7 @@ selection_update(Core::Context &ctx,
       }
     }
     
-    if(controllers[i].is_button_down_on_frame(Core::Input::Button::button_0))
+    if(controllers[i].is_button_down_on_frame(Core::Button::button_0))
     {
       // Start screen
       if(!start_screen)

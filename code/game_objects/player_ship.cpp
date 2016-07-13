@@ -148,7 +148,7 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
 
       m_gun_cooldown -= dt;
       
-      Core::Input::Controller controller = Core::Input::Controller(m_context, m_controller_id);
+      Core::Controller controller = Core::Controller(m_context, m_controller_id);
       
       // Lateral Movement
       {
@@ -169,7 +169,7 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
       }
       
       // New Jump
-      if(controller.is_button_down(Core::Input::Button::button_0) && m_jump_speed == 0.f)
+      if(controller.is_button_down(Core::Button::button_0) && m_jump_speed == 0.f)
       {
         m_jump_speed = 50.5f;
         m_jump_time = 0.f;
@@ -205,7 +205,7 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
         const float timer     = m_gun_cooldown;
         
         if(timer < (0.f + multipler) &&
-           (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Input::Button::button_3)))
+           (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Button::button_3)))
         {
           if(m_powerup == Powerup::cross_fire)
           {
