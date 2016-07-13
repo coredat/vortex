@@ -9,6 +9,7 @@
 #include <core/renderer/material_renderer.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/input/controller.hpp>
+#include <core/input/buttons.hpp>
 #include <core/transform/transform.hpp>
 #include <core/resources/shader.hpp>
 #include <core/resources/texture.hpp>
