@@ -18,6 +18,7 @@ public:
                                  const float depth);
   
   void            on_start() override;
+  void            on_end() override;
   void            on_update(const float dt, World_objects &objs) override;
   void            on_collision(Game_object *obj) override;
   

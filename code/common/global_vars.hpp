@@ -5,11 +5,15 @@
 #include <stdint.h>
 
 
+/*
+  Some global variables.
+  these are mainly for eaze of testing, and other constants.
+*/
 namespace Global {
 
 
-extern bool g_god_mode;
-extern uint32_t g_max_spawn_entities;
+extern bool       g_god_mode;
+extern uint32_t   g_max_spawn_entities;
 
 
 } // ns

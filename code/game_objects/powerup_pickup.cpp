@@ -111,12 +111,7 @@ Powerup_pickup::on_start()
   }
   
   // Depth
-  {
-    if(m_depth > Level_funcs::get_near_death_zone())
-    {
-      should_destroy();
-    }
-    
+  { 
     const math::vec3 pos     = trans.get_position();
     const math::vec3 new_pos = math::vec3_init(math::vec3_get_x(pos),
                                                math::vec3_get_y(pos),
@@ -157,9 +152,11 @@ Powerup_pickup::on_update(const float dt, World_objects &objs)
   {
     m_depth += (powerup_climb_speed * dt);
     
-    if(m_depth > Level_funcs::get_near_death_zone())
+    if(!math::is_between(m_depth,
+                         Level_funcs::get_near_death_zone(),
+                         Level_funcs::get_far_death_zone()))
     {
-      should_destroy();
+      destroy();
     }
     
     const math::vec3 pos     = trans.get_position();
@@ -173,6 +170,12 @@ Powerup_pickup::on_update(const float dt, World_objects &objs)
   ref.set_transform(trans);
 }
 
+
+void
+Powerup_pickup::on_end()
+{
+  
+}
 
 void
 Powerup_pickup::on_collision(Game_object *obj)

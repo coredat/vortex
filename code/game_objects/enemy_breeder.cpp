@@ -71,12 +71,8 @@ breeder_update(Game_object::Enemy &enemy,
   }
   
   // Should breed
+  if(enemy.get_world().get_entity_count_in_world() < Global::g_max_spawn_entities)
   {
-    if(enemy.get_world().get_entity_count_in_world() > Global::g_max_spawn_entities)
-    {
-      return;
-    }
-  
     if(enemy.m_direction == 0 && enemy.m_lifetime > 2.f)
     {
       enemy.m_lifetime = 0;
@@ -103,6 +99,7 @@ breeder_update(Game_object::Enemy &enemy,
     
     if(enemy.m_depth > Level_funcs::get_top_of_level())
     {
+      enemy.m_depth = Level_funcs::get_top_of_level();
       enemy.m_direction = 0;
 //        enemy.lifetime = 0;
     }
