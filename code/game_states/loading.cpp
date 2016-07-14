@@ -36,6 +36,8 @@ loading_init(Core::Context &context, Core::World &world)
 {
   curr_timer = 0;
   
+  const Core::Texture texture(Core::Directory::volatile_resource_path("assets/textures/repofa.png"));
+  
   // Create an entity for the logo.
   if(!loading_entity)
   {
@@ -44,7 +46,7 @@ loading_init(Core::Context &context, Core::World &world)
     loading_entity.set_tags(Object_tags::gui_cam);
     
     const Core::Transform trans(math::vec3_init(0, 0, 0),
-                                math::vec3_init(512.f / 2.f, 1, 256.f / 2.f),
+                                math::vec3_init(texture.get_width() / 2, 1, texture.get_height() / 2),
                                 math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau()));
     
     loading_entity.set_transform(trans);
@@ -55,7 +57,6 @@ loading_init(Core::Context &context, Core::World &world)
   {
     logo_material = Core::Material("start-logo");
     
-    const Core::Texture texture(Core::Directory::volatile_resource_path("assets/textures/repofa.png"));
     const Core::Shader shader(Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl"));
     
     logo_material.set_shader(shader);
