@@ -21,6 +21,7 @@
 #include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
+#include <math/general/general.hpp>
 #include <math/geometry/aabb.hpp>
 #include <core/common/directory.hpp>
 #include <utilities/optimizations.hpp>
@@ -34,6 +35,7 @@ namespace
   constexpr float momentum_falloff            = 0.90f;
   constexpr float powerup_durration           = 5.f;
   constexpr float powerup_time_dialation_rate = 0.9f;
+  constexpr uint32_t gun_max_blast            = 5;
 }
 
 
@@ -210,8 +212,12 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
         const float timer     = m_gun_cooldown;
         
         if(timer < (0.f + multipler) &&
-           (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Button::button_3)))
+           (controller.get_trigger(0) || controller.get_trigger(1) || controller.is_button_down(Core::Button::button_3)) &&
+           m_gun_overheat < gun_max_blast
+          )
         {
+          m_gun_overheat += 1;
+        
           if(m_powerup == Powerup::cross_fire)
           {
             auto bullet1 = new Bullet(get_world(),
@@ -255,6 +261,11 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
           }
 
           m_gun_cooldown = gun_cooldown_timer;
+        }
+        else if(timer < (0.f + multipler))
+        {
+          m_gun_overheat = 0;
+          m_gun_cooldown = 0.2f;
         }
       }
       

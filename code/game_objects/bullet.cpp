@@ -12,19 +12,19 @@
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
 #include <core/physics/rigidbody_properties.hpp>
-#include <math/vec/vec3.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/common/directory.hpp>
 #include <math/quat/quat.hpp>
+#include <math/vec/vec3.hpp>
 
 
 namespace
 {
-  Core::Model   model;
-  Core::Sample  gun_shot_sample;
+  Core::Model     model;
+  Core::Sample    gun_shot_sample;
   
-  Core::Material bullet_material;
+  Core::Material  bullet_material;
 }
 
 

@@ -30,6 +30,7 @@ private:
   const uint32_t    m_controller_id     = 0;
   float             m_point_on_circle   = 0.f;
   float             m_gun_cooldown      = 0.f;
+  float             m_gun_overheat      = 0.f;
   float             m_jump_speed        = 0.f;
   float             m_jump_time         = 0.f;
   float             m_momentum          = 0.f;
