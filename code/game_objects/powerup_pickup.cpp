@@ -56,7 +56,12 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
     power_up_material.set_shader(shader);
     power_up_material.set_map_01(texture);
   }
+}
 
+
+void
+Powerup_pickup::on_start()
+{
   Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());
   
   Core::Rigidbody_properties rb_props;
@@ -71,31 +76,19 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
     ref.set_collider(collider);
     ref.set_rigidbody_properties(rb_props);
     
-  Core::Transform trans = ref.get_transform();
-  
-  math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point_on_circle);
-  
-  const math::vec3 position = trans.get_position();
-  
-  math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
-                                       math::vec2_get_y(new_point),
-                                       math::vec3_get_z(position));
-  trans.set_position(new_pos);
-  ref.set_transform(trans);
+    Core::Transform trans = ref.get_transform();
+    
+    math::vec2 new_point = Level_funcs::get_point_on_cirlce(m_point_on_circle);
+    
+    const math::vec3 position = trans.get_position();
+    
+    math::vec3 new_pos = math::vec3_init(math::vec2_get_x(new_point),
+                                         math::vec2_get_y(new_point),
+                                         math::vec3_get_z(position));
+    trans.set_position(new_pos);
+    ref.set_transform(trans);
   }
-}
 
-
-namespace
-{
-  
-}
-
-
-void
-Powerup_pickup::on_start()
-{
-  auto ref = get_entity();
   Core::Transform trans = ref.get_transform();
   
   // Point on circle
