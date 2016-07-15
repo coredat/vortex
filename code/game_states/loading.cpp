@@ -46,9 +46,9 @@ loading_init(Core::Context &context, Core::World &world)
     loading_entity.set_tags(Object_tags::gui_cam);
     
     const Core::Transform trans(math::vec3_init(0, 0, 0),
-                                math::vec3_init(math::to_float(texture.get_width() >> 1),
+                                math::vec3_init(math::to_float(texture.get_width()) / 2,
                                                 1,
-                                                math::to_float(texture.get_height() >> 1)),
+                                                math::to_float(texture.get_height()) / 2),
                                 math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau()));
     
     loading_entity.set_transform(trans);

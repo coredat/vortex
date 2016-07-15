@@ -84,8 +84,8 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   
   // Set post process.
   m_final_post_camera.set_attached_entity(ref);
-  m_final_post_camera.set_width(m_world_camera.get_width());
-  m_final_post_camera.set_height(m_world_camera.get_height());
+  m_final_post_camera.set_width(m_world_camera.get_width() * 2);
+  m_final_post_camera.set_height(m_world_camera.get_height() * 2);
   m_final_post_camera.set_feild_of_view(m_world_camera.get_field_of_view());
   m_final_post_camera.set_near_plane(m_world_camera.get_near_plane());
   m_final_post_camera.set_far_plane(m_world_camera.get_far_plane());
