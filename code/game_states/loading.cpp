@@ -26,7 +26,7 @@ namespace
   Core::Entity      loading_entity;
   Core::Material    logo_material;
   
-  const float       max_timer = 2.f; // Min time loading screen stays up
+  const float       max_timer = 10.f; // Min time loading screen stays up
   float             curr_timer = 0.f;
 }
 
@@ -46,9 +46,9 @@ loading_init(Core::Context &context, Core::World &world)
     loading_entity.set_tags(Object_tags::gui_cam);
     
     const Core::Transform trans(math::vec3_init(0, 0, 0),
-                                math::vec3_init(math::to_float(texture.get_width()) / 2,
+                                math::vec3_init(math::to_float(texture.get_width()),
                                                 1,
-                                                math::to_float(texture.get_height()) / 2),
+                                                math::to_float(texture.get_height())),
                                 math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau()));
     
     loading_entity.set_transform(trans);
