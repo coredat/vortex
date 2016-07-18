@@ -54,6 +54,7 @@ loading_init(Core::Context &context, Core::World &world)
     loading_entity.set_transform(trans);
   }
   
+  
   // Create a material for the logo.
   if(!logo_material)
   {
