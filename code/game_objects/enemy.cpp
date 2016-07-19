@@ -19,7 +19,7 @@
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
 #include <core/physics/box_collider_utils.hpp>
-#include <core/physics/rigidbody_properties.hpp>
+#include <core/physics/rigidbody.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <math/vec/vec2.hpp>
@@ -119,12 +119,11 @@ Enemy::on_start()
   ref.set_renderer(mat_renderer);
   
   Core::Box_collider coll = Core::Box_collider_utils::create_with_half_extents(math::aabb_get_half_extents(model.get_model_aabb()));
-  ref.set_collider(coll);
   
-  Core::Rigidbody_properties rb_props;
-  rb_props.set_collision_mask(Object_tags::enemy, Object_tags::bullet | Object_tags::player);
-  
-  ref.set_rigidbody_properties(rb_props);
+  Core::Rigidbody rb;
+  rb.set_collider(coll);
+  rb.set_collision_mask(Object_tags::enemy, Object_tags::bullet | Object_tags::player);
+  ref.set_rigidbody(rb);
   
   switch(m_type)
   {

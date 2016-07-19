@@ -11,7 +11,7 @@
 #include <core/audio/sample.hpp>
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
-#include <core/physics/rigidbody_properties.hpp>
+#include <core/physics/rigidbody.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/common/directory.hpp>
@@ -92,13 +92,14 @@ Bullet::Bullet(Core::World &world,
   
   // Physics
   {
+    Core::Rigidbody rb;
+  
     Core::Box_collider collider(0.5f, 0.5f, 0.5f);
-    ref.set_collider(collider);
+    rb.set_collider(collider);
   
     // Rigidbody properties
-    Core::Rigidbody_properties rb_props;
-    rb_props.set_collision_mask(Object_tags::bullet, collision_flags);
-    ref.set_rigidbody_properties(rb_props);
+    rb.set_collision_mask(Object_tags::bullet, collision_flags);
+    ref.set_rigidbody(rb);
   }
   
   // Transform

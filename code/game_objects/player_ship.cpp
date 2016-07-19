@@ -17,7 +17,6 @@
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
 #include <core/physics/box_collider_utils.hpp>
-#include <core/physics/rigidbody_properties.hpp>
 #include <core/physics/rigidbody.hpp>
 #include <math/vec/vec2.hpp>
 #include <math/vec/vec3.hpp>
@@ -65,9 +64,6 @@ Player_ship::Player_ship(Core::World &world,
   Core::Texture texture(green_texture_path);
 
   Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());
-  
-//  Core::Rigidbody_properties rb_props;
-//  rb_props.set_collision_mask(Object_tags::player, Object_tags::enemy | Object_tags::powerup);
 
   Core::Rigidbody rb;
   rb.set_collider(collider);
@@ -79,8 +75,6 @@ Player_ship::Player_ship(Core::World &world,
     ref.set_name("Player");
     ref.set_tags(Object_tags::player | Object_tags::world_cam);
     ref.set_rigidbody(rb);
-//    ref.set_collider(collider);
-//    ref.set_rigidbody_properties(rb_props);
   }
 }
 

@@ -10,7 +10,7 @@
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
 #include <core/physics/box_collider_utils.hpp>
-#include <core/physics/rigidbody_properties.hpp>
+#include <core/physics/rigidbody.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/common/directory.hpp>
@@ -64,8 +64,10 @@ Powerup_pickup::on_start()
 {
   Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());
   
-  Core::Rigidbody_properties rb_props;
-  rb_props.set_collision_mask(Object_tags::powerup, Object_tags::player);
+  Core::Rigidbody rb;
+  rb.set_collider(collider);
+  
+  rb.set_collision_mask(Object_tags::powerup, Object_tags::player);
  
   // Setup entity.
   Core::Entity_ref ref = get_entity();
@@ -73,8 +75,7 @@ Powerup_pickup::on_start()
     ref.set_name("Powerup");
     ref.set_tags(Object_tags::powerup | Object_tags::world_cam);
     
-    ref.set_collider(collider);
-    ref.set_rigidbody_properties(rb_props);
+    ref.set_rigidbody(rb);
     
     Core::Transform trans = ref.get_transform();
     
