@@ -25,6 +25,7 @@
 #include <math/geometry/aabb.hpp>
 #include <core/common/directory.hpp>
 #include <utilities/optimizations.hpp>
+#include <utilities/logging.hpp>
 
 
 namespace
@@ -291,6 +292,11 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
 void
 Player_ship::on_collision(Game_object *obj)
 {
+  if(!obj)
+  {
+    LOG_ERROR("Look at this")
+    return;
+  }
   const auto ref = obj->get_entity();
 
   if(obj && (ref.has_tag(Object_tags::enemy) || ref.has_tag(Object_tags::bullet)))

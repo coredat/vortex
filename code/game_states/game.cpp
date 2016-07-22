@@ -12,6 +12,7 @@
 #include <core/world/world.hpp>
 #include <core/context/context.hpp>
 #include <core/physics/collision_pair.hpp>
+#include <core/physics/collision.hpp>
 #include <utilities/logging.hpp>
 #include <assert.h>
 
@@ -76,17 +77,17 @@ game_update(Core::Context &context,
             Game_object::World_objects &objs,
             const float dt)
 {
-  world.get_overlapping_aabbs([&](const Core::Collision_pair pairs[], const uint32_t number_of_pairs)
+  world.set_collision_callback([](const Core::Collision_type type, const Core::Collision &collision)
   {
-    for(uint32_t i = 0; i < number_of_pairs; ++i)
+//    for(uint32_t i = 0; i < number_of_pairs; ++i)
     {
-      const Core::Entity_ref &ref_a = pairs[i].entity_a;
-      const Core::Entity_ref &ref_b = pairs[i].entity_b;
+      const Core::Entity_ref &ref_a = collision.get_entity_a();
+      const Core::Entity_ref &ref_b = collision.get_entity_b();
       
-      if(!ref_a.is_valid())
-      {
-        continue;
-      }
+//      if(!ref_a.is_valid() || !ref_b.is_valid())
+//      {
+//        return;
+//      }
 
       // Enemy collided with a bullet
       if(ref_b.has_tag(Object_tags::bullet) && ref_a.has_tag(Object_tags::enemy))
@@ -103,7 +104,7 @@ game_update(Core::Context &context,
       
       if(ref_a.has_tag(Object_tags::player))
       {
-        if(ref_b.has_tag(Object_tags::enemy) || ref_b.has_tag(Object_tags::bullet))
+        if(ref_b.has_tag(Object_tags::enemy) || (ref_b.has_tag(Object_tags::enemy) && ref_b.has_tag(Object_tags::bullet)))
         {
           Game_object::Game_object *this_obj = reinterpret_cast<Game_object::Game_object*>(ref_a.get_user_data());
           Game_object::Game_object *that_obj = reinterpret_cast<Game_object::Game_object*>(ref_b.get_user_data());
@@ -133,6 +134,67 @@ game_update(Core::Context &context,
         }
       }
     }
+
+  });
+  
+
+  world.get_overlapping_aabbs([&](const Core::Collision_pair pairs[], const uint32_t number_of_pairs)
+  {
+//    for(uint32_t i = 0; i < number_of_pairs; ++i)
+//    {
+//      const Core::Entity_ref &ref_a = pairs[i].entity_a;
+//      const Core::Entity_ref &ref_b = pairs[i].entity_b;
+//      
+//      if(!ref_a.is_valid())
+//      {
+//        continue;
+//      }
+//
+//      // Enemy collided with a bullet
+//      if(ref_b.has_tag(Object_tags::bullet) && ref_a.has_tag(Object_tags::enemy))
+//      {
+//        Game_object::Game_object *this_obj = reinterpret_cast<Game_object::Game_object*>(ref_a.get_user_data());
+//        Game_object::Game_object *that_obj = reinterpret_cast<Game_object::Game_object*>(ref_b.get_user_data());
+//        assert(this_obj);
+//        
+//        if(this_obj)
+//        {
+//          this_obj->on_collision(that_obj);
+//        }
+//      }
+//      
+//      if(ref_a.has_tag(Object_tags::player))
+//      {
+//        if(ref_b.has_tag(Object_tags::enemy) || ref_b.has_tag(Object_tags::bullet))
+//        {
+//          Game_object::Game_object *this_obj = reinterpret_cast<Game_object::Game_object*>(ref_a.get_user_data());
+//          Game_object::Game_object *that_obj = reinterpret_cast<Game_object::Game_object*>(ref_b.get_user_data());
+//          assert(this_obj);
+//          
+//          if(this_obj)
+//          {
+//            this_obj->on_collision(that_obj);
+//          }
+//        }
+//        
+//        if(ref_b.has_tag(Object_tags::powerup))
+//        {
+//          Game_object::Game_object *this_obj = reinterpret_cast<Game_object::Game_object*>(ref_a.get_user_data());
+//          Game_object::Game_object *that_obj = reinterpret_cast<Game_object::Game_object*>(ref_b.get_user_data());
+//          assert(this_obj);
+//          
+//          if(this_obj)
+//          {
+//            this_obj->on_collision(that_obj);
+//          }
+//          
+//          if(that_obj)
+//          {
+//            that_obj->on_collision(this_obj);
+//          }
+//        }
+//      }
+//    }
   });
     
   spawn_enemies(world, dt, objs);
