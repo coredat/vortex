@@ -96,9 +96,9 @@ Bullet::Bullet(Core::World &world,
   
     Core::Box_collider collider(0.5f, 0.5f, 0.5f);
     rb.set_collider(collider);
-  
-    // Rigidbody properties
     rb.set_collision_mask(Object_tags::bullet, collision_flags);
+    rb.set_is_trigger(true);
+    
     ref.set_rigidbody(rb);
   }
   

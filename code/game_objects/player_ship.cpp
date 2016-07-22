@@ -68,6 +68,7 @@ Player_ship::Player_ship(Core::World &world,
   Core::Rigidbody rb;
   rb.set_collider(collider);
   rb.set_collision_mask(Object_tags::player, Object_tags::enemy | Object_tags::powerup);
+  rb.set_is_trigger(true);
   
   // Setup entity.
   Core::Entity_ref ref = get_entity();

@@ -66,7 +66,7 @@ Powerup_pickup::on_start()
   
   Core::Rigidbody rb;
   rb.set_collider(collider);
-  
+  rb.set_is_trigger(true);
   rb.set_collision_mask(Object_tags::powerup, Object_tags::player);
  
   // Setup entity.
@@ -74,7 +74,7 @@ Powerup_pickup::on_start()
   {
     ref.set_name("Powerup");
     ref.set_tags(Object_tags::powerup | Object_tags::world_cam);
-    
+
     ref.set_rigidbody(rb);
     
     Core::Transform trans = ref.get_transform();

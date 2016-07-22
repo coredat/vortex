@@ -123,6 +123,7 @@ Enemy::on_start()
   Core::Rigidbody rb;
   rb.set_collider(coll);
   rb.set_collision_mask(Object_tags::enemy, Object_tags::bullet | Object_tags::player);
+  rb.set_is_trigger(true);
   ref.set_rigidbody(rb);
   
   switch(m_type)
