@@ -253,13 +253,12 @@ main()
     }
     
     
-    objs.on_destroy();
-    
     // Needs to give chance to objects to get into the
     // right position before they are rendererd.
-    objs.on_start();
-    
     world.think();
+    objs.on_start();
+    objs.on_destroy();
+
   }
 
   return 0;
