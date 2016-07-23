@@ -255,10 +255,9 @@ main()
     
     // Needs to give chance to objects to get into the
     // right position before they are rendererd.
-    world.think();
     objs.on_start();
+    world.think();
     objs.on_destroy();
-
   }
 
   return 0;
