@@ -84,10 +84,11 @@ game_update(Core::Context &context,
       const Core::Entity_ref &ref_a = collision.get_entity_a();
       const Core::Entity_ref &ref_b = collision.get_entity_b();
       
-//      if(!ref_a.is_valid() || !ref_b.is_valid())
-//      {
+      if(!ref_a.is_valid() || !ref_b.is_valid())
+      {
+        assert(false);
 //        return;
-//      }
+      }
 
       // Enemy collided with a bullet
       if(ref_b.has_tag(Object_tags::bullet) && ref_a.has_tag(Object_tags::enemy))

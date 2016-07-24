@@ -12,6 +12,8 @@
 #include <math/quat/quat.hpp>
 #include <math/general/general.hpp>
 #include <core/common/directory.hpp>
+#include <core/world/world.hpp>
+#include <utilities/logging.hpp>
 
 
 namespace
@@ -111,7 +113,11 @@ Explosion::on_update(const float dt, World_objects &objs)
                                                math::rand_range(math::vec3_get_y(pos) - scale, math::vec3_get_y(pos) + scale),
                                                math::rand_range(math::vec3_get_z(pos) - scale, math::vec3_get_z(pos) + scale));
     
-    objs.push_object(new Explosion(get_world(), new_pos, 0.8f * m_scale_mul));
+    if(get_world().get_entity_count_in_world() < 2048)
+    {
+      LOG_TODO_ONCE("This magic number means we need to know the capacity of entities in the core. Boo");
+      objs.push_object(new Explosion(get_world(), new_pos, 0.8f * m_scale_mul));
+    }
     
     m_reproduced = true;
   }
