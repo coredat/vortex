@@ -142,7 +142,10 @@ game_over_update(Core::Context &ctx,
     
     for(auto &pl : player_entities)
     {
-      pl.destroy();
+      if(pl)
+      {
+        pl.destroy();
+      }
     }
     
     return Game_state::selection;
