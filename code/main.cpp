@@ -66,7 +66,7 @@ main()
   text_entity.set_name("Test text entity");
   
   Core::Text_renderer text_renderer;
-  Core::Font font("ft");
+  Core::Font font("/Users/PhilCK/Desktop/font/LiberationSerif-Regular.ttf");
   {
     text_renderer.set_text("foofy");
     text_renderer.set_font(font);
