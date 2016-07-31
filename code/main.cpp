@@ -28,6 +28,10 @@
 #include <core/world/world_setup.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/transform/transform.hpp>
+#include <core/input/input.hpp>
+#include <core/input/controller.hpp>
+#include <core/input/axis.hpp>
+
 #include <math/vec/vec3.hpp>
 #include <utilities/timer.hpp>
 #include <utilities/logging.hpp>
@@ -61,6 +65,8 @@ main()
   Core::Context context(1200, 720, false, "Vortex Defender 2099", context_setup);
   Core::World   world(context, Core::World_setup{});
   
+  Core::Input::mouse_set_capture(context, true);
+
   // ** Text Renderer Test ** //
   Core::Entity text_entity(world);
   text_entity.set_name("Test text entity");
@@ -100,6 +106,15 @@ main()
   // Game state
   while(context.is_open())
   {
+    Core::Controller controller(context, 0);
+    
+    char foo[123];
+    memset(foo, 0, sizeof(foo));
+
+    sprintf(foo, "Mouse X: %f", controller.get_axis(0).x);
+
+    context.set_title(foo);
+
     #ifdef CORE_DEBUG_MENU
     if (ImGui::BeginMainMenuBar())
     {

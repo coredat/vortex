@@ -233,7 +233,7 @@ selection_update(Core::Context &ctx,
       }
     }
     
-    if(controllers[i].is_button_down_on_frame(Core::Button::button_0) || controllers[i].get_axis(0).y != 0.f)
+    if(controllers[i].is_button_down_on_frame(Core::Button::button_0))// || controllers[i].get_axis(0).y != 0.f)
     {
       // Start screen
       if(!start_screen)
