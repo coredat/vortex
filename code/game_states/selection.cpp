@@ -175,7 +175,7 @@ selection_update(Core::Context &ctx,
   */
   for(const auto &ctrl : controllers)
   {
-    if(ctrl.is_button_up_on_frame(Core::Button::button_4) && players_signed_in > 0)
+    if(ctrl.is_button_up_on_frame(Core::Button::button_start) && players_signed_in > 0)
     {
       // Reset selection screen
       {
@@ -219,7 +219,7 @@ selection_update(Core::Context &ctx,
   {
     if(!signed_in_selections[i])
     {
-      if(controllers[i].is_button_down_on_frame(Core::Button::button_0))
+      if(controllers[i].is_button_down_on_frame(Core::Button::button_a))
       {
         const Core::Material_renderer mat_renderer(materials[0], models[0]);
         
@@ -233,7 +233,7 @@ selection_update(Core::Context &ctx,
       }
     }
     
-    if(controllers[i].is_button_down_on_frame(Core::Button::button_0))// || controllers[i].get_axis(0).y != 0.f)
+    if(controllers[i].is_button_down_on_frame(Core::Button::button_a))// || controllers[i].get_axis(0).y != 0.f)
     {
       // Start screen
       if(!start_screen)

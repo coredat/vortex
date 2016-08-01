@@ -65,7 +65,7 @@ main()
   Core::Context context(1200, 720, false, "Vortex Defender 2099", context_setup);
   Core::World   world(context, Core::World_setup{});
   
-  Core::Input::mouse_set_capture(context, true);
+//  Core::Input::mouse_set_capture(context, true);
 
   // ** Text Renderer Test ** //
   Core::Entity text_entity(world);

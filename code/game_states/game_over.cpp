@@ -132,10 +132,10 @@ game_over_update(Core::Context &ctx,
   /*
     If any gamepad presses start we go back to the game selection screen.
   */
-  if(controller_1.is_button_down_on_frame(Core::Button::button_4) ||
-     controller_2.is_button_down_on_frame(Core::Button::button_4) ||
-     controller_3.is_button_down_on_frame(Core::Button::button_4) ||
-     controller_4.is_button_down_on_frame(Core::Button::button_4))
+  if(controller_1.is_button_down_on_frame(Core::Button::button_start) ||
+     controller_2.is_button_down_on_frame(Core::Button::button_start) ||
+     controller_3.is_button_down_on_frame(Core::Button::button_start) ||
+     controller_4.is_button_down_on_frame(Core::Button::button_start))
   {
     created_screen = false;
     continue_screen.destroy();
