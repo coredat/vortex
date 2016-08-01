@@ -106,15 +106,6 @@ main()
   // Game state
   while(context.is_open())
   {
-    Core::Controller controller(context, 0);
-    
-    char foo[123];
-    memset(foo, 0, sizeof(foo));
-
-    sprintf(foo, "Mouse X: %f", controller.get_axis(0).x);
-
-    context.set_title(foo);
-
     #ifdef CORE_DEBUG_MENU
     if (ImGui::BeginMainMenuBar())
     {

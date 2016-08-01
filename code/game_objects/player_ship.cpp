@@ -161,7 +161,7 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
       
       // Lateral Movement
       {
-        const float move_axis  = controller.get_axis(0).x * move_speed_base;
+        const float move_axis  = controller.get_axis(1).x * move_speed_base;
         const float move_speed = move_axis * movement_dt;
         
         if(move_speed)

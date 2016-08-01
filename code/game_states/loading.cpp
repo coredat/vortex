@@ -26,7 +26,7 @@ namespace
   Core::Entity      loading_entity;
   Core::Material    logo_material;
   
-  const float       max_timer = 2.f; // Min time loading screen stays up
+  const float       max_timer = 0.f; // Min time loading screen stays up
   float             curr_timer = 0.f;
 }
 
