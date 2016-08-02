@@ -35,7 +35,7 @@ Explosion::Explosion(Core::World &world,
 : Game_object(world)
 , m_time(0.f)
 , m_scale_mul(scale_mul)
-, m_reproduced(m_scale_mul < 0.1f)
+, m_reproduced(m_scale_mul < 0.3f)
 {
   // Load missing assets
   {
