@@ -86,7 +86,7 @@ title_screen_update(Core::Context &ctx,
 
   for(const auto &ctrl : controllers)
   {
-    if(ctrl.is_button_up_on_frame(Core::Button::button_start))
+    if(ctrl.is_button_up_on_frame(Core::Gamepad_button::button_start))
     {
       title_screen.destroy();
       return Game_state::selection;
