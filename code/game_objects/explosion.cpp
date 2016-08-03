@@ -99,7 +99,7 @@ Explosion::on_update(const float dt, World_objects &objs)
 {
   Core::Entity_ref ref = get_entity();
 
-  m_time += dt * 10.f;
+  m_time += dt * 12.f;
   
   const float new_scale = 0.5f + math::sin(m_time);
   
