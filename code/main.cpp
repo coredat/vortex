@@ -75,7 +75,7 @@ main()
   Core::Font font("/Users/PhilCK/Desktop/font/LiberationSerif-Regular.ttf");
   {
     text_renderer.set_font(font);
-    text_renderer.set_text("foofy");
+    text_renderer.set_text("Random Text 123");
   }
   
   text_entity.set_renderer(text_renderer);
