@@ -79,19 +79,6 @@ main()
   {
     text_renderer.set_font(font);
     text_renderer.set_text("Random Text 123");
-    
-    Graphics_api::Vertex_attribute vertdesc[3] = {
-      Graphics_api::Vertex_attribute::position_3d,
-      Graphics_api::Vertex_attribute::normal,
-      Graphics_api::Vertex_attribute::texture_coord,
-    };
-    
-    Graphics_api::Vertex_format v_fmt;
-    Graphics_api::vertex_format_create(vertdesc, 3);
-    
-    Graphics_api::Quad_info q;
-    
-    auto mesh = Graphics_api::create_quads(&v_fmt, &q, 1);
   }
   
   text_entity.set_renderer(text_renderer);
