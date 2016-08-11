@@ -23,7 +23,7 @@ public:
   void            on_message(const uint32_t id, void *data) override;
   
   uint32_t        get_score() const;
-  Player_ship*    spawn_ship(Core::Context &ctx) const;
+  Player_ship*    spawn_ship(Core::Context &ctx);
   
   void            set_material(const Core::Material &mat);
   Core::Material  get_material() const;
@@ -42,6 +42,7 @@ private:
   bool            m_is_active       = false;
   Core::Material  m_curr_material   = Core::Material("none");
   Core::Model     m_curr_model      = Core::Model();
+  Core::Entity    m_counter         = Core::Entity();
 
 }; // ns
 

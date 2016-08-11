@@ -1,10 +1,14 @@
 #include <game_objects/player.hpp>
 #include <game_objects/player_ship.hpp>
 #include <common/event_ids.hpp>
+#include <common/object_tags.hpp>
 #include <core/world/world.hpp>
 #include <core/context/context.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/renderer/renderer.hpp>
+#include <core/renderer/text_renderer.hpp>
+#include <core/font/font.hpp>
+#include <core/transform/transform.hpp>
 
 
 namespace Game_object {
@@ -12,6 +16,7 @@ namespace Game_object {
 
 Player::Player(Core::World &world)
 : Game_object(world)
+, m_counter(world)
 {
 }
 
@@ -19,6 +24,7 @@ Player::Player(Core::World &world)
 void
 Player::on_start()
 {
+
 }
 
 
@@ -43,7 +49,7 @@ Player::set_controller(const uint32_t id)
 
 
 Player_ship*
-Player::spawn_ship(Core::Context &ctx) const
+Player::spawn_ship(Core::Context &ctx)
 {
   if(m_controller_id)
   {
@@ -54,6 +60,21 @@ Player::spawn_ship(Core::Context &ctx) const
     renderer.set_model(m_curr_model);
     
     ship->get_entity().set_renderer(renderer);
+    
+    // Setup the renderer
+    {
+      Core::Font font("/Users/PhilCK/Desktop/font/LiberationSerif-Bold.ttf");
+      
+      Core::Text_renderer renderer;
+      renderer.set_text("<>*");
+      renderer.set_font(font);
+      
+      Core::Transform text_transform;
+      
+      m_counter.set_tags(Object_tags::gui_cam);
+      m_counter.set_transform(text_transform);
+      m_counter.set_renderer(renderer);
+    }
     
     return ship;
   }

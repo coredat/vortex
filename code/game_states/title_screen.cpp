@@ -14,6 +14,8 @@
 #include <core/input/buttons.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
+#include <core/renderer/text_renderer.hpp>
+#include <core/font/font.hpp>
 #include <utilities/directory.hpp>
 #include <math/quat/quat.hpp>
 #include <utilities/logging.hpp>
@@ -22,8 +24,9 @@
 
 namespace
 {
-  Core::Entity title_screen;
-  Core::Material title_material;
+  Core::Entity    title_screen;
+  Core::Entity    title_text;
+  Core::Material  title_material;
 }
 
 
@@ -64,6 +67,28 @@ title_screen_init(Core::Context &ctx,
       math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau())
     ));
   }
+  
+  if(!title_text)
+  {
+    title_text = Core::Entity(world);
+    title_text.set_name("Test text entity");
+    title_text.set_tags(Object_tags::level_cam);
+    
+    Core::Text_renderer text_renderer;
+    Core::Font font("/Users/PhilCK/Desktop/font/LiberationSerif-Bold.ttf");
+    {
+      text_renderer.set_font(font);
+      text_renderer.set_text("Vortex Defender");
+    }
+    
+    title_text.set_renderer(text_renderer);
+    
+    Core::Transform text_trans;
+    text_trans.set_position(math::vec3_init(0, 200, 0));
+    
+    title_text.set_transform(text_trans);
+  }
+  
 }
 
 
@@ -89,6 +114,7 @@ title_screen_update(Core::Context &ctx,
     if(ctrl.is_button_up_on_frame(Core::Gamepad_button::button_start))
     {
       title_screen.destroy();
+      title_text.destroy();
       return Game_state::selection;
     }
   }

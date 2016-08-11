@@ -45,6 +45,7 @@
 #include <graphics_api/utils/geometry.hpp>
 #include <graphics_api/vertex_format.hpp>
 #include <graphics_api/mesh.hpp>
+#include <common/object_tags.hpp>
 
 
 
@@ -64,25 +65,10 @@ main()
   // ** Setup Core ** //
   Core::Context_setup context_setup;
   context_setup.vsync = true;
+  context_setup.high_dpi_support = false;
 
   Core::Context context(1200, 720, false, "Vortex Defender 2099", context_setup);
   Core::World   world(context, Core::World_setup{});
-  
-//  Core::Input::mouse_set_capture(context, true);
-
-  // ** Text Renderer Test ** //
-  Core::Entity text_entity(world);
-  text_entity.set_name("Test text entity");
-  
-  Core::Text_renderer text_renderer;
-  Core::Font font("/Users/PhilCK/Desktop/font/LiberationSerif-Regular.ttf");
-  {
-    text_renderer.set_font(font);
-    text_renderer.set_text("Random Text 123 fra lalalalalala doop");
-  }
-  
-  text_entity.set_renderer(text_renderer);
-  // ** End Text Renderer Test ** //
   
   // ** Start Game ** //
   Game_state curr_state = Game_state::null;
