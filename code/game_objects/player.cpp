@@ -53,7 +53,7 @@ Player::spawn_ship(Core::Context &ctx)
 {
   if(m_controller_id)
   {
-    Player_ship *ship = new Player_ship(get_world(), ctx, m_controller_id - 1);
+    Player_ship *ship = new Player_ship(get_world(), ctx, m_controller_id);
 
     Core::Material_renderer renderer;
     renderer.set_material(m_curr_material);
@@ -66,7 +66,7 @@ Player::spawn_ship(Core::Context &ctx)
       Core::Font font("/Users/PhilCK/Desktop/font/LiberationSerif-Bold.ttf");
       
       Core::Text_renderer renderer;
-      renderer.set_text("<>*");
+      renderer.set_text("000");
       renderer.set_font(font);
       
       Core::Transform text_transform;

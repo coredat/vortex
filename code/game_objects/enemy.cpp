@@ -179,9 +179,9 @@ Enemy::on_update(const float dt, World_objects &objs)
     // Fall through on purpose here!
     case(State::dying):
       destroy();
-          objs.push_object(new Explosion(get_world(),
-                                         get_entity().get_transform().get_position()));
-          
+      objs.push_object(new Explosion(get_world(),
+                                     get_entity().get_transform().get_position()));
+      
           
       m_state = State::dead;
       break;

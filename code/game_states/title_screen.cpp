@@ -7,8 +7,10 @@
 #include <core/resources/texture.hpp>
 #include <core/model/model.hpp>
 #include <core/entity/entity.hpp>
+#include <core/entity/entity_ref.hpp>
 #include <core/resources/shader.hpp>
 #include <core/transform/transform.hpp>
+#include <core/transform/transform_utils.hpp>
 #include <core/common/directory.hpp>
 #include <core/input/controller.hpp>
 #include <core/input/buttons.hpp>
@@ -16,6 +18,8 @@
 #include <core/renderer/material_renderer.hpp>
 #include <core/renderer/text_renderer.hpp>
 #include <core/font/font.hpp>
+#include <core/camera/camera.hpp>
+#include <core/camera/camera_utils.hpp>
 #include <utilities/directory.hpp>
 #include <math/quat/quat.hpp>
 #include <utilities/logging.hpp>
@@ -108,7 +112,38 @@ title_screen_update(Core::Context &ctx,
     Core::Controller(ctx, 2),
     Core::Controller(ctx, 3),
   };
-
+  
+  title_screen.on_mouse_over([](Core::Entity_ref ref)
+                             {
+                               int i = 0;
+                             });
+  
+  // Mouse Pick Test
+  {
+    // Norm coords
+    Core::Axis mouse = Core::Input::mouse_get_coordinates(ctx);
+    mouse.x = (mouse.x / (ctx.get_width() * 0.5f)) - 1.f;
+    mouse.y = (mouse.y / (ctx.get_height() * 0.5f)) - 1.f;
+    
+    const math::mat4 world_mat = Core::Transform_utils::get_world_matrix(title_screen.get_transform());
+    const math::mat4 view_mat = Core::Camera_utils::camera_get_view_matrix(camera);
+    const math::mat4 proj_mat = Core::Camera_utils::camera_get_projection_matrix(camera);
+    
+    const math::mat4 wvp_mat = math::mat4_multiply(world_mat, view_mat, proj_mat);
+    const math::mat4 wvp_inv_mat = math::mat4_get_inverse(wvp_mat);
+    
+    const math::vec4 near = math::mat4_multiply(math::vec4_init(mouse.x, mouse.y, 0, 1.f), wvp_inv_mat);
+    const math::vec4 ray_start = math::vec4_init(math::mat4_get(wvp_inv_mat, 12),
+                                                 math::mat4_get(wvp_inv_mat, 13),
+                                                 math::mat4_get(wvp_inv_mat, 14),
+                                                 math::mat4_get(wvp_inv_mat, 15));
+    
+    const math::vec4 ray_dir = math::vec4_subtract(near, ray_start);
+    
+    // Cast ray to the aabb
+    
+  }
+  
   for(const auto &ctrl : controllers)
   {
     if(ctrl.is_button_up_on_frame(Core::Gamepad_button::button_start))

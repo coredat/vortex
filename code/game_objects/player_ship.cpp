@@ -157,7 +157,7 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
 
       m_gun_cooldown -= dt;
       
-      Core::Controller controller = Core::Controller(m_context, m_controller_id);
+      Core::Controller controller = Core::Controller(m_context, m_controller_id - 1);
       
       // Lateral Movement
       {
