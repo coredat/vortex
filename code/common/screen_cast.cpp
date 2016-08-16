@@ -31,8 +31,8 @@ intersect_screen_plane(const Core::Camera &cam,
     return false; 
   };
   
-  const math::mat4 proj   = Core::Camera_utils::camera_get_projection_matrix(cam);
-  const math::mat4 view   = Core::Camera_utils::camera_get_view_matrix(cam);
+  const math::mat4 proj   = Core::Camera_utils::get_projection_matrix(cam);
+  const math::mat4 view   = Core::Camera_utils::get_view_matrix(cam);
   const math::mat4 inv_vp = math::mat4_get_inverse(math::mat4_multiply(proj, view));
   
   const math::vec4 screen_pos = math::vec4_init(ray_offset_x, ray_offset_y, -1.f, 1.f);
