@@ -12,6 +12,7 @@
 #include <core/transform/transform.hpp>
 #include <core/transform/transform_utils.hpp>
 #include <core/common/directory.hpp>
+#include <core/camera/camera_properties.hpp>
 #include <core/input/controller.hpp>
 #include <core/input/buttons.hpp>
 #include <core/physics/ray.hpp>
@@ -27,6 +28,7 @@
 #include <utilities/directory.hpp>
 #include <math/quat/quat.hpp>
 #include <utilities/logging.hpp>
+#include <renderer/debug_line.hpp>
 #include <assert.h>
 
 
@@ -68,23 +70,19 @@ title_screen_init(Core::Context &ctx,
     title_screen = Core::Entity(world);
     
     Core::Rigidbody rb;
-//    rb.set_collider(Core::Box_collider(1.15, 0.5, 0.3));
-    rb.set_collider(Core::Box_collider(2,2,2));
+    rb.set_collider(Core::Box_collider(0.5, 0.5, 0.5));
     rb.set_is_dynamic(false);
     rb.set_is_trigger(true);
-    title_screen.set_rigidbody(rb);
-    
     title_screen.set_name("title_screen[title]");
     title_screen.set_tags(Object_tags::gui_cam);
     title_screen.set_renderer(mat_renderer);
     title_screen.set_transform(Core::Transform(
       math::vec3_zero(),
-      math::vec3_init(100, 100, 0.5),
+      math::vec3_init(512, 128, 10),
       math::quat()
-//      math::quat_init_with_axis_angle(Core::Transform::get_world_left(), 0.f)//-math::quart_tau())
     ));
     
-
+    title_screen.set_rigidbody(rb);
   }
   
   if(!title_text)
@@ -136,46 +134,89 @@ title_screen_update(Core::Context &ctx,
   // Mouse Pick Test
   {
     // Norm coords
-    Core::Axis mouse_coords = Core::Input::mouse_get_coordinates(ctx);
-    mouse_coords.x = (2.f * mouse_coords.x) / ctx.get_width() - 1.f;
-    mouse_coords.y = 1.f - (2.f * mouse_coords.y) / ctx.get_height();
-    
-    const math::vec4 mouse_clip = math::vec4_init(mouse_coords.x, mouse_coords.y, 0.f, 1.f);
 
-//    mouse_worldspace = inverse(C) * inverse(P) * mouse_clip
-    const math::mat4 world_mat = Core::Transform_utils::get_world_matrix(camera.get_attached_entity().get_transform());
-    const math::mat4 world_inv_mat = math::mat4_get_inverse(world_mat);
-    
-    const math::mat4 proj_mat = Core::Camera_utils::camera_get_projection_matrix(camera);
-    const math::mat4 proj_inv_mat = math::mat4_get_inverse(proj_mat);
-    
-    const math::mat4 world_proj_inv_mat = math::mat4_multiply(world_inv_mat, proj_inv_mat);
-    const math::vec4 mouse_worldspace = math::mat4_multiply(mouse_clip, world_proj_inv_mat);
-    
-//    const math::vec4 ray_dir = math::vec4_normalize(mouse_worldspace);
-//    const math::vec3 norm_dir = math::vec3_init(math::get_x(ray_dir), math::get_y(ray_dir), math::get_z(ray_dir));
-  
-    const math::vec3 cam_pos = camera.get_attached_entity().get_transform().get_position();
-    const math::vec3 mouse_worldspace_norm = math::vec3_normalize(math::vec3_init(math::get_x(mouse_worldspace), math::get_y(mouse_worldspace), math::get_z(mouse_worldspace)));
-  
-    const math::vec3 mouse_pos = math::vec3_normalize(math::vec3_subtract(mouse_worldspace_norm, cam_pos));
-
-    Core::Ray ray(world, cam_pos, mouse_worldspace_norm);
-
-  
-//    printf("Cam pos %f, %f, %f \n", math::get_x(cam_pos), math::get_y(cam_pos), math::get_z(cam_pos));
-//    printf("Ray ori %f, %f, %f \n", math::get_x(ray_start), math::get_y(ray_start), math::get_z(ray_start));
-//    printf("Ray dir %f, %f, %f \n", math::get_x(ray_dir), math::get_y(ray_dir), math::get_z(ray_dir));
-    
-    if(ray.has_hit())
+    if(camera.get_type() == Core::Camera_type::perspective)
     {
-      auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
-      mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_red_512.png")));
+      Core::Axis mouse_coords = Core::Input::mouse_get_coordinates(ctx);
+      mouse_coords.x = (2.f * mouse_coords.x) / ctx.get_width() - 1.f;
+      mouse_coords.y = 1.f - (2.f * mouse_coords.y) / ctx.get_height();
+      const math::vec3 ray_nds = math::vec3_init(mouse_coords.x, mouse_coords.y, 1.f);
+
+      const math::vec4 ray_clip = math::vec4_init(math::get_x(ray_nds), math::get_y(ray_nds), -1.f, 1.f);
+      
+      const math::mat4 proj_mat = Core::Camera_utils::camera_get_projection_matrix(camera);
+      const math::mat4 proj_inv_mat = math::mat4_get_inverse(proj_mat);
+      
+      const math::vec4 ray_eye_get = math::mat4_multiply(ray_clip, proj_inv_mat);
+      const math::vec4 ray_eye = math::vec4_init(math::get_x(ray_eye_get), math::get_y(ray_eye_get), -1.0, 0.0);
+      
+      // --
+      
+      const math::mat4 view_mat = Core::Camera_utils::camera_get_view_matrix(camera);
+      const math::mat4 view_inv_mat = math::mat4_get_inverse(view_mat);
+      
+      const math::vec4 ray_wor_all =  math::mat4_multiply(ray_eye, view_inv_mat);
+      const math::vec3 ray_wor = math::vec3_normalize(math::vec3_init(math::get_x(ray_wor_all), math::get_y(ray_wor_all), math::get_z(ray_wor_all)));
+
+      // --
+
+      const math::vec3 cam_pos = camera.get_attached_entity().get_transform().get_position();
+
+      const math::vec3 ray_start = cam_pos;//math::vec3_add(cam_pos, ray_wor);
+      const math::vec3 ray_dir = ray_wor;//camera.get_attached_entity().get_transform().get_forward();
+
+      const Core::Ray ray(world, ray_start, ray_dir);
+
+      printf("Ray Ori %f, %f, %f \n", math::get_x(ray_start), math::get_y(ray_start), math::get_z(ray_start));
+      printf("Ray Dir %f, %f, %f \n", math::get_x(ray_dir), math::get_y(ray_dir), math::get_z(ray_dir));
+      
+      if(ray.has_hit())
+      {
+        auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
+        mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_red_512.png")));
+      }
+      else
+      {
+        auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
+        mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png")));
+      }
+      
+      const math::vec3 scale = math::vec3_scale(ray_dir, 100.f);
+      const math::vec3 ray_to = math::vec3_add(ray_start, scale);
+      
+      Renderer::debug_line(ray_start, ray_to, math::vec3_init(0,1,0));
     }
     else
     {
-      auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
-      mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png")));
+      Core::Axis mouse_coords = Core::Input::mouse_get_coordinates(ctx);
+      mouse_coords.x = (math::to_float(ctx.get_width()) * 0.5f) - mouse_coords.x;
+      mouse_coords.y = (math::to_float(ctx.get_height()) * 0.5f) - mouse_coords.y;
+      
+      const Core::Transform cam_tran = camera.get_attached_entity().get_transform();
+      
+      const math::vec3 left = math::vec3_scale(cam_tran.get_left(), mouse_coords.x);
+      const math::vec3 up = math::vec3_scale(cam_tran.get_up(), mouse_coords.y);
+      
+      const math::vec3 cam_pos = cam_tran.get_position();
+      
+      const math::vec3 ray_start = math::vec3_add(math::vec3_add(cam_pos, left), up);
+      const math::vec3 ray_dir = cam_tran.get_forward();
+
+      const Core::Ray ray(world, ray_start, ray_dir);
+
+      printf("Ray Ori %f, %f, %f \n", math::get_x(ray_start), math::get_y(ray_start), math::get_z(ray_start));
+      printf("Ray Dir %f, %f, %f \n", math::get_x(ray_dir), math::get_y(ray_dir), math::get_z(ray_dir));
+      
+      if(ray.has_hit())
+      {
+        auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
+        mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_red_512.png")));
+      }
+      else
+      {
+        auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
+        mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png")));
+      }
     }
     
     // Cast ray to the aabb

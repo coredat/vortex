@@ -189,7 +189,7 @@ main()
       {
         next_state = title_screen_update(context,
                                          world,
-                                         go_cam->m_world_camera,
+                                         go_cam->m_gui_camera,
                                          objs,
                                          dt);
         
