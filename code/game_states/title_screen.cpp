@@ -15,7 +15,7 @@
 #include <core/camera/camera_properties.hpp>
 #include <core/input/controller.hpp>
 #include <core/input/buttons.hpp>
-#include <core/physics/ray.hpp>
+#include <core/common/ray.hpp>
 #include <core/physics/rigidbody.hpp>
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
@@ -135,14 +135,10 @@ title_screen_update(Core::Context &ctx,
   {
     // Norm coords
 
-    const Core::Ray viewport_ray = Core::Camera_utils::viewport_to_ray(camera,
-                                                                       world,
-                                                                       Core::Input::mouse_get_coordinates(ctx),
-                                                                       Core::Axis{math::to_float(ctx.get_width()),
-                                                                                  math::to_float(ctx.get_height())
-                                                                                  });
+    const Core::Ray        viewport_ray    = Core::Camera_utils::get_ray_from_viewport(camera, Core::Input::mouse_get_coordinates(ctx));
+    const Core::Entity_ref entity_from_ray = world.find_entity_by_ray(viewport_ray);
 
-    if(viewport_ray.has_hit())
+    if(entity_from_ray)
     {
       auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
       mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_red_512.png")));
@@ -152,8 +148,18 @@ title_screen_update(Core::Context &ctx,
       auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
       mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png")));
     }
+//
+//    // Cast ray to the aabb
+
+    // Can drag around the plane
+    const math::vec3 pos = Core::Camera_utils::get_world_position_on_nearplane(camera, Core::Input::mouse_get_coordinates(ctx));
     
-    // Cast ray to the aabb
+    const math::vec3 fwd_pos = math::vec3_add(pos, camera.get_attached_entity().get_transform().get_position());
+    
+    Core::Transform trans = title_screen.get_transform();
+    trans.set_position(fwd_pos);
+    
+    title_screen.set_transform(trans);
     
   }
   
