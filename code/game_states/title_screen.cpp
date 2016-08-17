@@ -70,15 +70,15 @@ title_screen_init(Core::Context &ctx,
     title_screen = Core::Entity(world);
     
     Core::Rigidbody rb;
-    rb.set_collider(Core::Box_collider(0.5, 0.5, 0.5));
+    rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
     rb.set_is_dynamic(false);
     rb.set_is_trigger(true);
     title_screen.set_name("title_screen[title]");
     title_screen.set_tags(Object_tags::gui_cam);
     title_screen.set_renderer(mat_renderer);
     title_screen.set_transform(Core::Transform(
-      math::vec3_zero(),
-      math::vec3_init(512, 128, 10),
+      math::vec3_init(128.f, 0.f, 0.f),
+      math::vec3_init(128.f, 128.f, 4.f),
       math::quat()
     ));
     
@@ -134,7 +134,6 @@ title_screen_update(Core::Context &ctx,
   // Mouse Pick Test
   {
     // Norm coords
-
     const Core::Ray        viewport_ray    = Core::Camera_utils::get_ray_from_viewport(camera, Core::Input::mouse_get_coordinates(ctx));
     const Core::Entity_ref entity_from_ray = world.find_entity_by_ray(viewport_ray);
 
@@ -148,19 +147,17 @@ title_screen_update(Core::Context &ctx,
       auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
       mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png")));
     }
-//
-//    // Cast ray to the aabb
+
+   // Cast ray to the aabb
 
     // Can drag around the plane
-    const math::vec3 pos = Core::Camera_utils::get_world_position_on_nearplane(camera, Core::Input::mouse_get_coordinates(ctx));
-    
+    const math::vec3 pos     = Core::Camera_utils::get_world_position_on_nearplane(camera, Core::Input::mouse_get_coordinates(ctx));
     const math::vec3 fwd_pos = math::vec3_add(pos, camera.get_attached_entity().get_transform().get_position());
     
     Core::Transform trans = title_screen.get_transform();
     trans.set_position(fwd_pos);
     
-    title_screen.set_transform(trans);
-    
+//    title_screen.set_transform(trans);
   }
   
   for(const auto &ctrl : controllers)
