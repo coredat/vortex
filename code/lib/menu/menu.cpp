@@ -58,8 +58,8 @@ Menu::add_button(Core::World &world, const Core::Material &mat)
   m_buttons.back().entity.set_renderer(renderer);
   
   const Core::Transform trans(
-    m_home,
-    math::vec3_init(100, 100, 100),
+    math::vec3_add(m_home, math::vec3_init(0, 0, -100)),
+    math::vec3_init(100, 100, 1028),
     math::quat()
   );
   
