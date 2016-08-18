@@ -25,7 +25,6 @@
 #include <utilities/file.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
-#include <lib/menu/menu.hpp>
 
 
 namespace
@@ -48,8 +47,6 @@ namespace
   Core::Entity        selection_screens[max_number_of_players];
   Core::Entity        signed_in_selections[max_number_of_players];
   Core::Entity        start_screen;
-  
-  Core::Lib::Menu     menu;
 }
 
 
@@ -163,8 +160,6 @@ selection_update(Core::Context &ctx,
                  Game_object::World_objects &objects,
                  const float dt)
 {
-  menu.update();
-
   constexpr uint32_t number_of_controllers = 4;
   
   const Core::Controller controllers[number_of_controllers]

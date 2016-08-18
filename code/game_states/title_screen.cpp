@@ -29,6 +29,7 @@
 #include <math/quat/quat.hpp>
 #include <utilities/logging.hpp>
 #include <renderer/debug_line.hpp>
+#include <lib/menu/menu.hpp>
 #include <assert.h>
 
 
@@ -37,6 +38,8 @@ namespace
   Core::Entity    title_screen;
   Core::Entity    title_text;
   Core::Material  title_material;
+  
+  Core::Lib::Menu   menu;
 }
 
 
@@ -77,8 +80,8 @@ title_screen_init(Core::Context &ctx,
     title_screen.set_tags(Object_tags::gui_cam);
     title_screen.set_renderer(mat_renderer);
     title_screen.set_transform(Core::Transform(
-      math::vec3_init(128.f, 0.f, 0.f),
-      math::vec3_init(128.f, 128.f, 4.f),
+      math::vec3_init(512, 0.f, 0.f),
+      math::vec3_init(128.f, 128.f, 128.f),
       math::quat()
     ));
     
@@ -106,6 +109,8 @@ title_screen_init(Core::Context &ctx,
     title_text.set_transform(text_trans);
   }
   
+  menu.set_home(math::vec2_init(100, 100), camera);
+  menu.add_button(world, title_material);
 }
 
 
@@ -126,21 +131,23 @@ title_screen_update(Core::Context &ctx,
     Core::Controller(ctx, 3),
   };
   
-  title_screen.on_mouse_over([](Core::Entity_ref ref)
-                             {
-                               int i = 0;
-                             });
   
   // Mouse Pick Test
   {
     // Norm coords
     const Core::Ray        viewport_ray    = Core::Camera_utils::get_ray_from_viewport(camera, Core::Input::mouse_get_coordinates(ctx));
     const Core::Entity_ref entity_from_ray = world.find_entity_by_ray(viewport_ray);
-
+    
     if(entity_from_ray)
     {
       auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
       mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_red_512.png")));
+      if(controllers[0].get_trigger(0))
+      {
+        title_screen.destroy();
+        title_text.destroy();
+        return Game_state::selection;
+      }
     }
     else
     {

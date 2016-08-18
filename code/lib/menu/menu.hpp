@@ -1,66 +1,43 @@
-#ifndef MENU_INCLUDED_F752A89C_24A7_49AB_82C8_0E9C5985347E
-#define MENU_INCLUDED_F752A89C_24A7_49AB_82C8_0E9C5985347E
+#ifndef MENU_INCLUDED_752C3FED_D46D_488C_90B1_68B84E42DDCA
+#define MENU_INCLUDED_752C3FED_D46D_488C_90B1_68B84E42DDCA
 
 
+#include <core/common/core_fwd.hpp>
 #include <core/entity/entity.hpp>
-#include <core/world/world.hpp>
-#include <core/resources/texture.hpp>
+#include <core/resources/material.hpp>
+#include <math/vec/vec_types.hpp>
+#include <vector>
 
 
 namespace Core {
 namespace Lib {
 
 
-class Button
-{
-public:
-  
-  void set_image(Core::Texture &texture);
-  void set_hover_image(Core::Texture &texture);
-  void set_active_image(Core::Texture &texture);
-  
-private:
-
-  Core::Texture m_image;
-  Core::Texture m_hover_image;
-  Core::Texture m_active_image;
-
-};
-
-
-class Menu;
-
-typedef void (*State_interaction)(Menu *menu);
-
-
-class State
-{
-public:
-
-  void push_button(const Button &button);
-  
-  void on_interaction(const State_interaction *callback);
-  
-private:
-
-  std::vector<Button> m_buttons;
-  State_interaction *interaction_callback = nullptr;
-
-};
-
-
 class Menu
 {
 public:
 
-  void push_state(State *state);
+  explicit          Menu();
   
-  void update();
+  void              set_home(const math::vec2 location, const Core::Camera &camera);
+  void              add_button(Core::World &world, const Core::Material &mat);
+  void              clear();
   
+  void              on_update(Core::Context &ctx, Core::World &world);
+
+
 private:
 
-  std::vector<State*>   m_current_state;
-  std::vector<State*>   m_pending_state;
+
+  struct Button
+  {
+    Core::Material  norm_material;
+    Core::Entity    entity;
+  };
+
+  math::vec3            m_home = math::vec3_zero();
+  math::vec2            m_cursor = math::vec2_zero();
+  std::vector<Button>   m_buttons;
 
 };
 

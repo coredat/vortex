@@ -9,6 +9,7 @@
 #include <core/renderer/text_renderer.hpp>
 #include <core/font/font.hpp>
 #include <core/transform/transform.hpp>
+#include <utilities/logging.hpp>
 
 
 namespace Game_object {
@@ -65,15 +66,16 @@ Player::spawn_ship(Core::Context &ctx)
     {
       Core::Font font("/Users/PhilCK/Desktop/font/LiberationSerif-Bold.ttf");
       
-      Core::Text_renderer renderer;
-      renderer.set_text("000");
-      renderer.set_font(font);
-      
-      Core::Transform text_transform;
-      
-      m_counter.set_tags(Object_tags::gui_cam);
-      m_counter.set_transform(text_transform);
-      m_counter.set_renderer(renderer);
+//      Core::Text_renderer renderer;
+//      renderer.set_text("000");
+//      renderer.set_font(font);
+//      
+//      Core::Transform text_transform;
+//      
+//      m_counter.set_tags(Object_tags::gui_cam);
+//      m_counter.set_transform(text_transform);
+//      m_counter.set_renderer(renderer);
+      LOG_ERROR("Renderer not getting unset");
     }
     
     return ship;

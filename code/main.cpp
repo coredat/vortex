@@ -127,7 +127,7 @@ main()
         case(Game_state::title_screen):
           title_screen_init(context,
                             world,
-                            go_cam->m_world_camera);
+                            go_cam->m_gui_camera);
           break;
 
         case(Game_state::selection):
