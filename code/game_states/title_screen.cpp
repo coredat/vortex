@@ -69,7 +69,7 @@ title_screen_init(Core::Context &ctx,
     Core::Material_renderer mat_renderer;
     mat_renderer.set_material(title_material);
     mat_renderer.set_model(model);
-  
+    
     title_screen = Core::Entity(world);
     
     Core::Rigidbody rb;
@@ -111,6 +111,7 @@ title_screen_init(Core::Context &ctx,
   
   menu.set_home(math::vec2_init(100, 100), camera);
   menu.add_button(world, title_material);
+//  menu.add_button(world, title_material);
 }
 
 
@@ -131,6 +132,8 @@ title_screen_update(Core::Context &ctx,
     Core::Controller(ctx, 3),
   };
   
+  
+  menu.think(ctx, world, camera);
   
   // Mouse Pick Test
   {

@@ -23,7 +23,7 @@ public:
   void              add_button(Core::World &world, const Core::Material &mat);
   void              clear();
   
-  void              on_update(Core::Context &ctx, Core::World &world);
+  void              think(Core::Context &ctx, Core::World &world, const Core::Camera &camera);
 
 
 private:
@@ -36,7 +36,7 @@ private:
   };
 
   math::vec3            m_home = math::vec3_zero();
-  math::vec2            m_cursor = math::vec2_zero();
+  math::vec3            m_cursor = math::vec3_zero();
   std::vector<Button>   m_buttons;
 
 };
