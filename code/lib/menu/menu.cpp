@@ -11,6 +11,9 @@
 #include <core/common/directory.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/renderer/renderer.hpp>
+#include <core/physics/collider.hpp>
+#include <core/physics/box_collider.hpp>
+#include <core/physics/rigidbody.hpp>
 #include <core/transform/transform.hpp>
 #include <core/font/font.hpp>
 #include <core/renderer/text_renderer.hpp>
@@ -66,12 +69,21 @@ Menu::add_button(Core::World &world, const Core::Material &mat)
   m_buttons.back().entity.set_renderer(renderer);
   
   const Core::Transform trans(
-    m_cursor,
+    math::vec3_init(0, 0, -10),
     math::vec3_init(1,1,1),
     math::quat()
   );
   
   m_buttons.back().entity.set_transform(trans);
+  
+  Core::Rigidbody rb;
+  rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
+  rb.set_is_dynamic(false);
+  rb.set_is_trigger(true);
+//  rb.set_mass(0.f);
+  
+  m_buttons.back().entity.set_rigidbody(rb);
+
   
   m_cursor = math::vec3_subtract(m_cursor, math::vec3_init(0.f, math::get_y(trans.get_scale()) * 1.1f, 0.f));
 }
