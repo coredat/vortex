@@ -80,7 +80,7 @@ title_screen_init(Core::Context &ctx,
     title_screen.set_tags(Object_tags::gui_cam);
     title_screen.set_renderer(mat_renderer);
     title_screen.set_transform(Core::Transform(
-      math::vec3_init(512, 0.f, 0.f),
+      math::vec3_init(512.f, 0.f, 0.f),
       math::vec3_init(128.f, 128.f, 128.f),
       math::quat()
     ));
@@ -104,7 +104,7 @@ title_screen_init(Core::Context &ctx,
     title_text.set_renderer(text_renderer);
     
     Core::Transform text_trans;
-    text_trans.set_position(math::vec3_init(0, 200, 0));
+    text_trans.set_position(math::vec3_init(0.f, 200.f, 0.f));
     
     title_text.set_transform(text_trans);
   }

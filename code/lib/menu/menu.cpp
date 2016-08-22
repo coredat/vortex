@@ -53,39 +53,39 @@ Menu::set_home(const math::vec2 location, const Core::Camera &camera)
 void
 Menu::add_button(Core::World &world, const Core::Material &mat)
 {
-  m_buttons.emplace_back(Button{mat, Core::Entity(world)});
-  
-  m_buttons.back().entity.set_name("[button]");
-  m_buttons.back().entity.add_tag(Object_tags::gui_cam); // sink this arg
-  
-//  Core::Material_renderer renderer;
-//  renderer.set_material(mat);
-//  renderer.set_model(model);
-
-  Core::Text_renderer renderer;
-  renderer.set_font(Core::Font("/Users/PhilCK/Desktop/font/LiberationSerif-Bold.ttf"));
-  renderer.set_text("foobar");
-  
-  m_buttons.back().entity.set_renderer(renderer);
-  
-  const Core::Transform trans(
-    math::vec3_init(0, 0, -10),
-    math::vec3_init(1,1,1),
-    math::quat()
-  );
-  
-  m_buttons.back().entity.set_transform(trans);
-  
-  Core::Rigidbody rb;
-  rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
-  rb.set_is_dynamic(false);
-  rb.set_is_trigger(true);
-//  rb.set_mass(0.f);
-  
-  m_buttons.back().entity.set_rigidbody(rb);
-
-  
-  m_cursor = math::vec3_subtract(m_cursor, math::vec3_init(0.f, math::get_y(trans.get_scale()) * 1.1f, 0.f));
+//  m_buttons.emplace_back(Button{mat, Core::Entity(world)});
+//  
+//  m_buttons.back().entity.set_name("[button]");
+//  m_buttons.back().entity.add_tag(Object_tags::gui_cam); // sink this arg
+//  
+////  Core::Material_renderer renderer;
+////  renderer.set_material(mat);
+////  renderer.set_model(model);
+//
+//  Core::Text_renderer renderer;
+//  renderer.set_font(Core::Font("/Users/PhilCK/Desktop/font/LiberationSerif-Bold.ttf"));
+//  renderer.set_text("foobar");
+//  
+//  m_buttons.back().entity.set_renderer(renderer);
+//  
+//  const Core::Transform trans(
+//    math::vec3_init(0, 0, -10),
+//    math::vec3_init(1,1,1),
+//    math::quat()
+//  );
+//  
+//  m_buttons.back().entity.set_transform(trans);
+//  
+//  Core::Rigidbody rb;
+//  rb.set_collider(Core::Box_collider(128.5f, 64.f, 5.5f));
+//  rb.set_is_dynamic(false);
+//  rb.set_is_trigger(true);
+////  rb.set_mass(0.f);
+//  
+//  m_buttons.back().entity.set_rigidbody(rb);
+//
+//  
+//  m_cursor = math::vec3_subtract(m_cursor, math::vec3_init(0.f, math::get_y(trans.get_scale()) * 1.1f, 0.f));
 }
 
 
