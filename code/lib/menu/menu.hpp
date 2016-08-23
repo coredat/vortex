@@ -32,6 +32,7 @@ private:
   struct Button
   {
     Core::Material  norm_material;
+    Core::Material  hot_material;
     Core::Entity    entity;
   };
 

@@ -9,6 +9,8 @@
 #include <core/model/model.hpp>
 #include <core/world/world.hpp>
 #include <core/common/directory.hpp>
+#include <core/resources/material.hpp>
+#include <core/resources/texture.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/physics/collider.hpp>
@@ -44,8 +46,8 @@ Menu::set_home(const math::vec2 location, const Core::Camera &camera)
   
   if(!model)
   {
-//    const char *path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
-//    model = Core::Model(path);
+    const char *path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
+    model = Core::Model(path);
   }
 }
 
@@ -53,39 +55,43 @@ Menu::set_home(const math::vec2 location, const Core::Camera &camera)
 void
 Menu::add_button(Core::World &world, const Core::Material &mat)
 {
-//  m_buttons.emplace_back(Button{mat, Core::Entity(world)});
-//  
-//  m_buttons.back().entity.set_name("[button]");
-//  m_buttons.back().entity.add_tag(Object_tags::gui_cam); // sink this arg
-//  
-////  Core::Material_renderer renderer;
-////  renderer.set_material(mat);
-////  renderer.set_model(model);
-//
+  m_buttons.emplace_back(Button{mat, mat, Core::Entity(world)});
+  
+  m_buttons.back().entity.set_name("[button]");
+  m_buttons.back().entity.add_tag(Object_tags::gui_cam); // sink this arg
+  
+  Core::Material_renderer renderer;
+  renderer.set_material(mat);
+  renderer.set_model(model);
+
 //  Core::Text_renderer renderer;
 //  renderer.set_font(Core::Font("/Users/PhilCK/Desktop/font/LiberationSerif-Bold.ttf"));
 //  renderer.set_text("foobar");
-//  
-//  m_buttons.back().entity.set_renderer(renderer);
-//  
-//  const Core::Transform trans(
-//    math::vec3_init(0, 0, -10),
-//    math::vec3_init(1,1,1),
-//    math::quat()
-//  );
-//  
-//  m_buttons.back().entity.set_transform(trans);
-//  
-//  Core::Rigidbody rb;
-//  rb.set_collider(Core::Box_collider(128.5f, 64.f, 5.5f));
-//  rb.set_is_dynamic(false);
-//  rb.set_is_trigger(true);
-////  rb.set_mass(0.f);
-//  
-//  m_buttons.back().entity.set_rigidbody(rb);
-//
-//  
-//  m_cursor = math::vec3_subtract(m_cursor, math::vec3_init(0.f, math::get_y(trans.get_scale()) * 1.1f, 0.f));
+  
+  m_buttons.back().entity.set_renderer(renderer);
+  
+  Core::Texture texture = mat.get_map_01();
+  
+  const Core::Transform trans(
+    math::vec3_init(0, 0, -0),
+    math::vec3_init(math::to_float(texture.get_width() >> 2),
+                    math::to_float(texture.get_height() >> 2),
+                    1.f),
+    math::quat()
+  );
+  
+  m_buttons.back().entity.set_transform(trans);
+  
+  Core::Rigidbody rb;
+  rb.set_collider(Core::Box_collider(0.5, 0.5, 0.5));
+  rb.set_is_dynamic(false);
+  rb.set_is_trigger(true);
+//  rb.set_mass(0.f);
+  
+  m_buttons.back().entity.set_rigidbody(rb);
+
+  
+  m_cursor = math::vec3_subtract(m_cursor, math::vec3_init(0.f, math::get_y(trans.get_scale()) * 1.1f, 0.f));
 }
 
 

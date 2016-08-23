@@ -109,8 +109,22 @@ title_screen_init(Core::Context &ctx,
     title_text.set_transform(text_trans);
   }
   
-  menu.set_home(math::vec2_init(100, 100), camera);
-  menu.add_button(world, title_material);
+  // Button
+  {
+    Core::Shader shader(Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl"));
+    assert(shader);
+    
+    Core::Texture start_game_cold(Core::Directory::volatile_resource_path("assets/textures/button_start_game_cold.png"));
+    assert(start_game_cold);
+  
+    Core::Material cold_start_button("[button]start_cold");
+    cold_start_button.set_shader(shader);
+    cold_start_button.set_map_01(start_game_cold);
+    
+    menu.set_home(math::vec2_init(100, 100), camera);
+    menu.add_button(world, cold_start_button);
+  }
+  
 //  menu.add_button(world, title_material);
 }
 
