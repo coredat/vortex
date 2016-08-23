@@ -38,69 +38,99 @@ Menu::Menu()
 }
 
 
-void
-Menu::set_home(const math::vec2 location, const Core::Camera &camera)
+namespace {
+
+
+/*
+  Adds an item to the menu list.
+  returns the cursor offset for the next item.
+*/
+math::vec3
+create_menu_item(Core::Entity_ref entity,
+                 const Core::Material &mat,
+                 const math::vec3 cursor_position,
+                 const bool add_rb)
 {
-  m_home = Core::Camera_utils::get_world_position_on_nearplane(camera, Core::Axis{math::get_x(location), math::get_y(location)});
-  m_cursor = m_home;
-  
   if(!model)
   {
     const char *path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
     model = Core::Model(path);
   }
-}
-
-
-void
-Menu::add_button(Core::World &world, const Core::Material &hot, const Core::Material &cold)
-{
-  m_buttons.emplace_back(Button{cold, hot, Core::Entity(world)});
-  
-  m_buttons.back().entity.set_name("[button]");
-  m_buttons.back().entity.add_tag(Object_tags::gui_cam); // sink this arg
   
   Core::Material_renderer renderer;
-  renderer.set_material(cold);
+  renderer.set_material(mat);
   renderer.set_model(model);
   
-//  Core::Text_renderer renderer;
-//  renderer.set_font(Core::Font("/Users/PhilCK/Desktop/font/LiberationSerif-Bold.ttf"));
-//  renderer.set_text("foobar");
-  
-  m_buttons.back().entity.set_renderer(renderer);
-  
-  Core::Texture texture = cold.get_map_01();
-  
+  const Core::Texture texture = mat.get_map_01();
   const float width = math::to_float(texture.get_width() >> 2);
   const float height = math::to_float(texture.get_height() >> 2);
   
   const Core::Transform trans(
-    math::vec3_init(math::get_x(m_cursor) + (width * 0.5f), math::get_y(m_cursor) + (height * 0.5f), 0),
+    math::vec3_init(math::get_x(cursor_position) + (width * 0.5f), math::get_y(cursor_position) - (height * 0.5f), 0),
     math::vec3_init(width,
                     height,
                     1.f),
     math::quat()
   );
   
-  m_buttons.back().entity.set_transform(trans);
-  
-  Core::Rigidbody rb;
-  rb.set_collider(Core::Box_collider(0.5, 0.5, 0.5));
-  rb.set_is_dynamic(false);
-  rb.set_is_trigger(true);
-//  rb.set_mass(0.f);
-  
-  m_buttons.back().entity.set_rigidbody(rb);
+  entity.set_renderer(renderer);
+  entity.set_transform(trans);
 
+  if(add_rb)
+  {
+    Core::Rigidbody rb;
+    rb.set_collider(Core::Box_collider(0.5f, 0.5f, 0.5f));
+    rb.set_is_dynamic(false);
+    rb.set_is_trigger(true);
+    entity.set_rigidbody(rb);
+  }
   
-  m_cursor = math::vec3_subtract(m_cursor, math::vec3_init(0.f, math::get_y(trans.get_scale()) * 1.1f, 0.f));
+  return math::vec3_subtract(cursor_position, math::vec3_init(0.f, math::get_y(trans.get_scale()) * 1.1f, 0.f));;
+}
+
+
+}
+
+
+void
+Menu::set_home(const math::vec2 location,
+               Core::World &world,
+               const Core::Camera &camera,
+               const Core::Material &title_mat)
+{
+  m_home = Core::Camera_utils::get_world_position_on_nearplane(camera, Core::Axis{math::get_x(location), math::get_y(location)});
+  m_cursor = m_home;
+  
+  m_title = Core::Entity(world);
+  m_title.set_name("[menu]title");
+  m_title.set_tags(Object_tags::gui_cam);
+  m_cursor = create_menu_item(m_title, title_mat, m_cursor, false);
+}
+
+
+void
+Menu::add_button(const char *name, Core::World &world, const Core::Material &hot, const Core::Material &cold)
+{
+  m_buttons.emplace_back(Button{cold, hot, Core::Entity(world)});
+  
+  Core::Entity_ref button = m_buttons.back().entity;
+  
+  button.set_name(name);
+  button.add_tag(Object_tags::gui_cam); // sink this arg
+
+  m_cursor = create_menu_item(button, cold, m_cursor, true);
 }
 
 
 void
 Menu::clear()
 {
+  for(uint32_t i = 0; i < m_buttons.size(); ++i)
+  {
+    m_buttons[i].entity.destroy();
+  }
+  
+  m_buttons.clear();
 }
 
 
@@ -109,6 +139,8 @@ Menu::think(Core::Context &ctx, Core::World &world, const Core::Camera &camera)
 {
   const Core::Ray        viewport_ray    = Core::Camera_utils::get_ray_from_viewport(camera, Core::Input::mouse_get_coordinates(ctx));
   const Core::Entity_ref entity_from_ray = world.find_entity_by_ray(viewport_ray);
+  
+  m_curr_button_selected = Core::Entity_ref();
   
   for(uint32_t i = 0; i < m_buttons.size(); ++i)
   {
@@ -120,6 +152,7 @@ Menu::think(Core::Context &ctx, Core::World &world, const Core::Camera &camera)
     {
       mat_renderer.set_material(button->hot_material);
       button->entity.set_renderer(mat_renderer);
+      m_curr_button_selected = button->entity;
     }
     else
     {
@@ -127,7 +160,13 @@ Menu::think(Core::Context &ctx, Core::World &world, const Core::Camera &camera)
       button->entity.set_renderer(mat_renderer);
     }
   }
-  
+}
+
+
+Core::Entity_ref
+Menu::current_button_selected() const
+{
+  return m_curr_button_selected;
 }
 
 

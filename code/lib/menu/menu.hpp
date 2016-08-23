@@ -4,6 +4,7 @@
 
 #include <core/common/core_fwd.hpp>
 #include <core/entity/entity.hpp>
+#include <core/entity/entity_ref.hpp>
 #include <core/resources/material.hpp>
 #include <math/vec/vec_types.hpp>
 #include <vector>
@@ -19,12 +20,13 @@ public:
 
   explicit          Menu();
   
-  void              set_home(const math::vec2 location, const Core::Camera &camera);
-  void              add_button(Core::World &world, const Core::Material &hot, const Core::Material &cold);
+  void              set_home(const math::vec2 location, Core::World &world, const Core::Camera &camera, const Core::Material &title_mat);
+  void              add_button(const char *name, Core::World &world, const Core::Material &hot, const Core::Material &cold);
   void              clear();
   
   void              think(Core::Context &ctx, Core::World &world, const Core::Camera &camera);
 
+  Core::Entity_ref  current_button_selected() const;
 
 private:
 
@@ -40,6 +42,8 @@ private:
   math::vec3            m_cursor = math::vec3_zero();
   std::vector<Button>   m_buttons;
 
+  Core::Entity          m_title;
+  Core::Entity_ref      m_curr_button_selected;
 };
 
 
