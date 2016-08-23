@@ -53,29 +53,32 @@ Menu::set_home(const math::vec2 location, const Core::Camera &camera)
 
 
 void
-Menu::add_button(Core::World &world, const Core::Material &mat)
+Menu::add_button(Core::World &world, const Core::Material &hot, const Core::Material &cold)
 {
-  m_buttons.emplace_back(Button{mat, mat, Core::Entity(world)});
+  m_buttons.emplace_back(Button{cold, hot, Core::Entity(world)});
   
   m_buttons.back().entity.set_name("[button]");
   m_buttons.back().entity.add_tag(Object_tags::gui_cam); // sink this arg
   
   Core::Material_renderer renderer;
-  renderer.set_material(mat);
+  renderer.set_material(cold);
   renderer.set_model(model);
-
+  
 //  Core::Text_renderer renderer;
 //  renderer.set_font(Core::Font("/Users/PhilCK/Desktop/font/LiberationSerif-Bold.ttf"));
 //  renderer.set_text("foobar");
   
   m_buttons.back().entity.set_renderer(renderer);
   
-  Core::Texture texture = mat.get_map_01();
+  Core::Texture texture = cold.get_map_01();
+  
+  const float width = math::to_float(texture.get_width() >> 2);
+  const float height = math::to_float(texture.get_height() >> 2);
   
   const Core::Transform trans(
-    math::vec3_init(0, 0, -0),
-    math::vec3_init(math::to_float(texture.get_width() >> 2),
-                    math::to_float(texture.get_height() >> 2),
+    math::vec3_init(math::get_x(m_cursor) + (width * 0.5f), math::get_y(m_cursor) + (height * 0.5f), 0),
+    math::vec3_init(width,
+                    height,
                     1.f),
     math::quat()
   );
@@ -107,10 +110,24 @@ Menu::think(Core::Context &ctx, Core::World &world, const Core::Camera &camera)
   const Core::Ray        viewport_ray    = Core::Camera_utils::get_ray_from_viewport(camera, Core::Input::mouse_get_coordinates(ctx));
   const Core::Entity_ref entity_from_ray = world.find_entity_by_ray(viewport_ray);
   
-  if(entity_from_ray)
+  for(uint32_t i = 0; i < m_buttons.size(); ++i)
   {
-    int i = 0;
+    Button *button = &m_buttons[i];
+  
+    Core::Material_renderer mat_renderer = button->entity.get_renderer();
+    
+    if(entity_from_ray && (button->entity == entity_from_ray))
+    {
+      mat_renderer.set_material(button->hot_material);
+      button->entity.set_renderer(mat_renderer);
+    }
+    else
+    {
+      mat_renderer.set_material(button->norm_material);
+      button->entity.set_renderer(mat_renderer);
+    }
   }
+  
 }
 
 

@@ -116,16 +116,29 @@ title_screen_init(Core::Context &ctx,
     
     Core::Texture start_game_cold(Core::Directory::volatile_resource_path("assets/textures/button_start_game_cold.png"));
     assert(start_game_cold);
+
+    Core::Texture start_game_hot(Core::Directory::volatile_resource_path("assets/textures/button_start_game_hot.png"));
+    assert(start_game_hot);
   
     Core::Material cold_start_button("[button]start_cold");
     cold_start_button.set_shader(shader);
     cold_start_button.set_map_01(start_game_cold);
+
+    Core::Material hot_start_button("[button]start_hot");
+    hot_start_button.set_shader(shader);
+    hot_start_button.set_map_01(start_game_hot);
     
-    menu.set_home(math::vec2_init(100, 100), camera);
-    menu.add_button(world, cold_start_button);
+    menu.set_home(math::vec2_init(50, 100), camera);
+    menu.add_button(world, hot_start_button, cold_start_button);
+    menu.add_button(world, hot_start_button, cold_start_button);
+    menu.add_button(world, hot_start_button, cold_start_button);
+    menu.add_button(world, hot_start_button, cold_start_button);
+    menu.add_button(world, hot_start_button, cold_start_button);
+    menu.add_button(world, hot_start_button, cold_start_button);
+    menu.add_button(world, hot_start_button, cold_start_button);
+    menu.add_button(world, hot_start_button, cold_start_button);
+    menu.add_button(world, hot_start_button, cold_start_button);
   }
-  
-//  menu.add_button(world, title_material);
 }
 
 
@@ -155,22 +168,22 @@ title_screen_update(Core::Context &ctx,
     const Core::Ray        viewport_ray    = Core::Camera_utils::get_ray_from_viewport(camera, Core::Input::mouse_get_coordinates(ctx));
     const Core::Entity_ref entity_from_ray = world.find_entity_by_ray(viewport_ray);
     
-    if(entity_from_ray)
-    {
-      auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
-      mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_red_512.png")));
-      if(controllers[0].get_trigger(0))
-      {
-        title_screen.destroy();
-        title_text.destroy();
-        return Game_state::selection;
-      }
-    }
-    else
-    {
-      auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
-      mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png")));
-    }
+//    if(entity_from_ray)
+//    {
+//      auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
+//      mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_red_512.png")));
+//      if(controllers[0].get_trigger(0))
+//      {
+//        title_screen.destroy();
+//        title_text.destroy();
+//        return Game_state::selection;
+//      }
+//    }
+//    else
+//    {
+//      auto mat = Core::Renderer_utils::cast_to_material_renderer(title_screen.get_renderer()).get_material();
+//      mat.set_map_01(Core::Texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png")));
+//    }
 
    // Cast ray to the aabb
 

@@ -20,7 +20,7 @@ public:
   explicit          Menu();
   
   void              set_home(const math::vec2 location, const Core::Camera &camera);
-  void              add_button(Core::World &world, const Core::Material &mat);
+  void              add_button(Core::World &world, const Core::Material &hot, const Core::Material &cold);
   void              clear();
   
   void              think(Core::Context &ctx, Core::World &world, const Core::Camera &camera);
