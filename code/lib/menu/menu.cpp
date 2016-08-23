@@ -25,6 +25,7 @@
 namespace {
 
 Core::Model model;
+constexpr float paddiny_y = 10.f; // padding between buttons
 
 } // ns
 
@@ -66,7 +67,9 @@ create_menu_item(Core::Entity_ref entity,
   const float height = math::to_float(texture.get_height() >> 2);
   
   const Core::Transform trans(
-    math::vec3_init(math::get_x(cursor_position) + (width * 0.5f), math::get_y(cursor_position) - (height * 0.5f), 0),
+    math::vec3_init(math::get_x(cursor_position) + (width * 0.5f),
+                    math::get_y(cursor_position) - (height * 0.5f),
+                    0.f),
     math::vec3_init(width,
                     height,
                     1.f),
@@ -85,7 +88,7 @@ create_menu_item(Core::Entity_ref entity,
     entity.set_rigidbody(rb);
   }
   
-  return math::vec3_subtract(cursor_position, math::vec3_init(0.f, math::get_y(trans.get_scale()) * 1.1f, 0.f));;
+  return math::vec3_subtract(cursor_position, math::vec3_init(0.f, height + paddiny_y, 0.f));;
 }
 
 
@@ -125,9 +128,17 @@ Menu::add_button(const char *name, Core::World &world, const Core::Material &hot
 void
 Menu::clear()
 {
+  if(m_title)
+  {
+    m_title.destroy();
+  }
+
   for(uint32_t i = 0; i < m_buttons.size(); ++i)
   {
-    m_buttons[i].entity.destroy();
+    if(m_buttons[i].entity)
+    {
+      m_buttons[i].entity.destroy();
+    }
   }
   
   m_buttons.clear();

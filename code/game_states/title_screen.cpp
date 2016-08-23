@@ -71,7 +71,10 @@ title_screen_init(Core::Context &ctx,
     hot_start_button.set_shader(shader);
     hot_start_button.set_map_01(start_game_hot);
     
-    menu.set_home(math::vec2_init(100, 100), world, camera, title_mat);
+    menu.set_home(math::vec2_init(50, 50), world, camera, title_mat);
+    menu.add_button("button_start_game", world, hot_start_button, cold_start_button);
+    menu.add_button("button_start_game", world, hot_start_button, cold_start_button);
+    menu.add_button("button_start_game", world, hot_start_button, cold_start_button);
     menu.add_button("button_start_game", world, hot_start_button, cold_start_button);
   }
 }
@@ -99,13 +102,18 @@ title_screen_update(Core::Context &ctx,
 
   if(menu.current_button_selected() && strcmp(menu.current_button_selected().get_name(), "button_start_game") == 0)
   {
-    
+    if(controllers[0].is_button_down(Core::Gamepad_button::button_a))
+    {
+      menu.clear();
+      return Game_state::selection;
+    }
   }
   
   for(const auto &ctrl : controllers)
   {
     if(ctrl.is_button_up_on_frame(Core::Gamepad_button::button_start))
     {
+      menu.clear();
       return Game_state::selection;
     }
   }
