@@ -95,8 +95,9 @@ selection_init(Core::Context &ctx,
   // Load materials
   if(!materials[0])
   {
-    const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
+    const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/vortex_dir_light.ogl");
     Core::Shader shader(shader_path);
+    assert(shader);
   
     for(uint32_t i = 0; i < number_of_materials; ++i)
     {
@@ -324,7 +325,7 @@ selection_update(Core::Context &ctx,
       if(sel && sel->is_valid())
       {
         Core::Transform trans = sel->get_transform();
-
+  
         const math::quat spin_rot = math::quat_init_with_axis_angle(0.f, 1.f, 0.f, time + i);
         const math::quat tilt_rot = math::quat_init_with_axis_angle(0.f, 0.f, 1.f, -0.2f);
         const math::quat rot = math::quat_multiply(tilt_rot, spin_rot);

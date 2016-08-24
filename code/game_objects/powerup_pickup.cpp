@@ -49,7 +49,7 @@ Powerup_pickup::Powerup_pickup(Core::World &world,
     const char *green_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_green_512.png");
     Core::Texture texture(green_texture_path);
     
-    const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
+    const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/vortex_dir_light.ogl");
     Core::Shader shader(shader_path);
     
     power_up_material = Core::Material("Powerup");

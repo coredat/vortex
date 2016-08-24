@@ -86,7 +86,7 @@ Enemy::Enemy(Core::World &world, Type type)
     const char * orange_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png");
     Core::Texture texture(orange_texture_path);
     
-    const char * shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
+    const char * shader_path = Core::Directory::volatile_resource_path("assets/shaders/vortex_dir_light.ogl");
     Core::Shader shader(shader_path);
     
     generic_material.set_shader(shader);
