@@ -284,14 +284,13 @@ selection_update(Core::Context &ctx,
       math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau())
     ));
 
-    
     if(signed_in_selections[i])
     {
       Core::Transform trans = Screen_cast::intersect_screen_plane(cam, offset, 0.f);
     
       auto sel_trans = selection_screens[i].get_transform();
       sel_trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
-      sel_trans.set_position(math::vec3_add(trans.get_position(), math::vec3_init(0,0,0.002f)));
+      sel_trans.set_position(math::vec3_add(trans.get_position(), math::vec3_init(0.f, 0.f, 0.002f)));
       
       signed_in_selections[i].set_transform(sel_trans);
     }

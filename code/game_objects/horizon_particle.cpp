@@ -11,7 +11,7 @@ namespace Game_object {
 
 Horizon_particle::Horizon_particle(Core::World &world)
 : Game_object(world)
-, m_horizon_speed(10.f)
+, m_horizon_speed(40.f)
 {
   get_entity().set_name("Horizon-Particle");
   get_entity().set_tags(Object_tags::level_cam);
@@ -32,9 +32,9 @@ Horizon_particle::on_update(const float dt, World_objects &objs)
   Core::Transform trans = ref.get_transform();
   const math::vec3 curr_pos = trans.get_position();
   
-  const math::vec3 move_axis = math::vec3_init(0, 0, 1.f);
+  const math::vec3 move_axis  = math::vec3_init(0, 0, 1.f);
   const math::vec3 move_scale = math::vec3_scale(move_axis, (dt * m_horizon_speed));
-  const math::vec3 moved = math::vec3_add(curr_pos, move_scale);
+  const math::vec3 moved      = math::vec3_add(curr_pos, move_scale);
   
   trans.set_position(moved);
   ref.set_transform(trans);
