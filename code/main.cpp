@@ -87,9 +87,9 @@ main()
   }
   
   objs.push_object(go_cam);
-  objs.push_object(new Game_object::Horizon(world));
   
-  bool first_load = true;
+  bool first_load_selection = true;
+  bool first_load_title = true;
   
   // Game state
   while(context.is_open())
@@ -124,16 +124,25 @@ main()
           break;
           
         case(Game_state::title_screen):
+        {
+          if(first_load_title)
+          {
+            first_load_title = false;
+          }
+        
           title_screen_init(context,
                             world,
                             go_cam->m_gui_camera);
           break;
+        }
 
         case(Game_state::selection):
         {
-          if(first_load)
+          if(first_load_selection)
           {
-            first_load = false;
+            first_load_selection = false;
+            
+            objs.push_object(new Game_object::Horizon(world));
             
             objs.push_object(new Game_object::Level(world));
             go_cam->get_entity().set_transform(Core::Transform(
