@@ -12,7 +12,7 @@ namespace Screen_cast {
   Gets the position of a ray from the screen to a
   plane in the world.
 */
-Core::Transform
+math::vec3
 intersect_screen_plane(const Core::Camera &cam,
                        const float ray_offset_x = 0,
                        const float ray_offset_y = 0);

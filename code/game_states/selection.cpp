@@ -7,7 +7,6 @@
 #include <common/game_state.hpp>
 #include <core/context/context.hpp>
 #include <core/input/controller.hpp>
-#include <core/input/axis.hpp>
 #include <core/input/buttons.hpp>
 #include <core/resources/texture.hpp>
 #include <core/resources/shader.hpp>
@@ -21,10 +20,6 @@
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/common/directory.hpp>
-#include <core/common/plane.hpp>
-#include <core/common/plane_utils.hpp>
-#include <core/common/ray.hpp>
-#include <utilities/directory.hpp>
 #include <utilities/file.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
@@ -111,7 +106,7 @@ selection_init(Core::Context &ctx,
       materials[i].set_shader(shader);
       
       memset(buffer, 0, sizeof(buffer));
-      sprintf(buffer, "%sassets/textures/ship_%02d.png", util::dir::resource_path(), i + 1);
+      sprintf(buffer, "%sassets/textures/ship_%02d.png", Core::Directory::volatile_resource_path(""), i + 1);
       
       materials[i].set_map_01(Core::Texture(buffer));
     }
@@ -123,7 +118,7 @@ selection_init(Core::Context &ctx,
     for(uint32_t i = 0; i < number_of_models; ++i)
     {
       char buffer[MAX_FILE_PATH_SIZE];
-      sprintf(buffer, "%sassets/models/ship_%02d.obj", util::dir::resource_path(), i + 1);
+      sprintf(buffer, "%sassets/models/ship_%02d.obj", Core::Directory::volatile_resource_path(""), i + 1);
       
       models[i] = Core::Model(buffer);
     }
@@ -238,7 +233,7 @@ selection_update(Core::Context &ctx,
       }
     }
     
-    if(controllers[i].is_button_down_on_frame(Core::Gamepad_button::button_a))// || controllers[i].get_axis(0).y != 0.f)
+    if(controllers[i].is_button_down_on_frame(Core::Gamepad_button::button_a))
     {
       // Start screen
       if(!start_screen)
@@ -269,14 +264,6 @@ selection_update(Core::Context &ctx,
   {
     auto &sel = selection_screens[i];
     
-    constexpr float offsets[] = {-2.5f, -0.8f, 0.8f, 2.5f};
-    
-//    const float offset = -3.f + (i * 2.f);
-    const float offset = offsets[i];
-    
-//    sel.set_transform(Screen_cast::intersect_screen_plane(cam, offset, 1.5f));
-//    sel.set_transform(Screen_cast::intersect_screen_plane(cam, offset, 1.5f));
-    
     const float horz_quart_screen = math::to_float(ctx.get_width()) / 6.f;
     const float horz_margin = horz_quart_screen * 0.5f;
     const float horz_half_screen = math::to_float(ctx.get_width()) / 3.f;
@@ -290,28 +277,13 @@ selection_update(Core::Context &ctx,
 
     if(signed_in_selections[i])
     {
-      const math::vec3 cam_pos    = cam.get_attached_entity().get_transform().get_position();
-      const math::vec3 cam_fwd    = cam.get_attached_entity().get_transform().get_forward();
-      const math::vec3 scaled_fwd = math::vec3_scale(cam_fwd, 20.f);
-      const math::vec3 plane_pos  = math::vec3_add(cam_pos, scaled_fwd);
-      const math::vec3 plane_norm = math::vec3_scale(cam_fwd, -1.f);
-      const Core::Plane plane(plane_pos, plane_norm);
-      
       const float quart_screen = math::to_float(ctx.get_width() >> 2);
       const float x_offset     = quart_screen + (quart_screen * i);
       const float y_offset     = math::to_float(ctx.get_height() >> 1);
-      const Core::Ray ray      = Core::Camera_utils::get_ray_from_viewport(cam, {x_offset, y_offset});
-      
-      float out_distance = 0;
-      const bool intersection = Core::Plane_utils::ray_intersects_with_plane(plane, ray, out_distance);
-      ASSERT(intersection); // This ray should never miss.
-      
-      const math::vec3 scale_ray = math::vec3_scale(ray.get_direction(), out_distance);
-      const math::vec3 point     = math::vec3_add(cam_pos, scale_ray);
-      
+
       auto sel_trans = selection_screens[i].get_transform();
       sel_trans.set_scale(math::vec3_init(1.f));
-      sel_trans.set_position(point);
+      sel_trans.set_position(Screen_cast::intersect_screen_plane(cam, x_offset, y_offset));
       
       signed_in_selections[i].set_transform(sel_trans);
     }
@@ -348,7 +320,7 @@ selection_update(Core::Context &ctx,
   
         const math::quat spin_rot = math::quat_init_with_axis_angle(0.f, 1.f, 0.f, time + i);
         const math::quat tilt_rot = math::quat_init_with_axis_angle(0.f, 0.f, 1.f, -0.2f);
-        const math::quat rot = math::quat_multiply(tilt_rot, spin_rot);
+        const math::quat rot      = math::quat_multiply(tilt_rot, spin_rot);
     
         trans.set_rotation(rot);
         

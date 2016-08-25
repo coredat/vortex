@@ -99,13 +99,14 @@ game_over_update(Core::Context &ctx,
       
       if(pl)
       {
-        constexpr float offsets[] = {-2.5f, -0.8f, 0.8f, 2.5f};
-
-//        const float offset = -3.f + (i * 2.f);
-        const float offset = offsets[i];
+        const float quart_screen = math::to_float(ctx.get_width() >> 2);
+        const float x_offset     = quart_screen + (quart_screen * i);
+        const float y_offset     = math::to_float(ctx.get_height() >> 3) * 3.f;
         
-        Core::Transform trans = Screen_cast::intersect_screen_plane(cam, offset, 1.5f);
-        trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
+        const math::vec3 pos = Screen_cast::intersect_screen_plane(cam, x_offset, y_offset);
+        Core::Transform trans;
+        trans.set_position(pos);
+        trans.set_scale(math::vec3_init(1.f));
 
         const math::quat spin_rot = math::quat_init_with_axis_angle(0, 1, 0, time + i);
         const math::quat tilt_rot = math::quat_init_with_axis_angle(0, 0, 1, -0.2f);
@@ -120,7 +121,6 @@ game_over_update(Core::Context &ctx,
         math::vec3_init(128.f, 1.f, 64.f),
         math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau())
       ));
-//      continue_screen.set_transform(Screen_cast::intersect_screen_plane(cam, 0.f, -1.5f));
     }
   }
 
@@ -149,6 +149,25 @@ game_over_update(Core::Context &ctx,
     }
     
     return Game_state::selection;
+  }
+  
+  if(controller_1.is_button_down_on_frame(Core::Gamepad_button::button_back) ||
+     controller_2.is_button_down_on_frame(Core::Gamepad_button::button_back) ||
+     controller_3.is_button_down_on_frame(Core::Gamepad_button::button_back) ||
+     controller_4.is_button_down_on_frame(Core::Gamepad_button::button_back))
+  {
+    created_screen = false;
+    continue_screen.destroy();
+    
+    for(auto &pl : player_entities)
+    {
+      if(pl)
+      {
+        pl.destroy();
+      }
+    }
+    
+    return Game_state::title_screen;
   }
 
   return Game_state::game_over;
