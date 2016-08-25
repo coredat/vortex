@@ -15,7 +15,7 @@ class Horizon_particle : public Game_object
 {
 public:
 
-  explicit            Horizon_particle(Core::World &world);
+  explicit            Horizon_particle(Core::World &world, const float speed = 40.f);
 
   void                on_start() override;
   void                on_update(const float dt, World_objects &objs) override;

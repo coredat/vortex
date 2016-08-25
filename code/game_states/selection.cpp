@@ -21,10 +21,14 @@
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/common/directory.hpp>
+#include <core/common/plane.hpp>
+#include <core/common/plane_utils.hpp>
+#include <core/common/ray.hpp>
 #include <utilities/directory.hpp>
 #include <utilities/file.hpp>
 #include <math/vec/vec3.hpp>
 #include <math/quat/quat.hpp>
+#include <utilities/assert.hpp>
 
 
 namespace
@@ -286,11 +290,28 @@ selection_update(Core::Context &ctx,
 
     if(signed_in_selections[i])
     {
-      Core::Transform trans = Screen_cast::intersect_screen_plane(cam, offset, 0.f);
-    
+      const math::vec3 cam_pos    = cam.get_attached_entity().get_transform().get_position();
+      const math::vec3 cam_fwd    = cam.get_attached_entity().get_transform().get_forward();
+      const math::vec3 scaled_fwd = math::vec3_scale(cam_fwd, 20.f);
+      const math::vec3 plane_pos  = math::vec3_add(cam_pos, scaled_fwd);
+      const math::vec3 plane_norm = math::vec3_scale(cam_fwd, -1.f);
+      const Core::Plane plane(plane_pos, plane_norm);
+      
+      const float quart_screen = math::to_float(ctx.get_width() >> 2);
+      const float x_offset     = quart_screen + (quart_screen * i);
+      const float y_offset     = math::to_float(ctx.get_height() >> 1);
+      const Core::Ray ray      = Core::Camera_utils::get_ray_from_viewport(cam, {x_offset, y_offset});
+      
+      float out_distance = 0;
+      const bool intersection = Core::Plane_utils::ray_intersects_with_plane(plane, ray, out_distance);
+      ASSERT(intersection); // This ray should never miss.
+      
+      const math::vec3 scale_ray = math::vec3_scale(ray.get_direction(), out_distance);
+      const math::vec3 point     = math::vec3_add(cam_pos, scale_ray);
+      
       auto sel_trans = selection_screens[i].get_transform();
-      sel_trans.set_scale(math::vec3_init(0.01, 0.01, 0.01));
-      sel_trans.set_position(math::vec3_add(trans.get_position(), math::vec3_init(0.f, 0.f, 0.002f)));
+      sel_trans.set_scale(math::vec3_init(1.f));
+      sel_trans.set_position(point);
       
       signed_in_selections[i].set_transform(sel_trans);
     }

@@ -9,9 +9,9 @@
 namespace Game_object {
 
 
-Horizon_particle::Horizon_particle(Core::World &world)
+Horizon_particle::Horizon_particle(Core::World &world, const float speed)
 : Game_object(world)
-, m_horizon_speed(40.f)
+, m_horizon_speed(speed)
 {
   get_entity().set_name("Horizon-Particle");
   get_entity().set_tags(Object_tags::level_cam);

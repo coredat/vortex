@@ -64,22 +64,19 @@ Horizon::on_update(const float dt, World_objects &objs)
   {
     m_curr_horz_timer = 0;
     
-//    m_curr_horz_timer -= 20;
-    
-    constexpr uint32_t  number_to_spawn = 5;
-    constexpr float     horz_offset = 15;
+    constexpr uint32_t number_to_spawn = 5;
     
     for(uint32_t i = 0; i < number_to_spawn; ++i)
     {
-      Horizon_particle *particle = new Horizon_particle(get_world());
+      Horizon_particle *particle = new Horizon_particle(get_world(), math::rand_range(10.f, 60.f));
       Core::Entity_ref ref = particle->get_entity();
             
       const float length = math::rand_range(10.f, 25.f);
-      const float angle = math::rand_range(0.f, math::tau());
+      const float angle  = math::rand_range(0.f, math::tau());
       
       const float x_pos = math::sin(angle) * length;
       const float y_pos = math::cos(angle) * length;
-      const float z_pos = -200 + (m_curr_horz_timer * 10);
+      const float z_pos = -200.f + (m_curr_horz_timer * 10);
       
       const math::quat rot = math::quat_init_with_axis_angle(0, 1, 0, math::quart_tau());
       

@@ -61,13 +61,12 @@ main()
   #endif
 
 
-
   // ** Setup Core ** //
   Core::Context_setup context_setup;
   context_setup.vsync = true;
   context_setup.high_dpi_support = false;
 
-  Core::Context context(1200, 720, false, "Vortex Defender 2099", context_setup);
+  Core::Context context(1200, 720, false, "Vortex Defender", context_setup);
   Core::World   world(context, Core::World_setup{});
   
   // ** Start Game ** //

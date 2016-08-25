@@ -82,11 +82,11 @@ breeder_update(Game_object::Enemy &enemy,
       Game_object::Enemy *egg1 = new Game_object::Enemy(enemy.get_world(), Game_object::Enemy::Type::egg);
       egg1->m_point_on_circle = enemy.m_point_on_circle + (0.1f * enemy.m_user_data);
       egg1->m_depth = enemy.m_depth;
-
+      
       Game_object::Enemy *egg2 = new Game_object::Enemy(enemy.get_world(), Game_object::Enemy::Type::egg);
       egg2->m_point_on_circle = enemy.m_point_on_circle - (0.1f * enemy.m_user_data);
       egg2->m_depth = enemy.m_depth;
-    
+      
       objs.push_object(egg1);
       objs.push_object(egg2);
     }
