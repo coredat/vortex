@@ -50,7 +50,8 @@ math::vec3
 create_menu_item(Core::Entity_ref entity,
                  const Core::Material &mat,
                  const math::vec3 cursor_position,
-                 const bool add_rb)
+                 const bool add_rb,
+                 const uint32_t scale_div = 2)
 {
   if(!model)
   {
@@ -63,8 +64,8 @@ create_menu_item(Core::Entity_ref entity,
   renderer.set_model(model);
   
   const Core::Texture texture = mat.get_map_01();
-  const float width = math::to_float(texture.get_width() >> 2);
-  const float height = math::to_float(texture.get_height() >> 2);
+  const float width  = math::to_float(texture.get_width() >> scale_div);
+  const float height = math::to_float(texture.get_height() >> scale_div);
   
   const Core::Transform trans(
     math::vec3_init(math::get_x(cursor_position) + (width * 0.5f),
