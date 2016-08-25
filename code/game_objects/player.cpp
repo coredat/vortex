@@ -1,4 +1,5 @@
 #include <game_objects/player.hpp>
+#include <game_objects/player_ui.hpp>
 #include <game_objects/player_ship.hpp>
 #include <common/event_ids.hpp>
 #include <common/object_tags.hpp>
@@ -8,6 +9,7 @@
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/text_renderer.hpp>
 #include <core/font/font.hpp>
+#include <core/entity/entity.hpp>
 #include <core/transform/transform.hpp>
 #include <utilities/logging.hpp>
 
@@ -65,20 +67,24 @@ Player::spawn_ship(Core::Context &ctx)
     // Setup the renderer
     {
       Core::Font font("/Users/PhilCK/Desktop/font/LiberationSerif-Bold.ttf");
-      
-//      Core::Text_renderer renderer;
-//      renderer.set_text("000");
-//      renderer.set_font(font);
-//      
-//      Core::Transform text_transform;
-//      
-//      m_counter.set_tags(Object_tags::gui_cam);
-//      m_counter.set_transform(text_transform);
-//      m_counter.set_renderer(renderer);
+
       LOG_ERROR("Renderer not getting unset");
     }
     
     return ship;
+  }
+  
+  return nullptr;
+}
+
+Player_ui*
+Player::spawn_ui(Core::Context &ctx)
+{
+  if(m_controller_id)
+  {
+    Player_ui *ui = new Player_ui(get_world(), ctx);
+    
+    return ui;
   }
   
   return nullptr;

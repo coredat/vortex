@@ -32,6 +32,8 @@ public:
   
 private:
 
+  Core::Entity      m_gui_camera_entity; // this doens't move
+
   math::vec3        m_target_point;
   
 };

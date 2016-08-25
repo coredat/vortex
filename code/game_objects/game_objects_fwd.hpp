@@ -10,6 +10,7 @@ class Level;
 class Horizon;
 class Horizon_particle;
 class Player;
+class Player_ui;
 class Player_ship;
 class Bullet;
 class Main_camera;

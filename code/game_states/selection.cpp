@@ -2,6 +2,7 @@
 #include <game_objects/world_objects.hpp>
 #include <game_objects/player.hpp>
 #include <game_objects/player_ship.hpp>
+#include <game_objects/player_ui.hpp>
 #include <common/object_tags.hpp>
 #include <common/screen_cast.hpp>
 #include <common/game_state.hpp>
@@ -203,6 +204,7 @@ selection_update(Core::Context &ctx,
             players[i]->set_controller(i);
             
             objects.push_object(players[i]->spawn_ship(ctx));
+            objects.push_object(players[i]->spawn_ui(ctx));
             
             sel.destroy();
           }

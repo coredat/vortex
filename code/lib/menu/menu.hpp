@@ -30,7 +30,6 @@ public:
 
 private:
 
-
   struct Button
   {
     Core::Material  norm_material;

@@ -27,6 +27,7 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
 , m_level_camera(world)
 , m_gui_camera(world)
 , m_final_post_camera(world)
+, m_gui_camera_entity(world)
 {
   Core::Entity_ref ref = get_entity();
   
@@ -71,7 +72,7 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   m_level_camera.set_tags_to_render(Object_tags::level_cam);
   m_level_camera.set_priority(3);
   
-  m_gui_camera.set_attached_entity(ref);
+  m_gui_camera.set_attached_entity(m_gui_camera_entity);
   m_gui_camera.set_type(Core::Camera_type::orthographic);
   m_gui_camera.set_width(m_world_camera.get_width());
   m_gui_camera.set_height(m_world_camera.get_height());
