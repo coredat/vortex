@@ -52,14 +52,20 @@ Player_ui::Player_ui(Core::World &world,
   const Core::Material_renderer mat_renderer(ui_mat, model);
   ref.set_renderer(mat_renderer);
   
-  const Core::Axis screen_positions[4] {
+  // All the corners of the screen.
+  const uint32_t screen_coords_count = 4;
+  
+  const Core::Axis screen_positions[screen_coords_count] {
     Core::Axis{0,0},
     Core::Axis{math::to_float(ctx.get_width()),0},
     Core::Axis{0,math::to_float(ctx.get_height())},
     Core::Axis{math::to_float(ctx.get_width()),math::to_float(ctx.get_width())},
   };
   
-  const Core::Ray ray = Core::Camera_utils::get_ray_from_viewport(cam, screen_positions[controller_id - 1]);
+  const uint32_t coord_index = controller_id - 1;
+  assert(controller_id < screen_coords_count);
+  
+  const Core::Ray ray = Core::Camera_utils::get_ray_from_viewport(cam, screen_positions[coord_index]);
   const Core::Plane plane = Core::Camera_utils::get_near_plane(cam);
   
   float out_distance = 0;

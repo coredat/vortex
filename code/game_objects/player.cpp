@@ -57,6 +57,8 @@ Player::spawn_ship(Core::Context &ctx)
   if(m_controller_id)
   {
     Player_ship *ship = new Player_ship(get_world(), ctx, m_controller_id);
+    
+    m_player_ref = ship->get_entity();
 
     Core::Material_renderer renderer;
     renderer.set_material(m_curr_material);
@@ -84,10 +86,20 @@ Player::spawn_ui(Core::Context &ctx, Core::Camera &cam)
   {
     Player_ui *ui = new Player_ui(get_world(), ctx, cam, m_controller_id);
     
+    m_ui_ref = ui->get_entity();
+    
     return ui;
   }
   
   return nullptr;
+}
+
+
+void
+Player::clear_ui_and_ship()
+{
+  m_ui_ref.destroy();
+  m_player_ref.destroy();
 }
 
 

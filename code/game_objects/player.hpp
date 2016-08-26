@@ -25,6 +25,7 @@ public:
   uint32_t        get_score() const;
   Player_ship*    spawn_ship(Core::Context &ctx);
   Player_ui*      spawn_ui(Core::Context &ctx, Core::Camera &cam);
+  void            clear_ui_and_ship();
   
   void            set_material(const Core::Material &mat);
   Core::Material  get_material() const;
@@ -38,12 +39,14 @@ public:
   
 private:
 
-  uint32_t        m_score           = 0;
-  uint32_t        m_controller_id   = UINT32_MAX;
-  bool            m_is_active       = false;
-  Core::Material  m_curr_material   = Core::Material("none");
-  Core::Model     m_curr_model      = Core::Model();
-  Core::Entity    m_counter         = Core::Entity();
+  uint32_t          m_score           = 0;
+  uint32_t          m_controller_id   = UINT32_MAX;
+  bool              m_is_active       = false;
+  Core::Material    m_curr_material   = Core::Material("none");
+  Core::Model       m_curr_model      = Core::Model();
+  Core::Entity      m_counter         = Core::Entity();
+  Core::Entity_ref  m_ui_ref;
+  Core::Entity_ref  m_player_ref;
 
 }; // ns
 

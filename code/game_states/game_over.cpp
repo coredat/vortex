@@ -50,6 +50,8 @@ game_over_update(Core::Context &ctx,
     {
       if(players[i]->is_valid())
       {
+        players[i]->clear_ui_and_ship();
+      
         player_entities[i] = Core::Entity(world);
         
         player_entities[i].set_name("screen_game_over[scoreboard]");
