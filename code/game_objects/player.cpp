@@ -78,11 +78,11 @@ Player::spawn_ship(Core::Context &ctx)
 }
 
 Player_ui*
-Player::spawn_ui(Core::Context &ctx)
+Player::spawn_ui(Core::Context &ctx, Core::Camera &cam)
 {
   if(m_controller_id)
   {
-    Player_ui *ui = new Player_ui(get_world(), ctx);
+    Player_ui *ui = new Player_ui(get_world(), ctx, cam, m_controller_id);
     
     return ui;
   }

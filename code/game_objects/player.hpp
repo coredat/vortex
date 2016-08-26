@@ -24,7 +24,7 @@ public:
   
   uint32_t        get_score() const;
   Player_ship*    spawn_ship(Core::Context &ctx);
-  Player_ui*      spawn_ui(Core::Context &ctx);
+  Player_ui*      spawn_ui(Core::Context &ctx, Core::Camera &cam);
   
   void            set_material(const Core::Material &mat);
   Core::Material  get_material() const;

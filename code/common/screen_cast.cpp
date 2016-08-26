@@ -23,11 +23,12 @@ intersect_screen_plane(const Core::Camera &cam,
   const math::vec3 scaled_fwd = math::vec3_scale(cam_fwd, 20.f);
   const math::vec3 plane_pos  = math::vec3_add(cam_pos, scaled_fwd);
   const math::vec3 plane_norm = math::vec3_scale(cam_fwd, -1.f);
+  
   const Core::Plane plane(plane_pos, plane_norm);
 
-  const Core::Ray ray      = Core::Camera_utils::get_ray_from_viewport(cam, {ray_offset_x, ray_offset_y});
+  const Core::Ray ray = Core::Camera_utils::get_ray_from_viewport(cam, {ray_offset_x, ray_offset_y});
 
-  float out_distance = 0;
+  float out_distance = 0.f;
   const bool intersection = Core::Plane_utils::ray_intersects_with_plane(plane, ray, out_distance);
   ASSERT(intersection); // This ray should never miss.
 

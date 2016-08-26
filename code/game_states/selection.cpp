@@ -156,6 +156,7 @@ Game_state
 selection_update(Core::Context &ctx,
                  Core::World &world,
                  Core::Camera &cam,
+                 Core::Camera &gui_cam,
                  Game_object::Player *players[],
                  const uint32_t player_count,
                  Game_object::World_objects &objects,
@@ -204,7 +205,7 @@ selection_update(Core::Context &ctx,
             players[i]->set_controller(i);
             
             objects.push_object(players[i]->spawn_ship(ctx));
-            objects.push_object(players[i]->spawn_ui(ctx));
+            objects.push_object(players[i]->spawn_ui(ctx, gui_cam));
             
             sel.destroy();
           }

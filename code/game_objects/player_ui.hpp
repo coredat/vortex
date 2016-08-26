@@ -14,14 +14,14 @@ class Player_ui : public Game_object
 public:
 
   explicit              Player_ui(Core::World &world,
-                                  Core::Context &ctx);
+                                  Core::Context &ctx,
+                                  const Core::Camera &cam,
+                                  const uint32_t controller_id);
   
   void                  on_start() override;
   void                  on_update(const float dt, World_objects &objs) override;
   
 private:
-
-  
 
 }; // class
 
