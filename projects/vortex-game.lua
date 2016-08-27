@@ -34,7 +34,8 @@ vortex_project_data = {
     -- Core Includes.
     make.get_proj_root() .. "../../core/code/",
     make.get_proj_root() .. "../../core/code/external/math",
-    make.get_proj_root() .. "../../core/code/external/graphics_api", -- Do i need this?
+    make.get_proj_root() .. "../../core/code/external/graphics_api", -- Pixel format! Core should have representation of this!
     make.get_proj_root() .. "../../core/code/external/utilities",
+    make.get_proj_root() .. "../../core/code/3rdparty/glew/include",
   },
 }

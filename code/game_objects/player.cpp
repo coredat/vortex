@@ -68,9 +68,9 @@ Player::spawn_ship(Core::Context &ctx)
     
     // Setup the renderer
     {
-      Core::Font font("/Users/PhilCK/Desktop/font/LiberationSerif-Bold.ttf");
+      //Core::Font font("/Users/PhilCK/Desktop/font/LiberationSerif-Bold.ttf");
 
-      LOG_ERROR("Renderer not getting unset");
+      //LOG_ERROR("Renderer not getting unset");
     }
     
     return ship;

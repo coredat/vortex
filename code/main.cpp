@@ -42,9 +42,6 @@
 #include <core/renderer/text_renderer.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/font/font.hpp>
-#include <graphics_api/utils/geometry.hpp>
-#include <graphics_api/vertex_format.hpp>
-#include <graphics_api/mesh.hpp>
 #include <common/object_tags.hpp>
 
 
