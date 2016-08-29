@@ -161,7 +161,7 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
       
       // Lateral Movement
       {
-        const float axis = math::max_length(controller.get_axis(0).x, controller.get_axis(1).x);
+        const float axis = Global::g_auto_play ? 1.f : math::max_length(controller.get_axis(0).x, controller.get_axis(1).x);
         const float move_axis  = axis * move_speed_base;
         const float move_speed = move_axis * movement_dt;
         
@@ -215,7 +215,7 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
         const float timer     = m_gun_cooldown;
         
         if(timer < (0.f + multipler) &&
-           (controller.get_trigger(0) || controller.get_trigger(1)) &&
+           (controller.get_trigger(0) || controller.get_trigger(1) || Global::g_auto_play) &&
            m_gun_overheat < gun_max_blast
           )
         {

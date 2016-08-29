@@ -97,6 +97,7 @@ main()
       if (ImGui::BeginMenu("Game Settings"))
       {
         ImGui::MenuItem("God mode", nullptr, &Global::g_god_mode);
+        ImGui::MenuItem("Auto mode", nullptr, &Global::g_auto_play);
         ImGui::EndMenu();
       }
       

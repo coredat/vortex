@@ -13,6 +13,7 @@ namespace Global {
 
 
 extern bool       g_god_mode;
+extern bool       g_auto_play;
 extern uint32_t   g_max_spawn_entities;
 
 
