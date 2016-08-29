@@ -78,6 +78,8 @@ main()
   
   Game_object::Player *players[player_count];
 
+  Core::Input::mouse_set_capture(context, true);
+  
   for(auto &pl : players)
   {
     pl = new Game_object::Player(world);
