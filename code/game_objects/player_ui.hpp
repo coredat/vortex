@@ -23,6 +23,8 @@ public:
   
 private:
 
+  Core::Entity          m_counters[3];
+
 }; // class
 
 

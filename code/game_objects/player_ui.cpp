@@ -18,6 +18,13 @@
 #include <core/input/axis.hpp>
 
 
+namespace
+{
+  Core::Material numbers[10];
+}
+
+
+
 namespace Game_object {
 
 
@@ -27,6 +34,49 @@ Player_ui::Player_ui(Core::World &world,
                      const uint32_t controller_id)
 : Game_object(world)
 {
+  const Core::Shader num_shader(Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl"));
+
+  // Load up numbers for the first run
+  if(!numbers[0])
+  {
+    char buffer[2048];
+  
+    for(uint32_t i = 0; i < 10; ++i)
+    {
+      memset(buffer, 0, sizeof(char) * 2048);
+      sprintf(buffer, "%s/num_%d.png", Core::Directory::volatile_resource_path("assets/textures"), i);
+      
+      Core::Texture texture(buffer);
+      assert(texture);
+      
+      // --
+      
+      
+      // --
+      
+      char mat_name[128];
+      memset(mat_name, 0, sizeof(char) * 128);
+      sprintf(mat_name, "[player_ui]number_%d", i);
+      
+      Core::Material material(mat_name);
+      assert(material);
+      
+      material.set_shader(num_shader);
+      material.set_map_01(texture);
+      
+      numbers[i] = material;
+    }
+  }
+  
+  // Create counter entitiets
+  // These actually render the numbers
+  for(auto &counter : m_counters)
+  {
+    counter = Core::Entity(world);
+    counter.set_name("[player_ui]counter");
+    counter.set_tags(Object_tags::gui_cam);
+  }
+
   auto ref = get_entity();
 
   ref.set_name("player_ui");
@@ -49,8 +99,8 @@ Player_ui::Player_ui(Core::World &world,
   const Core::Model model = Core::Model(unit_cube_path);
   assert(model);
   
-  const Core::Material_renderer mat_renderer(ui_mat, model);
-  ref.set_renderer(mat_renderer);
+  const Core::Material_renderer mat_renderer(numbers[0], model);
+//  ref.set_renderer(mat_renderer);
   
   // All the corners of the screen.
   const uint32_t screen_coords_count = 4;
@@ -82,7 +132,10 @@ Player_ui::Player_ui(Core::World &world,
     math::quat_init()
   );
   
-  ref.set_transform(trans);
+//  ref.set_transform(trans);
+
+  m_counters[0].set_renderer(mat_renderer);
+  m_counters[0].set_transform(trans);
 }
 
 
@@ -95,6 +148,7 @@ Player_ui::on_start()
 void
 Player_ui::on_update(const float dt, World_objects &objs)
 {
+  
 }
 
 

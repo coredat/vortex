@@ -77,8 +77,6 @@ main()
   constexpr uint32_t player_count = 4;
   
   Game_object::Player *players[player_count];
-
-  Core::Input::mouse_set_capture(context, true);
   
   for(auto &pl : players)
   {
@@ -121,11 +119,15 @@ main()
           break;
       
         case(Game_state::loading):
+          Core::Input::mouse_set_capture(context, false);
+
           loading_init(context, world);
           break;
           
         case(Game_state::title_screen):
         {
+          Core::Input::mouse_set_capture(context, false);
+
           if(first_load_title)
           {
             first_load_title = false;
@@ -139,6 +141,8 @@ main()
 
         case(Game_state::selection):
         {
+          Core::Input::mouse_set_capture(context, false);
+        
           if(first_load_selection)
           {
             first_load_selection = false;
@@ -158,10 +162,14 @@ main()
         }
         
         case(Game_state::game_mode):
+          Core::Input::mouse_set_capture(context, true);
+        
           game_init(context, world);
           break;
           
         case(Game_state::game_over):
+          Core::Input::mouse_set_capture(context, false);
+        
           game_over_init(context, world);
           objs.send_event(Event_id::destroy_all_enemies);
           break;
