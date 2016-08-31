@@ -30,13 +30,14 @@ public:
                                   const uint32_t controller_id);
   
   void                  on_start() override;
+  void                  on_end() override;
   void                  on_update(const float dt, World_objects &objs) override;
   void                  set_score(const uint32_t score);
   
 private:
 
   Core::Entity          m_counters[Units::size];
-  uint32_t              m_score = 1;
+  uint32_t              m_score = 0;
   
 
 }; // class

@@ -50,11 +50,6 @@ Player_ui::Player_ui(Core::World &world,
       Core::Texture texture(buffer);
       assert(texture);
       
-      // --
-      
-      
-      // --
-      
       char mat_name[128];
       memset(mat_name, 0, sizeof(char) * 128);
       sprintf(mat_name, "[player_ui]number_%d", i);
@@ -69,11 +64,19 @@ Player_ui::Player_ui(Core::World &world,
     }
   }
   
+  // Load up the plane model.
   if(!model)
   {
     const char * unit_cube_path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
     model = Core::Model(unit_cube_path);
     assert(model);
+  }
+  
+  // setup base entity
+  {
+    auto ref = get_entity();
+
+    ref.set_name("player_ui");
   }
   
   // Create counter entitiets
@@ -85,11 +88,6 @@ Player_ui::Player_ui(Core::World &world,
     counter.set_tags(Object_tags::gui_cam);
   }
 
-  auto ref = get_entity();
-
-  ref.set_name("player_ui");
-  ref.set_tags(Object_tags::gui_cam);
-
   const Core::Material_renderer mat_renderer(numbers[0], model);
   
   // All the corners of the screen.
@@ -99,14 +97,16 @@ Player_ui::Player_ui(Core::World &world,
   const float texture_height = math::to_float(numbers[0].get_map_01().get_height()) * 0.5f;
   const math::vec3 offset_size = math::vec3_init(texture_width, texture_height, 0.f);
   
-  const math::vec3 screen_corners[screen_coords_count] {
-    math::vec3_init(0,0,0),
-    math::vec3_init(math::to_float(ctx.get_width()),0,0),
-    math::vec3_init(0,math::to_float(ctx.get_height()),0),
-    math::vec3_init(math::to_float(ctx.get_width()), math::to_float(ctx.get_width()),0),
+  const math::vec3 screen_corners[screen_coords_count]
+  {
+    math::vec3_init(0.f, 0.f, 0.f),
+    math::vec3_init(math::to_float(ctx.get_width()), 0.f, 0.f),
+    math::vec3_init(0.f, math::to_float(ctx.get_height()), 0.f),
+    math::vec3_init(math::to_float(ctx.get_width()), math::to_float(ctx.get_width()), 0.f),
   };
   
-  const math::vec3 direction[screen_coords_count] {
+  const math::vec3 direction[screen_coords_count]
+  {
     math::vec3_init(+1.f, +1.f, 0.f),
     math::vec3_init(-1.f, +1.f, 0.f),
     math::vec3_init(+1.f, -1.f, 0.f),
@@ -130,39 +130,46 @@ Player_ui::Player_ui(Core::World &world,
   const math::vec3 scale_fwd = math::vec3_scale(cam_trans.get_forward(), out_distance);
   const math::vec3 position  = math::vec3_add(ray.get_origin(), scale_fwd);
   
-  const Core::Transform trans(
-    position,
-    math::vec3_init(16),
-    math::quat_init()
-  );
   
-  m_counters[Units::single].set_renderer(mat_renderer);
-  m_counters[Units::single].set_transform(trans);
-  
-  const Core::Transform trans_tens {
-    math::vec3_add(position, math::vec3_init(texture_width, 0, 0)),
-    math::vec3_init(16),
-    math::quat_init()
-  };
-  
-  m_counters[Units::tens].set_renderer(mat_renderer);
-  m_counters[Units::tens].set_transform(trans_tens);
-  
-  const Core::Transform trans_hundreds {
-    math::vec3_add(trans_tens.get_position(), math::vec3_init(texture_width, 0, 0)),
-    math::vec3_init(16),
-    math::quat_init()
-  };
-  
-  m_counters[Units::hundreds].set_renderer(mat_renderer);
-  m_counters[Units::hundreds].set_transform(trans_hundreds);
-  
+  // Set inital placement of the counters
+  {
+    float offset_x = 0;
+    
+    for(uint32_t i = 0; i < Units::size; ++i)
+    {
+      constexpr float scale = 3.f;
+      constexpr float inv_scale = 1.f / scale;
+    
+      const Core::Transform trans_tens {
+        math::vec3_add(position, math::vec3_init(offset_x, 0.f, 0.f)),
+        math::vec3_init(texture_width * inv_scale),
+        math::quat_init()
+      };
+      
+      m_counters[i].set_transform(trans_tens);
+      
+      offset_x -= (texture_width * inv_scale);
+    }
+  }
 }
 
 
 void
 Player_ui::on_start()
 {
+}
+
+
+void
+Player_ui::on_end()
+{
+  for(auto &count : m_counters)
+  {
+    if(count)
+    {
+      count.destroy();
+    }
+  }
 }
 
 
@@ -173,9 +180,12 @@ update_renderer(Core::Entity_ref ref,
                 const uint32_t index)
 {
   assert(index < 10);
-
-  Core::Material_renderer renderer = ref.get_renderer();
+  assert(ref);
+  
+  Core::Material_renderer renderer;
   renderer.set_material(numbers[index]);
+  renderer.set_model(model);
+  
   ref.set_renderer(renderer);
 }
 
@@ -185,13 +195,22 @@ update_renderer(Core::Entity_ref ref,
 void
 Player_ui::on_update(const float dt, World_objects &objs)
 {
+  // Calculate the individual units
   const uint32_t hundreds = (m_score / 100) % 10;
   const uint32_t tens = (m_score / 10) % 10;
   const uint32_t ones = m_score % 10;
   
   update_renderer(m_counters[Units::single], ones);
-  update_renderer(m_counters[Units::tens], tens);
-  update_renderer(m_counters[Units::hundreds], hundreds);
+  
+  if(m_score >= 10)
+  {
+    update_renderer(m_counters[Units::tens], tens);
+  }
+  
+  if(m_score >= 100)
+  {
+    update_renderer(m_counters[Units::hundreds], hundreds);
+  }
 }
 
 

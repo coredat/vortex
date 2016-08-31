@@ -38,9 +38,12 @@ Player::on_message(const uint32_t id, void *data)
   {
     if(*reinterpret_cast<uint32_t*>(data) == m_controller_id)
     {
-      Player_ui *ui = reinterpret_cast<Player_ui*>((void*)m_ui_ref.get_user_data());
-      assert(ui);
-      ui->set_score(++m_score);
+      if(m_ui_ref)
+      {
+        Player_ui *ui = reinterpret_cast<Player_ui*>((void*)m_ui_ref.get_user_data());
+        assert(ui);
+        ui->set_score(++m_score);
+      }
     }
   }
 }
@@ -58,6 +61,11 @@ Player::spawn_ship(Core::Context &ctx)
 {
   if(m_controller_id)
   {
+    if(m_player_ref)
+    {
+      m_player_ref.destroy();
+    }
+  
     Player_ship *ship = new Player_ship(get_world(), ctx, m_controller_id);
     
     m_player_ref = ship->get_entity();
@@ -86,6 +94,13 @@ Player::spawn_ui(Core::Context &ctx, Core::Camera &cam)
 {
   if(m_controller_id)
   {
+    if(m_ui_ref)
+    {
+
+      m_score = 0;
+      m_ui_ref.destroy();
+    }
+  
     Player_ui *ui = new Player_ui(get_world(), ctx, cam, m_controller_id);
     
     m_ui_ref = ui->get_entity();
