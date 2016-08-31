@@ -46,6 +46,18 @@ Player::on_message(const uint32_t id, void *data)
       }
     }
   }
+  
+  else if(id == Event_id::player_died)
+  {
+    if(*reinterpret_cast<uint32_t*>(data) == m_controller_id)
+    {
+      if(m_ui_ref)
+      {
+        Player_ui *ui = reinterpret_cast<Player_ui*>((void*)m_ui_ref.get_user_data());
+        ui->destroy();
+      }
+    }
+  }
 }
 
 
@@ -67,6 +79,12 @@ Player::spawn_ship(Core::Context &ctx)
     }
   
     Player_ship *ship = new Player_ship(get_world(), ctx, m_controller_id);
+    
+    const float start_offset = (math::quart_tau() * 0.5f) * 3.f;
+    const float turn = math::quart_tau() * -(m_controller_id - 1);
+    const float start_pos = start_offset + turn;
+    
+    ship->set_point_on_circle(start_pos);
     
     m_player_ref = ship->get_entity();
 

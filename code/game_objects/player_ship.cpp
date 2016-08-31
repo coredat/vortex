@@ -4,6 +4,7 @@
 #include <game_objects/world_objects.hpp>
 #include <common/level_functions.hpp>
 #include <common/object_tags.hpp>
+#include <common/event_ids.hpp>
 #include <common/global_vars.hpp>
 #include <core/world/world.hpp>
 #include <core/context/context.hpp>
@@ -115,6 +116,13 @@ void
 Player_ship::on_start()
 {
   update_position(get_entity(), m_point_on_circle, m_momentum);
+}
+
+
+void
+Player_ship::set_point_on_circle(const float point)
+{
+  m_point_on_circle = point;
 }
 
 
@@ -281,6 +289,9 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
       world_objs.push_object(new Explosion(get_world(),
                                            get_entity().get_transform().get_position()));
       m_state = State::dead;
+      
+      world_objs.send_event(Event_id::player_died, (void*)&m_controller_id);
+      
       break;
     }
     

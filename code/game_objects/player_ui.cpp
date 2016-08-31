@@ -90,20 +90,8 @@ Player_ui::Player_ui(Core::World &world,
 
   const Core::Material_renderer mat_renderer(numbers[0], model);
   
-  // All the corners of the screen.
+  // Some data
   const uint32_t screen_coords_count = 4;
-  
-  const float texture_width = math::to_float(numbers[0].get_map_01().get_width()) * 0.5f;
-  const float texture_height = math::to_float(numbers[0].get_map_01().get_height()) * 0.5f;
-  const math::vec3 offset_size = math::vec3_init(texture_width, texture_height, 0.f);
-  
-  const math::vec3 screen_corners[screen_coords_count]
-  {
-    math::vec3_init(0.f, 0.f, 0.f),
-    math::vec3_init(math::to_float(ctx.get_width()), 0.f, 0.f),
-    math::vec3_init(0.f, math::to_float(ctx.get_height()), 0.f),
-    math::vec3_init(math::to_float(ctx.get_width()), math::to_float(ctx.get_width()), 0.f),
-  };
   
   const math::vec3 direction[screen_coords_count]
   {
@@ -112,6 +100,22 @@ Player_ui::Player_ui(Core::World &world,
     math::vec3_init(+1.f, -1.f, 0.f),
     math::vec3_init(-1.f, -1.f, 0.f),
   };
+  
+  const float margin_x = ctx.get_width() * 0.05f;
+  const float margin_y = ctx.get_height() * 0.05f;
+  
+  const math::vec3 screen_corners[screen_coords_count]
+  {
+    math::vec3_init(0.f + margin_x, 0.f + margin_y, 0.f),
+    math::vec3_init(math::to_float(ctx.get_width()) - margin_x, 0.f + margin_y, 0.f),
+    math::vec3_init(0.f + margin_x, math::to_float(ctx.get_height()) - margin_y, 0.f),
+    math::vec3_init(math::to_float(ctx.get_width()) - margin_x, math::to_float(ctx.get_height()) - margin_y, 0.f),
+  };
+  
+  const float texture_width = math::to_float(numbers[0].get_map_01().get_width()) * 0.5f;
+  const float texture_height = math::to_float(numbers[0].get_map_01().get_height()) * 0.5f;
+  const math::vec3 offset_size = math::vec3_init(texture_width, texture_height, 0.f);
+
   
   const uint32_t coord_index = controller_id - 1;
   assert(controller_id < screen_coords_count);

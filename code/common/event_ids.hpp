@@ -10,7 +10,7 @@ enum ENUM {
   null = 0,
   destroy_all_enemies,
   player_destroyed_enemy,
-
+  player_died,
 };
 
 

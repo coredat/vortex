@@ -24,6 +24,8 @@ public:
                               World_objects &world_objs) override;
   void              on_collision(Game_object *obj) override;
 
+  void              set_point_on_circle(const float point);
+
 private:
 
   Core::Context     &m_context;
