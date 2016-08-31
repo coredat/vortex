@@ -38,7 +38,9 @@ Player::on_message(const uint32_t id, void *data)
   {
     if(*reinterpret_cast<uint32_t*>(data) == m_controller_id)
     {
-      ++m_score;
+      Player_ui *ui = reinterpret_cast<Player_ui*>((void*)m_ui_ref.get_user_data());
+      assert(ui);
+      ui->set_score(++m_score);
     }
   }
 }

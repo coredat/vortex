@@ -21,6 +21,7 @@
 namespace
 {
   Core::Material numbers[10];
+  Core::Model model;
 }
 
 
@@ -68,6 +69,13 @@ Player_ui::Player_ui(Core::World &world,
     }
   }
   
+  if(!model)
+  {
+    const char * unit_cube_path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
+    model = Core::Model(unit_cube_path);
+    assert(model);
+  }
+  
   // Create counter entitiets
   // These actually render the numbers
   for(auto &counter : m_counters)
@@ -81,41 +89,37 @@ Player_ui::Player_ui(Core::World &world,
 
   ref.set_name("player_ui");
   ref.set_tags(Object_tags::gui_cam);
-  
-  Core::Material ui_mat = Core::Material("player_ui_mat");
-  
-  const char * orange_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png");
-  const Core::Texture texture(orange_texture_path);
-  assert(texture);
-  
-  const char * shader_path = Core::Directory::volatile_resource_path("assets/shaders/vortex_dir_light.ogl");
-  const Core::Shader shader(shader_path);
-  assert(shader);
-  
-  ui_mat.set_shader(shader);
-  ui_mat.set_map_01(texture);
 
-  const char * unit_cube_path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
-  const Core::Model model = Core::Model(unit_cube_path);
-  assert(model);
-  
   const Core::Material_renderer mat_renderer(numbers[0], model);
-//  ref.set_renderer(mat_renderer);
   
   // All the corners of the screen.
   const uint32_t screen_coords_count = 4;
   
-  const Core::Axis screen_positions[screen_coords_count] {
-    Core::Axis{0,0},
-    Core::Axis{math::to_float(ctx.get_width()),0},
-    Core::Axis{0,math::to_float(ctx.get_height())},
-    Core::Axis{math::to_float(ctx.get_width()),math::to_float(ctx.get_width())},
+  const float texture_width = math::to_float(numbers[0].get_map_01().get_width()) * 0.5f;
+  const float texture_height = math::to_float(numbers[0].get_map_01().get_height()) * 0.5f;
+  const math::vec3 offset_size = math::vec3_init(texture_width, texture_height, 0.f);
+  
+  const math::vec3 screen_corners[screen_coords_count] {
+    math::vec3_init(0,0,0),
+    math::vec3_init(math::to_float(ctx.get_width()),0,0),
+    math::vec3_init(0,math::to_float(ctx.get_height()),0),
+    math::vec3_init(math::to_float(ctx.get_width()), math::to_float(ctx.get_width()),0),
+  };
+  
+  const math::vec3 direction[screen_coords_count] {
+    math::vec3_init(+1.f, +1.f, 0.f),
+    math::vec3_init(-1.f, +1.f, 0.f),
+    math::vec3_init(+1.f, -1.f, 0.f),
+    math::vec3_init(-1.f, -1.f, 0.f),
   };
   
   const uint32_t coord_index = controller_id - 1;
   assert(controller_id < screen_coords_count);
   
-  const Core::Ray ray = Core::Camera_utils::get_ray_from_viewport(cam, screen_positions[coord_index]);
+  const math::vec3 screen_corner_offset = math::vec3_multiply(offset_size, direction[coord_index]);
+  const math::vec3 ray_pos = math::vec3_add(screen_corner_offset, screen_corners[coord_index]);
+  
+  const Core::Ray ray = Core::Camera_utils::get_ray_from_viewport(cam, Core::Axis{math::get_x(ray_pos), math::get_y(ray_pos)});
   const Core::Plane plane = Core::Camera_utils::get_near_plane(cam);
   
   float out_distance = 0;
@@ -128,14 +132,31 @@ Player_ui::Player_ui(Core::World &world,
   
   const Core::Transform trans(
     position,
-    math::vec3_init(128),
+    math::vec3_init(16),
     math::quat_init()
   );
   
-//  ref.set_transform(trans);
-
-  m_counters[0].set_renderer(mat_renderer);
-  m_counters[0].set_transform(trans);
+  m_counters[Units::single].set_renderer(mat_renderer);
+  m_counters[Units::single].set_transform(trans);
+  
+  const Core::Transform trans_tens {
+    math::vec3_add(position, math::vec3_init(texture_width, 0, 0)),
+    math::vec3_init(16),
+    math::quat_init()
+  };
+  
+  m_counters[Units::tens].set_renderer(mat_renderer);
+  m_counters[Units::tens].set_transform(trans_tens);
+  
+  const Core::Transform trans_hundreds {
+    math::vec3_add(trans_tens.get_position(), math::vec3_init(texture_width, 0, 0)),
+    math::vec3_init(16),
+    math::quat_init()
+  };
+  
+  m_counters[Units::hundreds].set_renderer(mat_renderer);
+  m_counters[Units::hundreds].set_transform(trans_hundreds);
+  
 }
 
 
@@ -145,10 +166,39 @@ Player_ui::on_start()
 }
 
 
+namespace {
+
+void
+update_renderer(Core::Entity_ref ref,
+                const uint32_t index)
+{
+  assert(index < 10);
+
+  Core::Material_renderer renderer = ref.get_renderer();
+  renderer.set_material(numbers[index]);
+  ref.set_renderer(renderer);
+}
+
+} // anon ns
+
+
 void
 Player_ui::on_update(const float dt, World_objects &objs)
 {
+  const uint32_t hundreds = (m_score / 100) % 10;
+  const uint32_t tens = (m_score / 10) % 10;
+  const uint32_t ones = m_score % 10;
   
+  update_renderer(m_counters[Units::single], ones);
+  update_renderer(m_counters[Units::tens], tens);
+  update_renderer(m_counters[Units::hundreds], hundreds);
+}
+
+
+void
+Player_ui::set_score(const uint32_t score)
+{
+  m_score = score;
 }
 
 
