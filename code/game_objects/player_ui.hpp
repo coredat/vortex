@@ -35,9 +35,10 @@ public:
   void                  on_update(const float dt, World_objects &objs) override;
   void                  set_score(const uint32_t score);
   
-private:
+//private:
 
   Core::Entity          m_counters[Units::size];
+  Core::Entity          m_avatar;
   uint32_t              m_score = 0;
   
 

@@ -157,6 +157,28 @@ Player_ui::Player_ui(Core::World &world,
       offset_x -= (texture_width * inv_scale);
     }
   }
+  
+  // Avatar
+  {
+    m_avatar = Core::Entity(world);
+    
+    m_avatar.set_tags(Object_tags::world_cam);
+  
+    const Core::Ray ray = Core::Camera_utils::get_ray_from_viewport(world_cam, Core::Axis{math::get_x(ray_pos), math::get_y(ray_pos)});
+    const Core::Plane plane = Core::Camera_utils::get_near_plane(world_cam);
+    
+    float dist = 0;
+    const bool intersects = Core::Plane_utils::ray_intersects_with_plane(plane, ray, dist);
+    assert(intersects);
+    
+    const math::vec3 scale_fwd = math::vec3_scale(cam_trans.get_forward(), out_distance);
+    const math::vec3 position  = math::vec3_add(ray.get_origin(), scale_fwd);
+    
+    Core::Transform avatar_trans = m_avatar.get_transform();
+    avatar_trans.set_position(position);
+    
+    m_avatar.set_transform(avatar_trans);
+  }
 }
 
 

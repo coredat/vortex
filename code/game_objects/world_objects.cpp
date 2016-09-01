@@ -84,6 +84,11 @@ World_objects::send_event(const uint32_t evt_id, void *data)
   {
     obj->on_message(evt_id, data);
   }
+  
+  for(auto &obj : m_start_objects)
+  {
+    obj->on_message(evt_id, data);
+  }
 }
 
 

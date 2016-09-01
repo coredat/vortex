@@ -121,6 +121,16 @@ Player::spawn_ui(Core::Context &ctx, Core::Camera &ui_cam, Core::Camera &world_c
   
     Player_ui *ui = new Player_ui(get_world(), ctx, ui_cam, world_cam, m_controller_id);
     
+    assert(m_player_ref);
+    assert(ui->m_avatar);
+    
+    Core::Material_renderer renderer;
+    renderer.set_material(m_curr_material);
+    renderer.set_model(m_curr_model);
+    
+    ui->m_avatar.set_renderer(renderer);
+    
+    
     m_ui_ref = ui->get_entity();
     
     return ui;
