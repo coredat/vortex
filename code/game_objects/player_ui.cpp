@@ -124,6 +124,7 @@ Player_ui::Player_ui(Core::World &world,
   const math::vec3 ray_pos = math::vec3_add(screen_corner_offset, screen_corners[coord_index]);
   
   const Core::Ray ray = Core::Camera_utils::get_ray_from_viewport(cam, Core::Axis{math::get_x(ray_pos), math::get_y(ray_pos)});
+  
   const Core::Plane plane = Core::Camera_utils::get_near_plane(cam);
   
   float out_distance = 0;

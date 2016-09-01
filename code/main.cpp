@@ -92,6 +92,11 @@ main()
   // Game state
   while(context.is_open())
   {
+    if(Core::Input::controllers_are_in_use(context))
+    {
+      printf("used\n");
+    }
+  
     #ifdef CORE_DEBUG_MENU
     if (ImGui::BeginMainMenuBar())
     {
