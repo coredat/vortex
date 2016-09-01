@@ -104,6 +104,13 @@ Main_camera::on_start()
 
 
 void
+Main_camera::set_target_height(const float height)
+{
+  m_target_height = height;
+}
+
+
+void
 Main_camera::on_update(const float dt, World_objects &world_objs)
 {
   Core::Entity_ref ref = get_entity();
@@ -114,7 +121,7 @@ Main_camera::on_update(const float dt, World_objects &world_objs)
   
   world.find_entities_by_tag(Object_tags::player, &players, &ent_size);
 
-  constexpr float camera_distance_far = 20.f;
+  const float camera_distance_far = m_target_height;
   constexpr float camera_distance_near = 10.f;
   
   const math::vec3 camera_origin = math::vec3_init(0,0,Level_funcs::get_top_of_level());

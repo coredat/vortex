@@ -26,7 +26,8 @@ public:
 
   explicit              Player_ui(Core::World &world,
                                   Core::Context &ctx,
-                                  const Core::Camera &cam,
+                                  const Core::Camera &gui_cam,
+                                  const Core::Camera &world_cam,
                                   const uint32_t controller_id);
   
   void                  on_start() override;

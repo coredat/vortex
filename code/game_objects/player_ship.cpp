@@ -78,6 +78,10 @@ Player_ship::Player_ship(Core::World &world,
     ref.set_name("Player");
     ref.set_tags(Object_tags::player | Object_tags::world_cam);
     ref.set_rigidbody(rb);
+    
+    Core::Transform trans = ref.get_transform();
+    trans.set_position(math::vec3_init(math::get_x(trans.get_position()), math::get_y(trans.get_position()), Level_funcs::get_top_of_level()));
+    ref.set_transform(trans);
   }
 }
 

@@ -108,7 +108,7 @@ Player::spawn_ship(Core::Context &ctx)
 }
 
 Player_ui*
-Player::spawn_ui(Core::Context &ctx, Core::Camera &cam)
+Player::spawn_ui(Core::Context &ctx, Core::Camera &ui_cam, Core::Camera &world_cam)
 {
   if(m_controller_id)
   {
@@ -119,7 +119,7 @@ Player::spawn_ui(Core::Context &ctx, Core::Camera &cam)
       m_ui_ref.destroy();
     }
   
-    Player_ui *ui = new Player_ui(get_world(), ctx, cam, m_controller_id);
+    Player_ui *ui = new Player_ui(get_world(), ctx, ui_cam, world_cam, m_controller_id);
     
     m_ui_ref = ui->get_entity();
     

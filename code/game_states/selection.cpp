@@ -205,7 +205,7 @@ selection_update(Core::Context &ctx,
             players[i]->set_controller(i);
             
             objects.push_object(players[i]->spawn_ship(ctx));
-            objects.push_object(players[i]->spawn_ui(ctx, gui_cam));
+            objects.push_object(players[i]->spawn_ui(ctx, gui_cam, cam));
             
             sel.destroy();
           }

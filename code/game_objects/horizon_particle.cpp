@@ -41,7 +41,7 @@ Horizon_particle::on_update(const float dt, World_objects &objs)
   
   const float curr_depth = math::vec3_get_z(moved);
   
-  if(40.f < curr_depth)
+  if(500.f < curr_depth)
   {
     destroy();
   }

@@ -73,6 +73,7 @@ main()
   
   Game_object::World_objects objs;
   Game_object::Main_camera *go_cam = new Game_object::Main_camera(world, context);;
+  go_cam->set_target_height(100.f);
   
   constexpr uint32_t player_count = 4;
   
@@ -88,6 +89,7 @@ main()
   
   bool first_load_selection = true;
   bool first_load_title = true;
+  bool first_load_level = true;
   
   // Game state
   while(context.is_open())
@@ -151,29 +153,34 @@ main()
           if(first_load_selection)
           {
             first_load_selection = false;
-            
             objs.push_object(new Game_object::Horizon(world));
-            
-            objs.push_object(new Game_object::Level(world));
-            go_cam->get_entity().set_transform(Core::Transform(
-              math::vec3_init(0, 0, 500.f),
-              math::vec3_one(),
-              math::quat_init()
-            ));
           }
         
-          selection_init(context, world, go_cam->m_world_camera);
+          selection_init(context,
+                         world,
+                         go_cam->m_world_camera);
           break;
         }
         
         case(Game_state::game_mode):
           Core::Input::mouse_set_capture(context, true);
-        
+          
+          go_cam->set_target_height(20.f);
+          
+          if(first_load_level)
+          {
+            first_load_level = false;
+            
+            objs.push_object(new Game_object::Level(world));
+          }
+          
           game_init(context, world);
           break;
           
         case(Game_state::game_over):
           Core::Input::mouse_set_capture(context, false);
+          
+          go_cam->set_target_height(50.f);
         
           game_over_init(context, world);
           objs.send_event(Event_id::destroy_all_enemies);
@@ -232,6 +239,15 @@ main()
                                       player_count,
                                       objs,
                                       dt);
+        
+        if(next_state == Game_state::game_mode)
+        {
+//          go_cam->get_entity().set_transform(Core::Transform(
+//            math::vec3_init(0, 0, 500.f),
+//            math::vec3_one(),
+//            math::quat_init()
+//          ));
+        }
         break;
       }
       

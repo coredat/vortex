@@ -31,7 +31,8 @@ namespace Game_object {
 
 Player_ui::Player_ui(Core::World &world,
                      Core::Context &ctx,
-                     const Core::Camera &cam,
+                     const Core::Camera &gui_cam,
+                     const Core::Camera &world_cam,
                      const uint32_t controller_id)
 : Game_object(world)
 {
@@ -123,15 +124,15 @@ Player_ui::Player_ui(Core::World &world,
   const math::vec3 screen_corner_offset = math::vec3_multiply(offset_size, direction[coord_index]);
   const math::vec3 ray_pos = math::vec3_add(screen_corner_offset, screen_corners[coord_index]);
   
-  const Core::Ray ray = Core::Camera_utils::get_ray_from_viewport(cam, Core::Axis{math::get_x(ray_pos), math::get_y(ray_pos)});
+  const Core::Ray ray = Core::Camera_utils::get_ray_from_viewport(gui_cam, Core::Axis{math::get_x(ray_pos), math::get_y(ray_pos)});
   
-  const Core::Plane plane = Core::Camera_utils::get_near_plane(cam);
+  const Core::Plane plane = Core::Camera_utils::get_near_plane(gui_cam);
   
   float out_distance = 0;
   const bool intersects = Core::Plane_utils::ray_intersects_with_plane(plane, ray, out_distance);
   assert(intersects); // should alwasy intersect
   
-  const Core::Transform cam_trans = cam.get_attached_entity().get_transform();
+  const Core::Transform cam_trans = gui_cam.get_attached_entity().get_transform();
   const math::vec3 scale_fwd = math::vec3_scale(cam_trans.get_forward(), out_distance);
   const math::vec3 position  = math::vec3_add(ray.get_origin(), scale_fwd);
   
