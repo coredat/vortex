@@ -26,6 +26,8 @@ namespace
   Core::Model model;
   
   math::vec3 ui_ray_pos;
+  
+  float spin = 0.f;
 }
 
 
@@ -98,8 +100,8 @@ Player_ui::Player_ui(Core::World &world,
   // Some data
   const uint32_t screen_coords_count = 4;
   
-  const float margin_x = ctx.get_width() * 0.05f;
-  const float margin_y = ctx.get_height() * 0.05f;
+  const float margin_x = ctx.get_width() * 0.1f;
+  const float margin_y = ctx.get_height() * 0.2f;
   
   const math::vec3 screen_corners[screen_coords_count]
   {
@@ -111,7 +113,8 @@ Player_ui::Player_ui(Core::World &world,
   
   auto screen_pos = screen_corners[controller_id - 1];
   
-  const math::vec3 position = Screen_cast::intersect_screen_plane(gui_cam, math::get_x(screen_pos), math::get_y(screen_pos));
+//  const math::vec3 position = Screen_cast::intersect_screen_plane(gui_cam, math::get_x(screen_pos), math::get_y(screen_pos));
+  const math::vec3 position = Core::Camera_utils::get_world_position_on_nearplane(gui_cam, Core::Axis{math::get_x(screen_pos), math::get_y(screen_pos)});
   const float texture_width = math::to_float(numbers[0].get_map_01().get_width()) * 0.5f;
   
   // Set inital placement of the counters
@@ -137,6 +140,16 @@ Player_ui::Player_ui(Core::World &world,
   
   m_avatar = Core::Entity(world);
   m_avatar.set_tags(Object_tags::world_cam);
+  
+//  const math::quat rot_side = math::quat_init_with_axis_angle(0, 1, 0, -math::quart_tau() * 1.4f);
+//  const math::quat rot_down = math::quat_init_with_axis_angle(1, 0, 0, 0);
+//  const math::quat rot = math::quat_multiply(rot_side, rot_down);
+//  
+//  
+//  Core::Transform trans = m_avatar.get_transform();
+//  trans.set_rotation(rot);
+//  
+//  m_avatar.set_transform(trans);
 }
 
 
@@ -231,6 +244,18 @@ Player_ui::on_update(const float dt, World_objects &objs)
     
     m_avatar.set_transform(avatar_trans);
   }
+  
+  spin += dt;
+  
+  const math::quat rot_side = math::quat_init_with_axis_angle(0, 1, 0, spin * 0.5f);
+  const math::quat rot_down = math::quat_init_with_axis_angle(0, 0, 1, -0.15f);
+  const math::quat rot = math::quat_multiply(rot_down, rot_side);
+  
+  Core::Transform trans = m_avatar.get_transform();
+  trans.set_rotation(rot);
+  
+  m_avatar.set_transform(trans);
+  
 }
 
 

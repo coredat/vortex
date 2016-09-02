@@ -114,11 +114,11 @@ Player::spawn_ui(Core::Context &ctx, Core::Camera &ui_cam, Core::Camera &world_c
   {
     if(m_ui_ref)
     {
-
-      m_score = 0;
       m_ui_ref.destroy();
     }
   
+  
+    m_score = 0;
     Player_ui *ui = new Player_ui(get_world(), ctx, ui_cam, world_cam, m_controller_id);
     
     assert(m_player_ref);
