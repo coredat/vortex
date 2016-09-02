@@ -1,8 +1,10 @@
 #include <game_objects/player_ui.hpp>
+#include <game_objects/main_camera.hpp>
 #include <common/screen_cast.hpp>
 #include <common/object_tags.hpp>
 #include <core/resources/material.hpp>
 #include <core/resources/texture.hpp>
+#include <core/world/world.hpp>
 #include <core/model/model.hpp>
 #include <core/resources/shader.hpp>
 #include <core/common/directory.hpp>
@@ -22,6 +24,8 @@ namespace
 {
   Core::Material numbers[10];
   Core::Model model;
+  
+  math::vec3 ui_ray_pos;
 }
 
 
@@ -124,9 +128,11 @@ Player_ui::Player_ui(Core::World &world,
   const math::vec3 screen_corner_offset = math::vec3_multiply(offset_size, direction[coord_index]);
   const math::vec3 ray_pos = math::vec3_add(screen_corner_offset, screen_corners[coord_index]);
   
-  const Core::Ray ray = Core::Camera_utils::get_ray_from_viewport(gui_cam, Core::Axis{math::get_x(ray_pos), math::get_y(ray_pos)});
+  ui_ray_pos = ray_pos;
   
+  const Core::Ray ray = Core::Camera_utils::get_ray_from_viewport(gui_cam, Core::Axis{math::get_x(ray_pos), math::get_y(ray_pos)});
   const Core::Plane plane = Core::Camera_utils::get_near_plane(gui_cam);
+  
   
   float out_distance = 0;
   const bool intersects = Core::Plane_utils::ray_intersects_with_plane(plane, ray, out_distance);
@@ -158,27 +164,8 @@ Player_ui::Player_ui(Core::World &world,
     }
   }
   
-  // Avatar
-  {
-    m_avatar = Core::Entity(world);
-    
-    m_avatar.set_tags(Object_tags::world_cam);
-  
-    const Core::Ray ray = Core::Camera_utils::get_ray_from_viewport(world_cam, Core::Axis{math::get_x(ray_pos), math::get_y(ray_pos)});
-    const Core::Plane plane = Core::Camera_utils::get_near_plane(world_cam);
-    
-    float dist = 0;
-    const bool intersects = Core::Plane_utils::ray_intersects_with_plane(plane, ray, dist);
-    assert(intersects);
-    
-    const math::vec3 scale_fwd = math::vec3_scale(cam_trans.get_forward(), out_distance);
-    const math::vec3 position  = math::vec3_add(ray.get_origin(), scale_fwd);
-    
-    Core::Transform avatar_trans = m_avatar.get_transform();
-    avatar_trans.set_position(position);
-    
-    m_avatar.set_transform(avatar_trans);
-  }
+  m_avatar = Core::Entity(world);
+  m_avatar.set_tags(Object_tags::world_cam);
 }
 
 
@@ -238,6 +225,64 @@ Player_ui::on_update(const float dt, World_objects &objs)
   if(m_score >= 100)
   {
     update_renderer(m_counters[Units::hundreds], hundreds);
+  }
+  
+  // Update avatar
+  {
+    // Some data
+//    const uint32_t screen_coords_count = 4;
+//    
+//    const math::vec3 direction[screen_coords_count]
+//    {
+//      math::vec3_init(+1.f, +1.f, 0.f),
+//      math::vec3_init(-1.f, +1.f, 0.f),
+//      math::vec3_init(+1.f, -1.f, 0.f),
+//      math::vec3_init(-1.f, -1.f, 0.f),
+//    };
+//    
+//    const float margin_x = ctx.get_width() * 0.05f;
+//    const float margin_y = ctx.get_height() * 0.05f;
+//    
+//    const math::vec3 screen_corners[screen_coords_count]
+//    {
+//      math::vec3_init(0.f + margin_x, 0.f + margin_y, 0.f),
+//      math::vec3_init(math::to_float(ctx.get_width()) - margin_x, 0.f + margin_y, 0.f),
+//      math::vec3_init(0.f + margin_x, math::to_float(ctx.get_height()) - margin_y, 0.f),
+//      math::vec3_init(math::to_float(ctx.get_width()) - margin_x, math::to_float(ctx.get_height()) - margin_y, 0.f),
+//    };
+//
+//    
+//    const uint32_t coord_index = controller_id - 1;
+//    assert(controller_id < screen_coords_count);
+//    
+//    const math::vec3 screen_corner_offset = math::vec3_multiply(offset_size, direction[coord_index]);
+//    const math::vec3 ray_pos = math::vec3_add(screen_corner_offset, screen_corners[coord_index]);
+  
+    Core::Entity_ref *search_array = nullptr;
+    size_t size_of_find = 0;
+    get_world().find_entities_by_tag(Object_tags::camera, &search_array, &size_of_find);
+    assert(size_of_find && search_array);
+    
+    Main_camera *camera = reinterpret_cast<Main_camera*>((void*)search_array[0].get_user_data());
+    assert(camera);
+    
+    const Core::Ray ray2 = Core::Camera_utils::get_ray_from_viewport(camera->m_world_camera, Core::Axis{0,0});
+    const Core::Plane plane2 = Core::Camera_utils::get_near_plane(camera->m_world_camera);
+    const Core::Plane plane(math::vec3_zero(), math::vec3_scale(camera->m_world_camera.get_attached_entity().get_transform().get_forward(), -1.f));
+    
+    float dist = 0;
+    const bool intersects = Core::Plane_utils::ray_intersects_with_plane(plane, ray2, dist);
+    assert(intersects);
+    
+    const Core::Transform cam_trans2 = camera->m_world_camera.get_attached_entity().get_transform();
+    
+    const math::vec3 scale_fwd2 = math::vec3_scale(cam_trans2.get_forward(), dist * 1);
+    const math::vec3 pos2  = math::vec3_add(ray2.get_origin(), scale_fwd2);
+    
+    Core::Transform avatar_trans = m_avatar.get_transform();
+    avatar_trans.set_position(pos2);
+    
+    m_avatar.set_transform(avatar_trans);
   }
 }
 
