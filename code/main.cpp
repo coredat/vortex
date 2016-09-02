@@ -166,6 +166,7 @@ main()
           Core::Input::mouse_set_capture(context, true);
           
           go_cam->set_target_height(20.f);
+          go_cam->set_target_speed(10.f);
           
           if(first_load_level)
           {
@@ -181,6 +182,7 @@ main()
           Core::Input::mouse_set_capture(context, false);
           
           go_cam->set_target_height(50.f);
+          go_cam->set_target_speed(2.f);
         
           game_over_init(context, world);
           objs.send_event(Event_id::destroy_all_enemies);

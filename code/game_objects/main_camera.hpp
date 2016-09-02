@@ -24,6 +24,7 @@ public:
   void              on_update(const float dt, World_objects &world_objs) override;
   
   void              set_target_height(const float height);
+  void              set_target_speed(const float speed);
 
 public:
 
@@ -38,6 +39,7 @@ private:
 
   math::vec3        m_target_point;
   float             m_target_height = 20.f;
+  float             m_target_speed = 10.f;
   
 };
 

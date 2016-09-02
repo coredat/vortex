@@ -111,6 +111,13 @@ Main_camera::set_target_height(const float height)
 
 
 void
+Main_camera::set_target_speed(const float speed)
+{
+  m_target_speed = speed;
+}
+
+
+void
 Main_camera::on_update(const float dt, World_objects &world_objs)
 {
   Core::Entity_ref ref = get_entity();
@@ -180,7 +187,7 @@ Main_camera::on_update(const float dt, World_objects &world_objs)
   math::vec3 new_pos = math::vec3_zero();
   {
     constexpr float player_influence  = 1.f;
-    constexpr float camera_move_speed = 10.f;
+    const float camera_move_speed = m_target_speed;
     
     const math::vec3 scaled_accum = math::vec3_scale(avg_accum, player_influence);
     m_target_point = math::vec3_add(scaled_accum, pullback_distance);
