@@ -240,7 +240,7 @@ Player_ui::on_update(const float dt, World_objects &objs)
     
     Core::Transform avatar_trans = m_avatar.get_transform();
     avatar_trans.set_position(point);
-    avatar_trans.set_scale(math::vec3_init(1.2f));
+    avatar_trans.set_scale(math::vec3_init(0.7f));
     
     m_avatar.set_transform(avatar_trans);
   }

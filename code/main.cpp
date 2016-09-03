@@ -64,7 +64,7 @@ main()
   context_setup.vsync = true;
   context_setup.high_dpi_support = false;
 
-  Core::Context context(1200, 720, false, "Vortex Defender", context_setup);
+  Core::Context context(800, 480, false, "Vortex Defender", context_setup);
   Core::World   world(context, Core::World_setup{});
   
   // ** Start Game ** //
