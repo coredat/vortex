@@ -25,10 +25,17 @@ public:
                              const Core::Texture &hot_texture,
                              const Core::Texture &cold_texture);
   
-  bool                was_touched();
+  bool                was_touched(Core::Camera &camera,
+                                  Core::World &world,
+                                  Core::Context &ctx);
+  
+  
   bool                is_over(Core::Camera &camera,
                               Core::World &world,
                               Core::Context &ctx);
+  
+  bool                is_valid() const;
+                      operator bool() const;
   
 private:
 

@@ -9,7 +9,9 @@
 #include <core/transform/transform_utils.hpp>
 #include <core/camera/camera.hpp>
 #include <core/camera/camera_utils.hpp>
+#include <core/input/buttons.hpp>
 #include <core/common/ray.hpp>
+#include <core/input/controller.hpp>
 #include <core/model/model.hpp>
 #include <core/world/world.hpp>
 #include <core/input/input.hpp>
@@ -104,8 +106,23 @@ Button::Button(Core::World &world,
 
 
 bool
-Button::was_touched()
+Button::was_touched(Core::Camera &camera,
+                    Core::World &world,
+                    Core::Context &ctx)
+
 {
+  if(!m_entity)
+  {
+    return false;
+  }
+
+  Core::Controller p1_controller(ctx, 0);
+  
+  if(p1_controller.is_button_down(Core::Gamepad_button::button_start | Core::Gamepad_button::button_a) && is_over(camera, world, ctx))
+  {
+    return true;
+  }
+  
   return false;
 }
 
@@ -115,6 +132,10 @@ Button::is_over(Core::Camera &camera,
                 Core::World &world,
                 Core::Context &ctx)
 {
+  if(!m_entity)
+  {
+    return false;
+  }
 
   const Core::Ray        viewport_ray    = Core::Camera_utils::get_ray_from_viewport(camera, Core::Input::mouse_get_coordinates(ctx));
   const Core::Entity_ref entity_from_ray = world.find_entity_by_ray(viewport_ray);
@@ -133,6 +154,19 @@ Button::is_over(Core::Camera &camera,
   m_entity.set_renderer(cold_renderer);
   
   return false;
+}
+
+
+bool
+Button::is_valid() const
+{
+  return m_entity.is_valid();
+}
+
+
+Button::operator bool() const
+{
+  return is_valid();
 }
 
 

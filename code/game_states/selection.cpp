@@ -152,20 +152,6 @@ selection_init(Core::Context &ctx,
       sel.set_renderer(mat_renderer);
     }
   }
-  
-  // Continue button
-  {
-    const Core::Texture hot_texture(Core::Directory::volatile_resource_path("assets/textures/button_continue_hot.png"));
-    const Core::Texture cold_texture(Core::Directory::volatile_resource_path("assets/textures/button_continue_cold.png"));
-    
-    continue_button = Core::Lib::Button(world,
-                                        ctx,
-                                        "continue",
-                                        math::vec2_init(ctx.get_width() / 2, (ctx.get_height() / 6) * 5),
-                                        cam,
-                                        hot_texture,
-                                        cold_texture);
-  }
 }
 
 
@@ -189,18 +175,22 @@ selection_update(Core::Context &ctx,
     Core::Controller(ctx, 3),
   };
   
-  
-  if(continue_button.is_over(gui_cam, world, ctx))
-  {
-    int i = 0;
-  }
-  
   /*
     If p1 hits start we start.
   */
   for(const auto &ctrl : controllers)
   {
-    if(ctrl.is_button_up_on_frame(Core::Gamepad_button::button_start) && players_signed_in > 0)
+    bool button_pushed = false;
+  
+    if(continue_button.is_over(gui_cam, world, ctx))
+    {
+      if(continue_button.was_touched(gui_cam, world, ctx))
+      {
+        button_pushed = true;
+      }
+    }
+  
+    if((button_pushed || ctrl.is_button_up_on_frame(Core::Gamepad_button::button_start)) && players_signed_in > 0)
     {
       // Reset selection screen
       {
@@ -215,7 +205,7 @@ selection_update(Core::Context &ctx,
       // Remove player selection screens
       // And spawn the player.
       {
-        start_screen.destroy();
+//        start_screen.destroy();
       
         for(uint32_t i = 0; i < 4; ++i)
         {
@@ -234,6 +224,10 @@ selection_update(Core::Context &ctx,
           }
         }
       }
+      
+      // Reset button
+      continue_button = Core::Lib::Button();
+      
       return Game_state::game_mode;
     }
   }
@@ -262,14 +256,21 @@ selection_update(Core::Context &ctx,
     if(controllers[i].is_button_down_on_frame(Core::Gamepad_button::button_a))
     {
       // Start screen
-      if(!start_screen)
+      if(!continue_button)
       {
-        start_screen = Core::Entity(world);
-        start_screen.set_name("Selection[start]");
-        start_screen.set_tags(Object_tags::gui_cam);
-        
-        const Core::Material_renderer mat_renderer(start_game_material, plane);
-        start_screen.set_renderer(mat_renderer);
+        // Continue button
+        {
+          const Core::Texture hot_texture(Core::Directory::volatile_resource_path("assets/textures/button_continue_hot.png"));
+          const Core::Texture cold_texture(Core::Directory::volatile_resource_path("assets/textures/button_continue_cold.png"));
+          
+          continue_button = Core::Lib::Button(world,
+                                              ctx,
+                                              "continue",
+                                              math::vec2_init(ctx.get_width() / 2, (ctx.get_height() / 6) * 5),
+                                              gui_cam,
+                                              hot_texture,
+                                              cold_texture);
+        }
       }
     
       current_player_selection[i] = (current_player_selection[i] + 1) % number_of_materials;
