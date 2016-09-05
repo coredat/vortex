@@ -161,7 +161,7 @@ selection_init(Core::Context &ctx,
     continue_button = Core::Lib::Button(world,
                                         ctx,
                                         "continue",
-                                        math::vec2_init(ctx.get_width() / 2, (ctx.get_height() / 3) * 2),
+                                        math::vec2_init(ctx.get_width() / 2, (ctx.get_height() / 6) * 5),
                                         cam,
                                         hot_texture,
                                         cold_texture);
@@ -188,6 +188,12 @@ selection_update(Core::Context &ctx,
     Core::Controller(ctx, 2),
     Core::Controller(ctx, 3),
   };
+  
+  
+  if(continue_button.is_over(gui_cam, world, ctx))
+  {
+    int i = 0;
+  }
   
   /*
     If p1 hits start we start.

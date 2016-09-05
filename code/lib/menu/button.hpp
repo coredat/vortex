@@ -26,7 +26,9 @@ public:
                              const Core::Texture &cold_texture);
   
   bool                was_touched();
-  bool                is_over();
+  bool                is_over(Core::Camera &camera,
+                              Core::World &world,
+                              Core::Context &ctx);
   
 private:
 

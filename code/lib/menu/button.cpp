@@ -2,14 +2,23 @@
 #include <common/object_tags.hpp>
 #include <common/screen_cast.hpp>
 #include <core/world/world.hpp>
+#include <core/physics/collider.hpp>
+#include <core/physics/box_collider.hpp>
+#include <core/physics/rigidbody.hpp>
 #include <core/transform/transform.hpp>
 #include <core/transform/transform_utils.hpp>
 #include <core/camera/camera.hpp>
+#include <core/camera/camera_utils.hpp>
+#include <core/common/ray.hpp>
 #include <core/model/model.hpp>
+#include <core/world/world.hpp>
+#include <core/input/input.hpp>
 #include <core/resources/texture.hpp>
+#include <core/entity/entity_ref.hpp>
 #include <core/resources/shader.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/renderer/renderer.hpp>
+#include <core/input/axis.hpp>
 #include <core/common/directory.hpp>
 #include <utilities/assert.hpp>
 
@@ -52,8 +61,8 @@ Button::Button(Core::World &world,
     strcat(material_name, "_hot");
     
     Core::Material hot_material(button_name);
-    cold_material.set_shader(fb_shader);
-    cold_material.set_map_01(hot_texture);
+    hot_material.set_shader(fb_shader);
+    hot_material.set_map_01(hot_texture);
     
     m_hot_material = hot_material;
   }
@@ -66,7 +75,7 @@ Button::Button(Core::World &world,
     m_entity.set_name("[button]");
     m_entity.set_tags(Object_tags::gui_cam);
     
-    const Core::Model model(Core::Directory::volatile_resource_path("assets/models/unit_plane.obj"));
+    const Core::Model model(Core::Directory::volatile_resource_path("assets/models/unit_cube.obj"));
     ASSERT(model);
     
     const Core::Material_renderer mat_renderer(m_cold_material, model);
@@ -75,15 +84,21 @@ Button::Button(Core::World &world,
     m_entity.set_renderer(mat_renderer);
     
     // Transform
-    const math::vec3 pos   = Screen_cast::intersect_screen_plane(camera, math::get_x(position), math::get_y(position));
-    const math::quat rot   = math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau());
-    const math::vec3 scale = math::vec3_init(cold_texture.get_width() * 0.2f, 1.f, cold_texture.get_height() * 0.2f);
+    const math::vec3 pos   = Core::Camera_utils::get_world_position_on_nearplane(camera, Core::Axis{math::get_x(position), math::get_y(position)});
+    const math::vec3 scale = math::vec3_init(cold_texture.get_width() * 0.2f, cold_texture.get_height() * 0.2f, 0);
 
     m_entity.set_transform(Core::Transform(pos,
                                            scale,
-                                           rot));
+                                           math::quat_init()));
     
+    Core::Box_collider collider(0.5f, 0.5f, 0.5f);
+    Core::Rigidbody rb;
     
+    rb.set_collider(collider);
+    rb.set_mass(0);
+    rb.set_is_trigger(true);
+    
+    m_entity.set_rigidbody(rb);
   }
 }
 
@@ -96,8 +111,27 @@ Button::was_touched()
 
 
 bool
-Button::is_over()
+Button::is_over(Core::Camera &camera,
+                Core::World &world,
+                Core::Context &ctx)
 {
+
+  const Core::Ray        viewport_ray    = Core::Camera_utils::get_ray_from_viewport(camera, Core::Input::mouse_get_coordinates(ctx));
+  const Core::Entity_ref entity_from_ray = world.find_entity_by_ray(viewport_ray);
+  
+  const Core::Material_renderer renderer = m_entity.get_renderer();
+  
+  if(entity_from_ray == m_entity)
+  {
+    const Core::Material_renderer hot_renderer(m_hot_material, renderer.get_model());
+    m_entity.set_renderer(hot_renderer);
+    
+    return true;
+  }
+  
+  const Core::Material_renderer cold_renderer(m_cold_material, renderer.get_model());
+  m_entity.set_renderer(cold_renderer);
+  
   return false;
 }
 

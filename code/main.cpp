@@ -158,7 +158,7 @@ main()
         
           selection_init(context,
                          world,
-                         go_cam->m_world_camera);
+                         go_cam->m_gui_camera);
           break;
         }
         
