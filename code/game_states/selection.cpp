@@ -3,6 +3,7 @@
 #include <game_objects/player.hpp>
 #include <game_objects/player_ship.hpp>
 #include <game_objects/player_ui.hpp>
+#include <lib/menu/button.hpp>
 #include <common/object_tags.hpp>
 #include <common/screen_cast.hpp>
 #include <common/game_state.hpp>
@@ -47,6 +48,8 @@ namespace
   Core::Entity        selection_screens[max_number_of_players];
   Core::Entity        signed_in_selections[max_number_of_players];
   Core::Entity        start_screen;
+  
+  Core::Lib::Button   continue_button;
 }
 
 
@@ -148,6 +151,20 @@ selection_init(Core::Context &ctx,
       const Core::Material_renderer mat_renderer(no_selection_material, plane);
       sel.set_renderer(mat_renderer);
     }
+  }
+  
+  // Continue button
+  {
+    const Core::Texture hot_texture(Core::Directory::volatile_resource_path("assets/textures/button_continue_hot.png"));
+    const Core::Texture cold_texture(Core::Directory::volatile_resource_path("assets/textures/button_continue_cold.png"));
+    
+    continue_button = Core::Lib::Button(world,
+                                        ctx,
+                                        "continue",
+                                        math::vec2_init(ctx.get_width() / 2, (ctx.get_height() / 3) * 2),
+                                        cam,
+                                        hot_texture,
+                                        cold_texture);
   }
 }
 

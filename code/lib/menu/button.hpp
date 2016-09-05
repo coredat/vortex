@@ -15,9 +15,13 @@ class Button
 {
 public:
 
+  explicit            Button();
+
   explicit            Button(Core::World &world,
                              Core::Context &ctx,
-                             const math::vec3 position,
+                             const char *button_name,
+                             const math::vec2 position,
+                             const Core::Camera &camera,
                              const Core::Texture &hot_texture,
                              const Core::Texture &cold_texture);
   
