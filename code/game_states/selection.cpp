@@ -47,7 +47,6 @@ namespace
   
   Core::Entity        selection_screens[max_number_of_players];
   Core::Entity        signed_in_selections[max_number_of_players];
-  Core::Entity        start_screen;
   
   Core::Lib::Button   continue_button;
 }
@@ -205,8 +204,6 @@ selection_update(Core::Context &ctx,
       // Remove player selection screens
       // And spawn the player.
       {
-//        start_screen.destroy();
-      
         for(uint32_t i = 0; i < 4; ++i)
         {
           auto &sel = signed_in_selections[i];
@@ -313,20 +310,6 @@ selection_update(Core::Context &ctx,
       sel_trans.set_position(Screen_cast::intersect_screen_plane(cam, x_offset, y_offset));
       
       signed_in_selections[i].set_transform(sel_trans);
-    }
-  }
-  
-  /*
-    Update
-  */
-  {
-    if(start_screen)
-    {
-      start_screen.set_transform(Core::Transform(
-        math::vec3_init(0, math::to_float(ctx.get_height()) / -3.f, 0),
-        math::vec3_init(128.f, 1.f, 64.f),
-        math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau())
-      ));
     }
   }
   
