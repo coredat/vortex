@@ -91,7 +91,6 @@ selection_init(Core::Context &ctx,
     start_game_material = Core::Material("press-start");
     start_game_material.set_shader(shader);
     start_game_material.set_map_01(press_start_texture);
-    
   }
 
   // Load materials
@@ -174,21 +173,24 @@ selection_update(Core::Context &ctx,
     Core::Controller(ctx, 3),
   };
   
+  bool button_pushed = false;
+  bool button_hovered = false;
+  
+  if(continue_button.is_over(gui_cam, world, ctx))
+  {
+    button_hovered = true;
+    
+    if(continue_button.was_touched(gui_cam, world, ctx))
+    {
+      button_pushed = true;
+    }
+  }
+  
   /*
     If p1 hits start we start.
   */
   for(const auto &ctrl : controllers)
   {
-    bool button_pushed = false;
-  
-    if(continue_button.is_over(gui_cam, world, ctx))
-    {
-      if(continue_button.was_touched(gui_cam, world, ctx))
-      {
-        button_pushed = true;
-      }
-    }
-  
     if((button_pushed || ctrl.is_button_up_on_frame(Core::Gamepad_button::button_start)) && players_signed_in > 0)
     {
       // Reset selection screen
@@ -268,6 +270,11 @@ selection_update(Core::Context &ctx,
                                               hot_texture,
                                               cold_texture);
         }
+      }
+      
+      if(button_hovered && i == 0)
+      {
+        continue;
       }
     
       current_player_selection[i] = (current_player_selection[i] + 1) % number_of_materials;

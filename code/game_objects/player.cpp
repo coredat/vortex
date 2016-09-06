@@ -41,7 +41,12 @@ Player::on_message(const uint32_t id, void *data)
       if(m_ui_ref)
       {
         Player_ui *ui = reinterpret_cast<Player_ui*>((void*)m_ui_ref.get_user_data());
-        ui->set_score(++m_score);
+        
+        // A message on the same frame might have destroyed the player's ui.
+        if(ui)
+        {
+          ui->set_score(++m_score);
+        }
       }
     }
   }
@@ -53,6 +58,8 @@ Player::on_message(const uint32_t id, void *data)
       if(m_ui_ref)
       {
         Player_ui *ui = reinterpret_cast<Player_ui*>((void*)m_ui_ref.get_user_data());
+        assert(ui);
+        
         ui->destroy();
       }
     }

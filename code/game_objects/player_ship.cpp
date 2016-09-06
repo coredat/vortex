@@ -65,7 +65,7 @@ Player_ship::Player_ship(Core::World &world,
   const char *green_texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_green_512.png");
   Core::Texture texture(green_texture_path);
 
-  Core::Box_collider collider = Core::Box_collider_utils::create_with_full_extents(math::vec3_one());
+  Core::Box_collider collider(0.7f, 0.7f, 0.7f);
 
   Core::Rigidbody rb;
   rb.set_collider(collider);

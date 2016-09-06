@@ -118,7 +118,9 @@ Button::was_touched(Core::Camera &camera,
 
   Core::Controller p1_controller(ctx, 0);
   
-  if(p1_controller.is_button_down(Core::Gamepad_button::button_start | Core::Gamepad_button::button_a) && is_over(camera, world, ctx))
+  const uint32_t buttons = Core::Gamepad_button::button_start | Core::Gamepad_button::button_a;
+  
+  if(p1_controller.is_button_up_on_frame(buttons) && is_over(camera, world, ctx))
   {
     return true;
   }
