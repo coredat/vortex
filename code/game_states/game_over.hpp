@@ -16,6 +16,7 @@ Game_state
 game_over_update(Core::Context &context,
                  Core::World &world,
                  Core::Camera &camera,
+                 Core::Camera &gui_cam,
                  Game_object::Player *players[],
                  const uint32_t player_count,
                  Game_object::World_objects &objs,                               

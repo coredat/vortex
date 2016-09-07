@@ -1,6 +1,7 @@
 #include <game_states/game_over.hpp>
 #include <common/object_tags.hpp>
 #include <common/game_state.hpp>
+#include <lib/menu/button.hpp>
 #include <common/screen_cast.hpp>
 #include <game_objects/explosion.hpp>
 #include <game_objects/enemy.hpp>
@@ -19,10 +20,11 @@
 namespace
 {
   Core::Entity player_entities[4];
-  Core::Entity continue_screen;
   Core::Model plane;
   Core::Material continue_material;
   bool created_screen = false;
+  
+  Core::Lib::Button continue_button;
 }
 
 
@@ -37,6 +39,7 @@ Game_state
 game_over_update(Core::Context &ctx,
                  Core::World &world,
                  Core::Camera &cam,
+                 Core::Camera &gui_cam,
                  Game_object::Player *players[],
                  const uint32_t player_count,
                  Game_object::World_objects &objs,
@@ -77,17 +80,37 @@ game_over_update(Core::Context &ctx,
       continue_material.set_map_01(continue_texture);
     }
     
-    if(!continue_screen)
+    if(!continue_button)
     {
-      continue_screen = Core::Entity(world);
-      continue_screen.set_name("screen_game_over[start]");
-      continue_screen.set_tags(Object_tags::gui_cam);
-      
-      const Core::Material_renderer mat_renderer(continue_material, plane);
-      continue_screen.set_renderer(mat_renderer);
+      // Continue button
+      {
+        const Core::Texture hot_texture(Core::Directory::volatile_resource_path("assets/textures/button_continue_hot.png"));
+        const Core::Texture cold_texture(Core::Directory::volatile_resource_path("assets/textures/button_continue_cold.png"));
+        
+        continue_button = Core::Lib::Button(world,
+                                            ctx,
+                                            "continue2",
+                                            math::vec2_init(ctx.get_width() / 2, (ctx.get_height() / 6) * 5),
+                                            gui_cam,
+                                            hot_texture,
+                                            cold_texture);
+      }
     }
   }
-
+  
+  bool button_pushed = false;
+  bool button_hovered = false;
+  
+  if(continue_button.is_over(gui_cam, world, ctx))
+  {
+    button_hovered = true;
+    
+    if(continue_button.was_touched(gui_cam, world, ctx))
+    {
+      button_pushed = true;
+    }
+  }
+  
   /*
     Result screens
   */
@@ -117,12 +140,6 @@ game_over_update(Core::Context &ctx,
         
         pl.set_transform(trans);
       }
-      
-      continue_screen.set_transform(Core::Transform(
-        math::vec3_init(0, math::to_float(ctx.get_height()) / -3.f, 0),
-        math::vec3_init(128.f, 1.f, 64.f),
-        math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau())
-      ));
     }
   }
 
@@ -137,10 +154,11 @@ game_over_update(Core::Context &ctx,
   if(controller_1.is_button_down_on_frame(Core::Gamepad_button::button_start) ||
      controller_2.is_button_down_on_frame(Core::Gamepad_button::button_start) ||
      controller_3.is_button_down_on_frame(Core::Gamepad_button::button_start) ||
-     controller_4.is_button_down_on_frame(Core::Gamepad_button::button_start))
+     controller_4.is_button_down_on_frame(Core::Gamepad_button::button_start) ||
+     button_pushed)
   {
     created_screen = false;
-    continue_screen.destroy();
+    continue_button = Core::Lib::Button();
     
     for(auto &pl : player_entities)
     {
@@ -159,7 +177,7 @@ game_over_update(Core::Context &ctx,
      controller_4.is_button_down_on_frame(Core::Gamepad_button::button_back))
   {
     created_screen = false;
-    continue_screen.destroy();
+    continue_button = Core::Lib::Button();
     
     for(auto &pl : player_entities)
     {
