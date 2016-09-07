@@ -141,15 +141,40 @@ Player_ui::Player_ui(Core::World &world,
   m_avatar = Core::Entity(world);
   m_avatar.set_tags(Object_tags::world_cam);
   
-//  const math::quat rot_side = math::quat_init_with_axis_angle(0, 1, 0, -math::quart_tau() * 1.4f);
-//  const math::quat rot_down = math::quat_init_with_axis_angle(1, 0, 0, 0);
-//  const math::quat rot = math::quat_multiply(rot_side, rot_down);
-//  
-//  
-//  Core::Transform trans = m_avatar.get_transform();
-//  trans.set_rotation(rot);
-//  
-//  m_avatar.set_transform(trans);
+  // Dumb copy and paste
+  // to stop flicker, Phil this code is dying!
+  {
+    Core::Entity_ref *search_array = nullptr;
+    size_t size_of_find = 0;
+    get_world().find_entities_by_tag(Object_tags::camera, &search_array, &size_of_find);
+    assert(size_of_find && search_array);
+    
+    
+    Main_camera *camera = reinterpret_cast<Main_camera*>((void*)search_array[0].get_user_data());
+    assert(camera);
+    
+    const Core::Ray ray2 = Core::Camera_utils::get_ray_from_viewport(camera->m_world_camera, Core::Axis{0,0});
+    const Core::Plane plane = Core::Camera_utils::get_near_plane(camera->m_world_camera);
+    
+//    const Core::Plane plane(math::vec3_init(0, 0, 10), math::vec3_scale(camera->m_world_camera.get_attached_entity().get_transform().get_forward(), -1.f));
+    
+    float dist = 0;
+    const bool intersects = Core::Plane_utils::ray_intersects_with_plane(plane, ray2, dist);
+    assert(intersects);
+    
+    const Core::Transform cam_trans2 = camera->m_world_camera.get_attached_entity().get_transform();
+    
+    const math::vec3 scale_fwd2 = math::vec3_scale(cam_trans2.get_forward(), dist * 2);
+    const math::vec3 pos2  = math::vec3_add(ray2.get_origin(), scale_fwd2);
+    
+    auto point = Screen_cast::intersect_screen_plane(camera->m_world_camera, 100, 100);
+    
+    Core::Transform avatar_trans = m_avatar.get_transform();
+    avatar_trans.set_position(point);
+    avatar_trans.set_scale(math::vec3_init(0.7f));
+    
+    m_avatar.set_transform(avatar_trans);
+  }
 }
 
 
