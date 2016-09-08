@@ -1,3 +1,5 @@
+#include <game_states/settings.hpp>
+#include <game_states/about.hpp>
 #include <game_states/title_screen.hpp>
 #include <common/game_state.hpp>
 #include <common/object_tags.hpp>
@@ -33,17 +35,15 @@
 #include <lib/menu/menu.hpp>
 #include <assert.h>
 
-
 namespace
 {
   Core::Lib::Menu   menu;
 }
 
-
 void
-title_screen_init(Core::Context &ctx,
-                  Core::World &world,
-                  Core::Camera &camera)
+settings_init(Core::Context &context,
+              Core::World &world,
+              Core::Camera &camera)
 {
   // Button
   {
@@ -107,10 +107,10 @@ title_screen_init(Core::Context &ctx,
 
     // Quit Button
 
-    Core::Texture quit_cold(Core::Directory::volatile_resource_path("assets/textures/button_quit_cold.png"));
+    Core::Texture quit_cold(Core::Directory::volatile_resource_path("assets/textures/button_back_cold.png"));
     assert(quit_cold);
     
-    Core::Texture quit_hot(Core::Directory::volatile_resource_path("assets/textures/button_quit_hot.png"));
+    Core::Texture quit_hot(Core::Directory::volatile_resource_path("assets/textures/button_back_hot.png"));
     assert(quit_hot);
     
     Core::Material cold_quit_button("[button]quit_cold");
@@ -122,20 +122,21 @@ title_screen_init(Core::Context &ctx,
     hot_quit_button.set_map_01(quit_hot);
     
     menu.set_home(math::vec2_init(50, 50), world, camera, title_mat);
-    menu.add_button("button_start_game", world, hot_start_button, cold_start_button);
-    menu.add_button("button_settings", world, hot_settings_button, cold_settings_button);
-    menu.add_button("button_about", world, hot_about_button, cold_about_button);
-    menu.add_button("button_quit", world, hot_quit_button, cold_quit_button);
+//    menu.add_button("button_start_game", world, hot_start_button, cold_start_button);
+//    menu.add_button("button_settings", world, hot_settings_button, cold_settings_button);
+//    menu.add_button("button_about", world, hot_about_button, cold_about_button);
+    menu.add_button("button_back", world, hot_quit_button, cold_quit_button);
   }
+
 }
 
 
+
 Game_state
-title_screen_update(Core::Context &ctx,
-                    Core::World &world,
-                    Core::Camera &camera,
-                    Game_object::World_objects &objects,
-                    const float dt)
+settings_update(Core::Context &ctx,
+                Core::World &world,
+                Core::Camera &camera,
+                Game_object::World_objects &objs)
 {
   constexpr uint32_t number_of_controllers = 4;
   
@@ -177,23 +178,14 @@ title_screen_update(Core::Context &ctx,
     }
   }
   
-  if(menu.current_button_selected() && strcmp(menu.current_button_selected().get_name(), "button_quit") == 0)
+  if(menu.current_button_selected() && strcmp(menu.current_button_selected().get_name(), "button_back") == 0)
   {
     if(controllers[0].is_button_up_on_frame(Core::Gamepad_button::button_a))
     {
       menu.clear();
-      return Game_state::quit;
-    }
-  }
-  
-  for(const auto &ctrl : controllers)
-  {
-    if(ctrl.is_button_up_on_frame(Core::Gamepad_button::button_start))
-    {
-      menu.clear();
-      return Game_state::selection;
+      return Game_state::title_screen;
     }
   }
 
-  return Game_state::title_screen;
+  return Game_state::settings;
 }

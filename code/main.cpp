@@ -18,6 +18,8 @@
 #include <game_states/selection.hpp>
 #include <game_states/game_over.hpp>
 #include <game_states/title_screen.hpp>
+#include <game_states/about.hpp>
+#include <game_states/settings.hpp>
 
 // Common
 #include <common/event_ids.hpp>
@@ -145,6 +147,22 @@ main()
                             go_cam->m_gui_camera);
           break;
         }
+        
+        case(Game_state::settings):
+        {
+          settings_init(context,
+                        world,
+                        go_cam->m_gui_camera);
+          break;
+        }
+        
+        case(Game_state::about):
+        {
+          about_init(context,
+                     world,
+                     go_cam->m_gui_camera);
+          break;
+        }
 
         case(Game_state::selection):
         {
@@ -229,6 +247,32 @@ main()
                                          objs,
                                          dt);
         
+        break;
+      }
+      
+      /*
+        Settings
+      */
+      case(Game_state::about):
+      {
+        next_state = about_update(context,
+                                  world,
+                                  go_cam->m_gui_camera,
+                                  objs);
+      
+        break;
+      }
+      
+      /*
+        About
+      */
+      case(Game_state::settings):
+      {
+        next_state = settings_update(context,
+                                     world,
+                                     go_cam->m_gui_camera,
+                                     objs);
+      
         break;
       }
 

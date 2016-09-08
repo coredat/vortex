@@ -7,6 +7,8 @@ enum class Game_state
   null,
   loading,
   title_screen,
+  settings,
+  about,
   selection,
   game_mode,
   game_over,
