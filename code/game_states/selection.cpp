@@ -232,7 +232,7 @@ selection_update(Core::Context &ctx,
   }
   
   /*
-    Add players as the push their buttons.
+    Selection
   */
   for(uint32_t i = 0; i < number_of_controllers; ++i)
   {
@@ -343,6 +343,37 @@ selection_update(Core::Context &ctx,
         
         sel->set_transform(trans);
       }
+    }
+  }
+  
+  
+  /*
+    Go back a screen!
+  */
+  for(uint32_t i = 0; i < number_of_controllers; ++i)
+  {
+    if(controllers[i].is_button_up_on_frame(Core::Gamepad_button::button_back | Core::Gamepad_button::button_b))
+    {
+      for(uint32_t i = 0; i < 4; ++i)
+      {
+        auto &sel = signed_in_selections[i];
+        
+        if(sel)
+        {
+          sel.destroy();
+        }
+      }
+      
+      for(auto &sel : selection_screens)
+      {
+        // Currently the best way to hide an entity is just
+        // to create a new one :D
+        sel.destroy();
+      }
+      
+      continue_button = Core::Lib::Button();
+      
+      return Game_state::title_screen;
     }
   }
   

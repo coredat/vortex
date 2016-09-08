@@ -57,6 +57,8 @@ title_screen_init(Core::Context &ctx,
     title_mat.set_shader(shader);
     title_mat.set_map_01(title_texture);
     
+    // Start Button
+    
     Core::Texture start_game_cold(Core::Directory::volatile_resource_path("assets/textures/button_start_game_cold.png"));
     assert(start_game_cold);
     
@@ -71,11 +73,59 @@ title_screen_init(Core::Context &ctx,
     hot_start_button.set_shader(shader);
     hot_start_button.set_map_01(start_game_hot);
     
+    // Settings Button
+
+    Core::Texture settings_cold(Core::Directory::volatile_resource_path("assets/textures/button_options_cold.png"));
+    assert(settings_cold);
+    
+    Core::Texture settings_hot(Core::Directory::volatile_resource_path("assets/textures/button_options_hot.png"));
+    assert(settings_hot);
+    
+    Core::Material cold_settings_button("[button]settings_cold");
+    cold_settings_button.set_shader(shader);
+    cold_settings_button.set_map_01(settings_cold);
+
+    Core::Material hot_settings_button("[button]settings_hot");
+    hot_settings_button.set_shader(shader);
+    hot_settings_button.set_map_01(settings_hot);
+
+    // About Button
+
+    Core::Texture about_cold(Core::Directory::volatile_resource_path("assets/textures/button_about_cold.png"));
+    assert(about_cold);
+    
+    Core::Texture about_hot(Core::Directory::volatile_resource_path("assets/textures/button_about_hot.png"));
+    assert(about_hot);
+    
+    Core::Material cold_about_button("[button]about_cold");
+    cold_about_button.set_shader(shader);
+    cold_about_button.set_map_01(about_cold);
+
+    Core::Material hot_about_button("[button]about_hot");
+    hot_about_button.set_shader(shader);
+    hot_about_button.set_map_01(about_hot);
+
+    // Quit Button
+
+    Core::Texture quit_cold(Core::Directory::volatile_resource_path("assets/textures/button_quit_cold.png"));
+    assert(quit_cold);
+    
+    Core::Texture quit_hot(Core::Directory::volatile_resource_path("assets/textures/button_quit_hot.png"));
+    assert(quit_hot);
+    
+    Core::Material cold_quit_button("[button]quit_cold");
+    cold_quit_button.set_shader(shader);
+    cold_quit_button.set_map_01(quit_cold);
+
+    Core::Material hot_quit_button("[button]quit_hot");
+    hot_quit_button.set_shader(shader);
+    hot_quit_button.set_map_01(quit_hot);
+    
     menu.set_home(math::vec2_init(50, 50), world, camera, title_mat);
     menu.add_button("button_start_game", world, hot_start_button, cold_start_button);
-    menu.add_button("button_start_game", world, hot_start_button, cold_start_button);
-    menu.add_button("button_start_game", world, hot_start_button, cold_start_button);
-    menu.add_button("button_start_game", world, hot_start_button, cold_start_button);
+    menu.add_button("button_start_game", world, hot_settings_button, cold_settings_button);
+    menu.add_button("button_start_game", world, hot_about_button, cold_about_button);
+    menu.add_button("button_quit", world, hot_quit_button, cold_quit_button);
   }
 }
 
@@ -106,6 +156,15 @@ title_screen_update(Core::Context &ctx,
     {
       menu.clear();
       return Game_state::selection;
+    }
+  }
+  
+  if(menu.current_button_selected() && strcmp(menu.current_button_selected().get_name(), "button_quit") == 0)
+  {
+    if(controllers[0].is_button_down(Core::Gamepad_button::button_a))
+    {
+      menu.clear();
+      return Game_state::quit;
     }
   }
   

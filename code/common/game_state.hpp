@@ -10,6 +10,7 @@ enum class Game_state
   selection,
   game_mode,
   game_over,
+  quit,
 };
 
 

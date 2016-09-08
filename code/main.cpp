@@ -188,6 +188,11 @@ main()
           objs.send_event(Event_id::destroy_all_enemies);
           break;
           
+        case(Game_state::quit):
+          context.close();
+          return 0;
+          break;
+          
         default:
           UNREACHABLE;
       }
@@ -284,6 +289,12 @@ main()
                                       dt);
         break;
       }
+      
+                
+      case(Game_state::quit):
+        context.close();
+        return 0;
+        break;
       
       default:
         UNREACHABLE;
