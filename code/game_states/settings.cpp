@@ -35,10 +35,12 @@
 #include <lib/menu/menu.hpp>
 #include <assert.h>
 
+
 namespace
 {
   Core::Lib::Menu   menu;
 }
+
 
 void
 settings_init(Core::Context &context,
@@ -50,7 +52,7 @@ settings_init(Core::Context &context,
     Core::Shader shader(Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl"));
     assert(shader);
     
-    Core::Texture title_texture(Core::Directory::volatile_resource_path("assets/textures/title.png"));
+    Core::Texture title_texture(Core::Directory::volatile_resource_path("assets/textures/button_options_cold.png"));
     assert(title_texture);
     
     Core::Material title_mat("[menu]title");
@@ -129,7 +131,6 @@ settings_init(Core::Context &context,
   }
 
 }
-
 
 
 Game_state
