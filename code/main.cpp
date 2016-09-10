@@ -140,6 +140,7 @@ main()
           if(first_load_title)
           {
             first_load_title = false;
+            objs.push_object(new Game_object::Horizon(world));
           }
         
           title_screen_init(context,
@@ -171,7 +172,7 @@ main()
           if(first_load_selection)
           {
             first_load_selection = false;
-            objs.push_object(new Game_object::Horizon(world));
+
           }
         
           selection_init(context,
