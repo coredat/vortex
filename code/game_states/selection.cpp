@@ -295,22 +295,21 @@ selection_update(Core::Context &ctx,
   {
     auto &sel = selection_screens[i];
     
-    const float horz_quart_screen = math::to_float(ctx.get_width()) / 6.f;
-    const float horz_margin = horz_quart_screen * 0.5f;
-    const float horz_half_screen = math::to_float(ctx.get_width()) / 3.f;
-    const float horz_pos = (i * horz_quart_screen) - horz_half_screen + horz_margin;
+    const float screen_div = math::to_float(ctx.get_width()) / 5.f;
+    const float x_offset   = (screen_div + (screen_div * i)) - (ctx.get_width() / 2.f);
+    const float y_offset   = math::to_float(ctx.get_height() >> 1);
 
     sel.set_transform(Core::Transform(
-      math::vec3_init(horz_pos, 0, 0),
+      math::vec3_init(x_offset, 0, 0),
       math::vec3_init(128.f, 1.f, 128.f),
       math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau())
     ));
 
     if(signed_in_selections[i])
     {
-      const float quart_screen = math::to_float(ctx.get_width() >> 2);
-      const float x_offset     = quart_screen + (quart_screen * i);
-      const float y_offset     = math::to_float(ctx.get_height() >> 1);
+      const float screen_div = math::to_float(ctx.get_width()) / 5.f;
+      const float x_offset   = screen_div + (screen_div * i);
+      const float y_offset   = math::to_float(ctx.get_height() >> 1);
 
       auto sel_trans = selection_screens[i].get_transform();
       sel_trans.set_scale(math::vec3_init(1.f));

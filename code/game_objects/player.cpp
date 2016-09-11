@@ -87,7 +87,7 @@ Player::spawn_ship(Core::Context &ctx)
     Player_ship *ship = new Player_ship(get_world(), ctx, m_controller_id);
     
     const float start_offset = (math::quart_tau() * 0.5f) * 3.f;
-    const float turn = math::quart_tau() * -(m_controller_id - 1);
+    const float turn = math::quart_tau() * -(math::to_float(m_controller_id) - 1.f);
     const float start_pos = start_offset + turn;
     
     ship->set_point_on_circle(start_pos);

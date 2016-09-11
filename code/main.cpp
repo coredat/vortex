@@ -66,7 +66,7 @@ main()
   context_setup.vsync = true;
   context_setup.high_dpi_support = false;
 
-  Core::Context context(800, 480, false, "Vortex Defender", context_setup);
+  Core::Context context(1024, 576, false, "Vortex Defender", context_setup);
   Core::World   world(context, Core::World_setup{});
   
   // ** Start Game ** //
@@ -95,12 +95,7 @@ main()
   
   // Game state
   while(context.is_open())
-  {
-    if(Core::Input::controllers_are_in_use(context))
-    {
-      printf("used\n");
-    }
-  
+  {  
     #ifdef CORE_DEBUG_MENU
     if (ImGui::BeginMainMenuBar())
     {
