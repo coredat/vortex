@@ -36,6 +36,7 @@ public:
   void            set_controller(const uint32_t id);
   
   bool            is_valid() const;
+  void            reset();
   
 private:
 

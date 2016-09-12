@@ -54,6 +54,7 @@ game_over_update(Core::Context &ctx,
       if(players[i]->is_valid())
       {
         players[i]->clear_ui_and_ship();
+        players[i]->reset();
       
         player_entities[i] = Core::Entity(world);
         
@@ -165,6 +166,7 @@ game_over_update(Core::Context &ctx,
       if(pl)
       {
         pl.destroy();
+        pl = Core::Entity();
       }
     }
     
@@ -184,6 +186,7 @@ game_over_update(Core::Context &ctx,
       if(pl)
       {
         pl.destroy();
+        pl = Core::Entity();
       }
     }
     

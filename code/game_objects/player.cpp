@@ -189,4 +189,11 @@ Player::is_valid() const
 }
 
 
+void
+Player::reset()
+{
+  m_controller_id = UINT32_MAX;
+}
+
+
 } // ns
