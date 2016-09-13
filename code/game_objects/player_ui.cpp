@@ -25,8 +25,6 @@ namespace
   Core::Material numbers[10];
   Core::Model model;
   
-  math::vec3 ui_ray_pos;
-  
   float spin = 0.f;
 }
 
@@ -41,6 +39,7 @@ Player_ui::Player_ui(Core::World &world,
                      const Core::Camera &world_cam,
                      const uint32_t controller_id)
 : Game_object(world)
+, m_corner(controller_id - 1)
 {
   const Core::Shader num_shader(Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl"));
 
@@ -111,10 +110,10 @@ Player_ui::Player_ui(Core::World &world,
     math::vec3_init(math::to_float(ctx.get_width()) - margin_x, math::to_float(ctx.get_height()) - margin_y, 0.f),
   };
   
-  auto screen_pos = screen_corners[controller_id - 1];
+  m_screen_pos = screen_corners[m_corner];
   
 //  const math::vec3 position = Screen_cast::intersect_screen_plane(gui_cam, math::get_x(screen_pos), math::get_y(screen_pos));
-  const math::vec3 position = Core::Camera_utils::get_world_position_on_nearplane(gui_cam, Core::Axis{math::get_x(screen_pos), math::get_y(screen_pos)});
+  const math::vec3 position = Core::Camera_utils::get_world_position_on_nearplane(gui_cam, Core::Axis{math::get_x(m_screen_pos), math::get_y(m_screen_pos)});
   const float texture_width = math::to_float(numbers[0].get_map_01().get_width()) * 0.5f;
   
   // Set inital placement of the counters
@@ -167,7 +166,7 @@ Player_ui::Player_ui(Core::World &world,
     const math::vec3 scale_fwd2 = math::vec3_scale(cam_trans2.get_forward(), dist * 2);
     const math::vec3 pos2  = math::vec3_add(ray2.get_origin(), scale_fwd2);
     
-    auto point = Screen_cast::intersect_screen_plane(camera->m_world_camera, 100, 100);
+    auto point = Screen_cast::intersect_screen_plane(camera->m_world_camera, math::get_x(m_screen_pos), math::get_y(m_screen_pos));
     
     Core::Transform avatar_trans = m_avatar.get_transform();
     avatar_trans.set_position(point);
@@ -261,7 +260,7 @@ Player_ui::on_update(const float dt, World_objects &objs)
     const math::vec3 scale_fwd2 = math::vec3_scale(cam_trans2.get_forward(), dist * 2);
     const math::vec3 pos2  = math::vec3_add(ray2.get_origin(), scale_fwd2);
     
-    auto point = Screen_cast::intersect_screen_plane(camera->m_world_camera, 100, 100);
+    auto point = Screen_cast::intersect_screen_plane(camera->m_world_camera, math::get_x(m_screen_pos), math::get_y(m_screen_pos));
     
     Core::Transform avatar_trans = m_avatar.get_transform();
     avatar_trans.set_position(point);

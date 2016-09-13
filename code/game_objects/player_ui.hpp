@@ -40,6 +40,8 @@ public:
   Core::Entity          m_counters[Units::size];
   Core::Entity          m_avatar;
   uint32_t              m_score = 0;
+  uint32_t              m_corner = 0;
+  math::vec3            m_screen_pos = math::vec3_zero();
   
 
 }; // class
