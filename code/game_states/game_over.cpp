@@ -25,6 +25,7 @@ namespace
   Core::Model plane;
   Core::Material continue_material;
   bool created_screen = false;
+  Core::Entity_ref ui_refs[4];
   
   Core::Lib::Button continue_button;
 }
@@ -67,6 +68,9 @@ game_over_update(Core::Context &ctx,
 //        player_entities[i].set_renderer(mat_renderer);
 
         auto *ui = new Game_object::Player_ui(world, ctx, gui_cam, cam, i + 1, Game_object::Player_ui::Ui_type::game_over_ui);
+        
+        ui_refs[i] = ui->get_entity();
+        
         objs.push_object(ui);
         
         assert(ui->m_avatar);
@@ -184,6 +188,14 @@ game_over_update(Core::Context &ctx,
       }
     }
     
+    for(uint32_t i = 0; i < 4; ++i)
+    {
+      if(ui_refs[i])
+      {
+        ui_refs[i].destroy();
+      }
+    }
+    
     return Game_state::selection;
   }
   
@@ -201,6 +213,14 @@ game_over_update(Core::Context &ctx,
       {
         pl.destroy();
         pl = Core::Entity();
+      }
+    }
+    
+    for(uint32_t i = 0; i < 4; ++i)
+    {
+      if(ui_refs[i])
+      {
+        ui_refs[i].destroy();
       }
     }
     
