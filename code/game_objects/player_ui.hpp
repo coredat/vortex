@@ -24,11 +24,18 @@ class Player_ui : public Game_object
 {
 public:
 
+enum class Ui_type {
+  in_game_ui,
+  game_over_ui,
+};
+
+
   explicit              Player_ui(Core::World &world,
                                   Core::Context &ctx,
                                   const Core::Camera &gui_cam,
                                   const Core::Camera &world_cam,
-                                  const uint32_t controller_id);
+                                  const uint32_t controller_id,
+                                  const Ui_type ui_type = Ui_type::in_game_ui);
   
   void                  on_start() override;
   void                  on_end() override;
@@ -42,6 +49,7 @@ public:
   uint32_t              m_score = 0;
   uint32_t              m_corner = 0;
   math::vec3            m_screen_pos = math::vec3_zero();
+  Ui_type               m_ui_type;
   
 
 }; // class

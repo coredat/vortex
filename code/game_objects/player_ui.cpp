@@ -29,15 +29,22 @@ namespace
 }
 
 
-
 namespace Game_object {
+
+
+namespace {
+
+
+
+}
 
 
 Player_ui::Player_ui(Core::World &world,
                      Core::Context &ctx,
                      const Core::Camera &gui_cam,
                      const Core::Camera &world_cam,
-                     const uint32_t controller_id)
+                     const uint32_t controller_id,
+                     const Ui_type ui_type)
 : Game_object(world)
 , m_corner(controller_id - 1)
 {
@@ -241,7 +248,6 @@ Player_ui::on_update(const float dt, World_objects &objs)
     size_t size_of_find = 0;
     get_world().find_entities_by_tag(Object_tags::camera, &search_array, &size_of_find);
     assert(size_of_find && search_array);
-    
     
     Main_camera *camera = reinterpret_cast<Main_camera*>((void*)search_array[0].get_user_data());
     assert(camera);
