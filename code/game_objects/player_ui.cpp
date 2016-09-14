@@ -35,6 +35,36 @@ namespace Game_object {
 namespace {
 
 
+inline math::vec3
+get_position(const Core::Context &ctx, const uint32_t player, const Player_ui::Ui_type type)
+{
+  const uint32_t screen_coords_count = 4;
+  
+  if(type == Player_ui::Ui_type::in_game_ui)
+  {
+    const float margin_x = ctx.get_width() * 0.1f;
+    const float margin_y = ctx.get_height() * 0.2f;
+    
+    const math::vec3 screen_corners[screen_coords_count]
+    {
+      math::vec3_init(0.f + margin_x, 0.f + margin_y, 0.f),
+      math::vec3_init(math::to_float(ctx.get_width()) - margin_x, 0.f + margin_y, 0.f),
+      math::vec3_init(0.f + margin_x, math::to_float(ctx.get_height()) - margin_y, 0.f),
+      math::vec3_init(math::to_float(ctx.get_width()) - margin_x, math::to_float(ctx.get_height()) - margin_y, 0.f),
+    };
+    
+    return screen_corners[player];
+  }
+  else
+  {
+    const float steps = math::to_float(ctx.get_width()) / 5.f;
+    const float offset_x = steps + (steps * player);
+    const float offset_y = math::to_float(ctx.get_height()) / 3.f;
+    
+    return math::vec3_init(offset_x, offset_y, 0.f);
+  }
+}
+
 
 }
 
@@ -103,21 +133,7 @@ Player_ui::Player_ui(Core::World &world,
 
   const Core::Material_renderer mat_renderer(numbers[0], model);
   
-  // Some data
-  const uint32_t screen_coords_count = 4;
-  
-  const float margin_x = ctx.get_width() * 0.1f;
-  const float margin_y = ctx.get_height() * 0.2f;
-  
-  const math::vec3 screen_corners[screen_coords_count]
-  {
-    math::vec3_init(0.f + margin_x, 0.f + margin_y, 0.f),
-    math::vec3_init(math::to_float(ctx.get_width()) - margin_x, 0.f + margin_y, 0.f),
-    math::vec3_init(0.f + margin_x, math::to_float(ctx.get_height()) - margin_y, 0.f),
-    math::vec3_init(math::to_float(ctx.get_width()) - margin_x, math::to_float(ctx.get_height()) - margin_y, 0.f),
-  };
-  
-  m_screen_pos = screen_corners[m_corner];
+  m_screen_pos = get_position(ctx, controller_id - 1, ui_type);
   
 //  const math::vec3 position = Screen_cast::intersect_screen_plane(gui_cam, math::get_x(screen_pos), math::get_y(screen_pos));
   const math::vec3 position = Core::Camera_utils::get_world_position_on_nearplane(gui_cam, Core::Axis{math::get_x(m_screen_pos), math::get_y(m_screen_pos)});
@@ -167,11 +183,6 @@ Player_ui::Player_ui(Core::World &world,
     float dist = 0;
     const bool intersects = Core::Plane_utils::ray_intersects_with_plane(plane, ray2, dist);
     assert(intersects);
-    
-    const Core::Transform cam_trans2 = camera->m_world_camera.get_attached_entity().get_transform();
-    
-    const math::vec3 scale_fwd2 = math::vec3_scale(cam_trans2.get_forward(), dist * 2);
-    const math::vec3 pos2  = math::vec3_add(ray2.get_origin(), scale_fwd2);
     
     auto point = Screen_cast::intersect_screen_plane(camera->m_world_camera, math::get_x(m_screen_pos), math::get_y(m_screen_pos));
     
@@ -261,11 +272,6 @@ Player_ui::on_update(const float dt, World_objects &objs)
     const bool intersects = Core::Plane_utils::ray_intersects_with_plane(plane, ray2, dist);
     assert(intersects);
     
-    const Core::Transform cam_trans2 = camera->m_world_camera.get_attached_entity().get_transform();
-    
-    const math::vec3 scale_fwd2 = math::vec3_scale(cam_trans2.get_forward(), dist * 2);
-    const math::vec3 pos2  = math::vec3_add(ray2.get_origin(), scale_fwd2);
-    
     auto point = Screen_cast::intersect_screen_plane(camera->m_world_camera, math::get_x(m_screen_pos), math::get_y(m_screen_pos));
     
     Core::Transform avatar_trans = m_avatar.get_transform();
@@ -283,9 +289,9 @@ Player_ui::on_update(const float dt, World_objects &objs)
   
   Core::Transform trans = m_avatar.get_transform();
   trans.set_rotation(rot);
+  auto old_pos = trans.get_position();
   
   m_avatar.set_transform(trans);
-  
 }
 
 

@@ -67,6 +67,13 @@ Player::on_message(const uint32_t id, void *data)
 }
 
 
+uint32_t
+Player::get_score() const
+{
+  return m_score;
+}
+
+
 void
 Player::set_controller(const uint32_t id)
 {

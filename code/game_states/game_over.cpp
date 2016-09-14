@@ -1,4 +1,5 @@
 #include <game_states/game_over.hpp>
+#include <game_objects/world_objects.hpp>
 #include <common/object_tags.hpp>
 #include <common/game_state.hpp>
 #include <lib/menu/button.hpp>
@@ -6,6 +7,7 @@
 #include <game_objects/explosion.hpp>
 #include <game_objects/enemy.hpp>
 #include <game_objects/player.hpp>
+#include <game_objects/player_ui.hpp>
 #include <core/context/context.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/renderer/renderer.hpp>
@@ -53,16 +55,28 @@ game_over_update(Core::Context &ctx,
     {
       if(players[i]->is_valid())
       {
-        players[i]->clear_ui_and_ship();
-        players[i]->reset();
-      
-        player_entities[i] = Core::Entity(world);
+//        players[i]->clear_ui_and_ship();
+//        players[i]->reset();
+//      
+//        player_entities[i] = Core::Entity(world);
+//        
+//        player_entities[i].set_name("screen_game_over[scoreboard]");
+//        player_entities[i].set_tags(Object_tags::world_cam);
+// 
+//        const Core::Material_renderer mat_renderer(players[i]->get_material(), players[i]->get_model());
+//        player_entities[i].set_renderer(mat_renderer);
+
+        auto *ui = new Game_object::Player_ui(world, ctx, gui_cam, cam, i + 1, Game_object::Player_ui::Ui_type::game_over_ui);
+        objs.push_object(ui);
         
-        player_entities[i].set_name("screen_game_over[scoreboard]");
-        player_entities[i].set_tags(Object_tags::world_cam);
- 
-        const Core::Material_renderer mat_renderer(players[i]->get_material(), players[i]->get_model());
-        player_entities[i].set_renderer(mat_renderer);
+        assert(ui->m_avatar);
+        
+        Core::Material_renderer renderer;
+        renderer.set_material(players[i]->get_material());
+        renderer.set_model(players[i]->get_model());
+        
+        ui->m_avatar.set_renderer(renderer);
+        ui->set_score(players[i]->get_score());
       }
     }
     
