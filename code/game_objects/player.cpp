@@ -143,7 +143,6 @@ Player::spawn_ui(Core::Context &ctx, Core::Camera &ui_cam, Core::Camera &world_c
     
     ui->m_avatar.set_renderer(renderer);
     
-    
     m_ui_ref = ui->get_entity();
     
     return ui;

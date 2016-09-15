@@ -25,7 +25,7 @@ namespace
   Core::Model plane;
   Core::Material continue_material;
   bool created_screen = false;
-  Core::Entity_ref ui_refs[4];
+  Game_object::Player_ui *ui_refs[4];
   
   Core::Lib::Button continue_button;
 }
@@ -67,20 +67,18 @@ game_over_update(Core::Context &ctx,
 //        const Core::Material_renderer mat_renderer(players[i]->get_material(), players[i]->get_model());
 //        player_entities[i].set_renderer(mat_renderer);
 
-        auto *ui = new Game_object::Player_ui(world, ctx, gui_cam, cam, i + 1, Game_object::Player_ui::Ui_type::game_over_ui);
+        ui_refs[i] = new Game_object::Player_ui(world, ctx, gui_cam, cam, i + 1, Game_object::Player_ui::Ui_type::game_over_ui);
         
-        ui_refs[i] = ui->get_entity();
+        objs.push_object(ui_refs[i]);
         
-        objs.push_object(ui);
-        
-        assert(ui->m_avatar);
+        assert(ui_refs[i]->m_avatar);
         
         Core::Material_renderer renderer;
         renderer.set_material(players[i]->get_material());
         renderer.set_model(players[i]->get_model());
         
-        ui->m_avatar.set_renderer(renderer);
-        ui->set_score(players[i]->get_score());
+        ui_refs[i]->m_avatar.set_renderer(renderer);
+        ui_refs[i]->set_score(players[i]->get_score());
       }
     }
     
@@ -192,7 +190,7 @@ game_over_update(Core::Context &ctx,
     {
       if(ui_refs[i])
       {
-        ui_refs[i].destroy();
+        ui_refs[i]->destroy();
       }
     }
     
@@ -220,7 +218,7 @@ game_over_update(Core::Context &ctx,
     {
       if(ui_refs[i])
       {
-        ui_refs[i].destroy();
+        ui_refs[i]->destroy();
       }
     }
     
