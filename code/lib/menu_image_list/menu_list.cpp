@@ -77,13 +77,66 @@ inititalize(Image_button *buttons_arr,
 }
 
 
-void
-align_to_camera(const Core::Camera &camera,
-                const Image_button *buttons_arr,
-                const uint32_t button_count)
+namespace {
+
+
+/*
+  Shuffles the array elements up or down by one.
+  If an element falls of the back it will be put onto the front.
+*/
+inline void
+shuffle_array(Image_button button_arr[],
+              const uint32_t button_count,
+              const int32_t dir)
 {
+  assert((dir == +1) || (dir == -1));
+  assert(button_count);
+
+  // Set top item to cold
+  {
+    Core::Entity_ref ref = button_arr[0].entity;
+    assert(ref);
+    
+    Core::Material_renderer renderer = ref.get_renderer();
+    assert(renderer);
+    
+    renderer.set_material(button_arr[0].cold_material);
+    ref.set_renderer(renderer);
+  }
   
+  // Shuffle the array.
+  // We want the top element the selected one.
+  {
+    // Move out to temp shuffle elements.
+    Image_button temp = static_cast<Image_button&&>(button_arr[0]);
+    
+    for(int32_t i = 0; i < static_cast<int32_t>(button_count) - 1; ++i)
+    {
+      const int32_t index      = (static_cast<int32_t>(i) * dir) % button_count;
+      const int32_t next_index = (index + dir) % button_count;
+    
+      button_arr[index] = static_cast<Image_button&&>(button_arr[next_index]);
+    }
+    
+    const int32_t last = dir > 0 ? button_count - 1 : 1;
+    
+    button_arr[last] = static_cast<Image_button&&>(temp);
+  }
+  
+  // Set the new top to hot.
+  {
+    Core::Entity_ref ref = button_arr[0].entity;
+    
+    Core::Material_renderer renderer = ref.get_renderer();
+    assert(renderer);
+    
+    renderer.set_material(button_arr[0].hot_material);
+    ref.set_renderer(renderer);
+  }
 }
+
+
+} // anon ns
 
 
 Core::Entity_ref
@@ -111,45 +164,9 @@ navigate(const Core::Controller &controller,
     // Only return a ref if we've changed order.
     return Core::Entity_ref();
   }
-  
-  // Set top button to cold.
-  {
-    Core::Entity_ref ref = button_arr[0].entity;
-    
-    Core::Material_renderer renderer = ref.get_renderer();
-    assert(renderer);
-    
-    renderer.set_material(button_arr[0].cold_material);
-    ref.set_renderer(renderer);
-  }
-  
-  // Shuffle the array.
-  // We want the top element the selected one.
-  {
-    Image_button temp = static_cast<Image_button&&>(button_arr[0]);
-    
-    for(int32_t i = 0; i < static_cast<int32_t>(button_count) - 1; ++i)
-    {
-      const int32_t index = (static_cast<int32_t>(i) * dir) % button_count;
-      const int32_t next_index = (index + dir) % button_count;
-    
-      button_arr[index] = static_cast<Image_button&&>(button_arr[next_index]);
-    }
-    
-    int32_t last = dir > 0 ? button_count - 1 : 1;
-    
-    button_arr[last] = static_cast<Image_button&&>(temp);
-  }
-  
-  // Set the new top to hot.
-  Core::Entity_ref ref = button_arr[0].entity;
-  
-  Core::Material_renderer renderer = ref.get_renderer();
-  assert(renderer);
-  
-  renderer.set_material(button_arr[0].hot_material);
-  ref.set_renderer(renderer);
 
+  shuffle_array(button_arr, button_count, dir);
+  
   // Return currently selected element.
   return button_arr[0].entity;
 }
@@ -167,8 +184,7 @@ mouse_over(const Core::Camera &camera,
   /*
     Bail if invalid.
   */
-  if(!button_arr || !button_count)
-  {
+  if(!button_arr || !button_count) {
     return Entity_ref();
   }
 
@@ -178,21 +194,19 @@ mouse_over(const Core::Camera &camera,
   /*
     Didn't get an entity so bail.
   */
-  if(!ent_from_ray)
-  {
+  if(!ent_from_ray) {
     return Entity_ref();
   }
   
   /*
-    If this entity is already selected - bail.
+    We already have this entity as activated.
   */
-  if(ent_from_ray == button_arr[0].entity)
-  {
+  if(ent_from_ray == button_arr[0].entity) {
     return Entity_ref();
   }
   
   /*
-    If shuffel until we find the button.
+    See if we can find the entity in our array.
   */
   int32_t shuffle_by = 0;
   
@@ -208,38 +222,10 @@ mouse_over(const Core::Camera &camera,
     }
   }
   
+  // We want the top element the selected one.
+  for(int j = 0; j < shuffle_by; ++j)
   {
-    Image_button temp = static_cast<Image_button&&>(button_arr[0]);
-    
-    // Make cold
-    Core::Material_renderer renderer = temp.entity.get_renderer();
-    assert(renderer);
-    
-    renderer.set_material(button_arr[0].cold_material);
-    temp.entity.set_renderer(renderer);
-    
-    int32_t i = 0;
-    for(; i < static_cast<int32_t>(shuffle_by); ++i)
-    {
-      Image_button temp = static_cast<Image_button&&>(button_arr[0]);    
-    
-      const int32_t index = static_cast<int32_t>(i) % button_count;
-      const int32_t next_index = (shuffle_by + i) % button_count;
-    
-      button_arr[index] = static_cast<Image_button&&>(button_arr[next_index]);
-      button_arr[next_index] = static_cast<Image_button&&>(temp);
-    }
-    
-//    button_arr[i % button_count] = static_cast<Image_button&&>(temp);
-    
-    // Set the new top to hot.
-    Core::Entity_ref ref = button_arr[0].entity;
-    
-    Core::Material_renderer hot_renderer = ref.get_renderer();
-    assert(hot_renderer);
-    
-    renderer.set_material(button_arr[0].hot_material);
-    ref.set_renderer(renderer);
+    shuffle_array(button_arr, button_count, 1);
   }
   
   return Core::Entity_ref();

@@ -12,34 +12,25 @@ namespace Lib {
 namespace Menu_list {
 
 
+/*
+  Useage
+  --
+  Keep an array of buttons, these methods will keep arrange it
+  so that the first element in the array is the active element.
+  
+  Its up to the calling code to know when a button has been activated.
+*/
 struct Image_button
 {
   Core::Entity    entity;
   Core::Material  hot_material;
   Core::Material  cold_material;
-  
-//  Image_button()
-//  {
-//  }
 
-  Image_button() = default;
-  
-  Image_button(Image_button &&other)
-  {
-    entity = std::move(other.entity);
-    hot_material = other.hot_material;
-    cold_material = other.cold_material;
-  }
-  
-  Image_button &operator=(Image_button &&other)
-  {
-    entity = std::move(other.entity);
-    hot_material = other.hot_material;
-    cold_material = other.cold_material;
-    
-    return *this;
-  }
-  
+  Image_button()                                = default;
+  Image_button(Image_button &&)                 = default;
+  Image_button(const Image_button &)            = default;
+  Image_button &operator=(Image_button &&)      = default;
+  Image_button &operator=(const Image_button &) = default;
 };
 
 
@@ -52,15 +43,6 @@ inititalize(Image_button *buttons_arr,
             const uint32_t button_count,
             const Core::Model &model,
             const Core::Camera &camera);
-
-
-/*
-  Align buttons onto a plane
-*/
-void
-align_to_camera(const Core::Camera &camera,
-                const Image_button *buttons_arr,
-                const uint32_t button_count);
 
 
 /*
