@@ -31,12 +31,15 @@
 #include <utilities/logging.hpp>
 #include <renderer/debug_line.hpp>
 #include <lib/menu/menu.hpp>
+#include <lib/menu_image_list/menu_list.hpp>
 #include <assert.h>
 
 
 namespace
 {
   Core::Lib::Menu   menu;
+  
+  Core::Lib::Menu_list::Image_button buttons[2];
 }
 
 
@@ -126,6 +129,22 @@ title_screen_init(Core::Context &ctx,
     menu.add_button("button_settings", world, hot_settings_button, cold_settings_button);
     menu.add_button("button_about", world, hot_about_button, cold_about_button);
     menu.add_button("button_quit", world, hot_quit_button, cold_quit_button);
+    
+    // New button thing
+    const char *path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
+    Core::Model model(path);
+    
+    buttons[0].entity = Core::Entity(world);
+    buttons[0].entity.set_tags(Object_tags::gui_cam);
+    buttons[0].hot_material  = hot_start_button;
+    buttons[0].cold_material = cold_start_button;
+    
+    buttons[1].entity = Core::Entity(world);
+    buttons[1].entity.set_tags(Object_tags::gui_cam);
+    buttons[1].hot_material  = hot_about_button;
+    buttons[1].cold_material = cold_about_button;
+    
+    Core::Lib::Menu_list::inititalize(buttons, 2, model, camera);
   }
 }
 
