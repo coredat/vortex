@@ -39,7 +39,7 @@ namespace
 {
   Core::Lib::Menu   menu;
   
-  Core::Lib::Menu_list::Image_button buttons[2];
+  Core::Lib::Menu_list::Image_button buttons[4];
 }
 
 
@@ -143,8 +143,19 @@ title_screen_init(Core::Context &ctx,
     buttons[1].entity.set_tags(Object_tags::gui_cam);
     buttons[1].hot_material  = hot_about_button;
     buttons[1].cold_material = cold_about_button;
+
+    buttons[2].entity = Core::Entity(world);
+    buttons[2].entity.set_tags(Object_tags::gui_cam);
+    buttons[2].hot_material  = hot_quit_button;
+    buttons[2].cold_material = cold_quit_button;
+
+    buttons[3].entity = Core::Entity(world);
+    buttons[3].entity.set_tags(Object_tags::gui_cam);
+    buttons[3].hot_material  = hot_settings_button;
+    buttons[3].cold_material = cold_settings_button;
+
     
-    Core::Lib::Menu_list::inititalize(buttons, 2, model, camera);
+    Core::Lib::Menu_list::inititalize(buttons, 4, model, camera);
   }
 }
 
@@ -166,6 +177,7 @@ title_screen_update(Core::Context &ctx,
     Core::Controller(ctx, 3),
   };
   
+  Core::Lib::Menu_list::navigate(controllers[0], buttons, 4);
   
   menu.think(ctx, world, camera);
 

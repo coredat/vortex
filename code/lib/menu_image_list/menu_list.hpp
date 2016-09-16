@@ -17,6 +17,27 @@ struct Image_button
   Core::Entity    entity;
   Core::Material  hot_material;
   Core::Material  cold_material;
+  
+  Image_button()
+  {
+  }
+  
+  Image_button(Image_button &&other)
+  {
+    entity = std::move(other.entity);
+    hot_material = other.hot_material;
+    cold_material = other.cold_material;
+  }
+  
+  Image_button &operator=(Image_button &&other)
+  {
+    entity = std::move(other.entity);
+    hot_material = other.hot_material;
+    cold_material = other.cold_material;
+    
+    return *this;
+  }
+  
 };
 
 
@@ -46,7 +67,7 @@ align_to_camera(const Core::Camera &camera,
 */
 Core::Entity_ref
 navigate(const Core::Controller &controller,
-         const Image_button *button_arr,
+         Image_button *button_arr,
          const uint32_t button_count);
 
 
