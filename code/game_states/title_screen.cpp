@@ -178,6 +178,7 @@ title_screen_update(Core::Context &ctx,
   };
   
   Core::Lib::Menu_list::navigate(controllers[0], buttons, 4);
+  Core::Lib::Menu_list::mouse_over(camera, world, Core::Input::mouse_get_coordinates(ctx), buttons, 4);
   
   menu.think(ctx, world, camera);
 

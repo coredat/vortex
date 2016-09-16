@@ -2,10 +2,18 @@
 #include <core/entity/entity_ref.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/resources/texture.hpp>
+#include <core/physics/box_collider.hpp>
+#include <core/physics/collider.hpp>
+#include <core/physics/rigidbody.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/input/controller.hpp>
 #include <core/input/buttons.hpp>
 #include <core/transform/transform.hpp>
+#include <core/camera/camera.hpp>
+#include <core/camera/camera_utils.hpp>
+#include <core/world/world.hpp>
+#include <core/common/ray.hpp>
+#include <core/input/input.hpp>
 #include <assert.h>
 
 
@@ -21,7 +29,7 @@ inititalize(Image_button *buttons_arr,
             const Core::Camera &camera)
 {
   int32_t margin_x = 10;
-  int32_t margin_y = 0;
+  int32_t margin_y = 200;
 
   for(uint32_t i = 0; i < button_count; ++i)
   {
@@ -32,11 +40,11 @@ inititalize(Image_button *buttons_arr,
     const int32_t width = texture.get_width() >> 2;
     const int32_t height = texture.get_height() >> 2;
     
-    const math::vec3 scale = math::vec3_init(math::to_float(width) * 0.5f,
-                                             math::to_float(height) * 0.5f,
+    const math::vec3 scale = math::vec3_init(math::to_float(width),
+                                             math::to_float(height),
                                              0.f);
     
-    const math::vec3 position = math::vec3_init(margin_x + (width * 0.25f), margin_y - height, 0);
+    const math::vec3 position = math::vec3_init(margin_x + (width * 0.5f), margin_y - height, 0);
     
     Core::Transform button_trans = ent_ref.get_transform();
     button_trans.set_scale(scale);
@@ -54,6 +62,15 @@ inititalize(Image_button *buttons_arr,
     mat_renderer.set_model(model);
     
     ent_ref.set_renderer(mat_renderer);
+    
+    // Create collider
+    Core::Box_collider box(0.5f, 0.5f, 0.5f);
+    Core::Rigidbody rb;
+    rb.set_mass(0);
+    rb.set_is_dynamic(false);
+    rb.set_collider(box);
+    
+    ent_ref.set_rigidbody(rb);
     
     margin_y -= height;
   }
@@ -139,9 +156,92 @@ navigate(const Core::Controller &controller,
 
 
 Core::Entity_ref
-mouse_over(const Image_button *button_arr,
+mouse_over(const Core::Camera &camera,
+           const Core::World &world,
+           const Core::Axis mouse_coords,
+           Image_button *button_arr,
            const uint32_t button_count)
 {
+  assert(button_arr && button_count);
+  
+  /*
+    Bail if invalid.
+  */
+  if(!button_arr || !button_count)
+  {
+    return Entity_ref();
+  }
+
+  const Core::Ray viewport_ray = Core::Camera_utils::get_ray_from_viewport(camera, mouse_coords);
+  const Core::Entity_ref ent_from_ray = world.find_entity_by_ray(viewport_ray);
+
+  /*
+    Didn't get an entity so bail.
+  */
+  if(!ent_from_ray)
+  {
+    return Entity_ref();
+  }
+  
+  /*
+    If this entity is already selected - bail.
+  */
+  if(ent_from_ray == button_arr[0].entity)
+  {
+    return Entity_ref();
+  }
+  
+  /*
+    If shuffel until we find the button.
+  */
+  int32_t shuffle_by = 0;
+  
+  for(int32_t i = 0; i < button_count; ++i)
+  {
+    const Image_button *button = &button_arr[i];
+    assert(button);
+  
+    if(button->entity == ent_from_ray)
+    {
+      shuffle_by = i;
+      break;
+    }
+  }
+  
+  {
+    Image_button temp = static_cast<Image_button&&>(button_arr[0]);
+    
+    // Make cold
+    Core::Material_renderer renderer = temp.entity.get_renderer();
+    assert(renderer);
+    
+    renderer.set_material(button_arr[0].cold_material);
+    temp.entity.set_renderer(renderer);
+    
+    int32_t i = 0;
+    for(; i < static_cast<int32_t>(shuffle_by); ++i)
+    {
+      Image_button temp = static_cast<Image_button&&>(button_arr[0]);    
+    
+      const int32_t index = static_cast<int32_t>(i) % button_count;
+      const int32_t next_index = (shuffle_by + i) % button_count;
+    
+      button_arr[index] = static_cast<Image_button&&>(button_arr[next_index]);
+      button_arr[next_index] = static_cast<Image_button&&>(temp);
+    }
+    
+//    button_arr[i % button_count] = static_cast<Image_button&&>(temp);
+    
+    // Set the new top to hot.
+    Core::Entity_ref ref = button_arr[0].entity;
+    
+    Core::Material_renderer hot_renderer = ref.get_renderer();
+    assert(hot_renderer);
+    
+    renderer.set_material(button_arr[0].hot_material);
+    ref.set_renderer(renderer);
+  }
+  
   return Core::Entity_ref();
 }
 

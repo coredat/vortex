@@ -18,9 +18,11 @@ struct Image_button
   Core::Material  hot_material;
   Core::Material  cold_material;
   
-  Image_button()
-  {
-  }
+//  Image_button()
+//  {
+//  }
+
+  Image_button() = default;
   
   Image_button(Image_button &&other)
   {
@@ -75,7 +77,10 @@ navigate(const Core::Controller &controller,
   Will return a valid entity if the menu item was clicked on.
 */
 Core::Entity_ref
-mouse_over(const Image_button *button_arr,
+mouse_over(const Core::Camera &camera,
+           const Core::World &world,
+           const Core::Axis mouse_coords,
+           Image_button *button_arr,
            const uint32_t button_count);
 
 
