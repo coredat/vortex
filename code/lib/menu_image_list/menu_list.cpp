@@ -23,56 +23,65 @@ namespace Menu_list {
 
 
 void
-inititalize(Image_button *buttons_arr,
+inititalize(Image_button buttons_arr[],
             const uint32_t button_count,
             const Core::Model &model,
             const Core::Camera &camera)
 {
   int32_t margin_x = 10;
-  int32_t margin_y = 200;
+  int32_t margin_y = 100;
 
   for(uint32_t i = 0; i < button_count; ++i)
   {
     Image_button &button = buttons_arr[i];
     Core::Entity_ref ent_ref = button.entity;
     
-    const Core::Texture texture = button.hot_material.get_map_01();
-    const int32_t width = texture.get_width() >> 2;
-    const int32_t height = texture.get_height() >> 2;
+    const Core::Texture texture = button.cold_material.get_map_01();
+    const int32_t width         = texture.get_width() >> 2;
+    const int32_t height        = texture.get_height() >> 2;
     
-    const math::vec3 scale = math::vec3_init(math::to_float(width),
-                                             math::to_float(height),
-                                             0.f);
+    margin_y -= (height * 0.5f);
     
-    const math::vec3 position = math::vec3_init(margin_x + (width * 0.5f), margin_y - height, 0);
-    
-    Core::Transform button_trans = ent_ref.get_transform();
-    button_trans.set_scale(scale);
-    button_trans.set_position(position);
-    
-    ent_ref.set_transform(button_trans);
+    // Transform
+    {
+      const math::vec3 position = math::vec3_init(margin_x + (width * 0.5f), margin_y, 0);
+      const math::vec3 scale = math::vec3_init(math::to_float(width),
+                                               math::to_float(height),
+                                               0.f);
+      
+      ent_ref.set_transform(Core::Transform(
+        position,
+        scale,
+        math::quat_init()
+      ));
+    }
     
     // Create renderer
-    Core::Material_renderer mat_renderer;
+    ent_ref.set_renderer(Core::Material_renderer(button.cold_material, model));
+
+    // Create collider if it has a hot material.
+    if(button.hot_material)
+    {
+      Core::Box_collider box(0.5f, 0.5f, 0.5f);
+      Core::Rigidbody rb;
+      rb.set_mass(0);
+      rb.set_is_dynamic(false);
+      rb.set_collider(box);
+      
+      ent_ref.set_rigidbody(rb);
+    }
     
-    // Top button is hot
-    const Core::Material mat = i ? button.cold_material : button.hot_material;
-    
-    mat_renderer.set_material(mat);
-    mat_renderer.set_model(model);
-    
-    ent_ref.set_renderer(mat_renderer);
-    
-    // Create collider
-    Core::Box_collider box(0.5f, 0.5f, 0.5f);
-    Core::Rigidbody rb;
-    rb.set_mass(0);
-    rb.set_is_dynamic(false);
-    rb.set_collider(box);
-    
-    ent_ref.set_rigidbody(rb);
-    
-    margin_y -= height;
+    margin_y -= (height * 0.5f);
+  }
+  
+  // If the first item can be made hot, do so, otherwise we call navigate to find it.
+  if(buttons_arr[0].hot_material)
+  {
+    buttons_arr[0].entity.set_renderer(Core::Material_renderer(buttons_arr[0].hot_material, model));
+  }
+  else
+  {
+    navigate(1, buttons_arr, button_count);
   }
 }
 
@@ -112,8 +121,8 @@ shuffle_array(Image_button button_arr[],
     
     for(int32_t i = 0; i < static_cast<int32_t>(button_count) - 1; ++i)
     {
-      const int32_t index      = (static_cast<int32_t>(i) * dir) % button_count;
-      const int32_t next_index = (index + dir) % button_count;
+      const int32_t index      = math::mod((i * dir), button_count);
+      const int32_t next_index = math::mod((index + dir), button_count);
     
       button_arr[index] = static_cast<Image_button&&>(button_arr[next_index]);
     }
@@ -124,6 +133,7 @@ shuffle_array(Image_button button_arr[],
   }
   
   // Set the new top to hot.
+  if(button_arr[0].hot_material)
   {
     Core::Entity_ref ref = button_arr[0].entity;
     
@@ -138,10 +148,36 @@ shuffle_array(Image_button button_arr[],
 
 } // anon ns
 
+Core::Entity_ref
+navigate(uint32_t dir,
+         Image_button button_arr[],
+         const uint32_t button_count)
+{
+  if(dir == 0)
+  {
+    return Core::Entity_ref();
+  }
+  
+  /*
+    While true so we don't navigate onto something unselectable.
+  */
+  while(true)
+  {
+    shuffle_array(button_arr, button_count, dir);
+    
+    if(button_arr[0].hot_material)
+    {
+      break;
+    }
+  }
+  
+  return button_arr[0].entity;
+}
+
 
 Core::Entity_ref
 navigate(const Core::Controller &controller,
-         Image_button *button_arr,
+         Image_button button_arr[],
          const uint32_t button_count)
 {
   assert(button_count);
@@ -164,11 +200,8 @@ navigate(const Core::Controller &controller,
     // Only return a ref if we've changed order.
     return Core::Entity_ref();
   }
-
-  shuffle_array(button_arr, button_count, dir);
   
-  // Return currently selected element.
-  return button_arr[0].entity;
+  return navigate(dir, button_arr, button_count);
 }
 
 
@@ -176,7 +209,7 @@ Core::Entity_ref
 mouse_over(const Core::Camera &camera,
            const Core::World &world,
            const Core::Axis mouse_coords,
-           Image_button *button_arr,
+           Image_button button_arr[],
            const uint32_t button_count)
 {
   assert(button_arr && button_count);

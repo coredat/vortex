@@ -35,12 +35,14 @@
 #include <assert.h>
 
 
-namespace
-{
+namespace {
+
   Core::Lib::Menu   menu;
   
-  Core::Lib::Menu_list::Image_button buttons[4];
-}
+  constexpr uint32_t buttons_count = 5;
+  Core::Lib::Menu_list::Image_button buttons[buttons_count];
+  
+} // anon ns
 
 
 void
@@ -134,28 +136,44 @@ title_screen_init(Core::Context &ctx,
     const char *path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
     Core::Model model(path);
     
-    buttons[0].entity = Core::Entity(world);
-    buttons[0].entity.set_tags(Object_tags::gui_cam);
-    buttons[0].hot_material  = hot_start_button;
-    buttons[0].cold_material = cold_start_button;
+    enum ENUM_POS {
+
+      button_title_pos,
+      button_start_pos,
+      button_settings_pos,
+      button_about_pos,
+      button_quit_pos,
+      
+      buttons_size
+    };
     
-    buttons[1].entity = Core::Entity(world);
-    buttons[1].entity.set_tags(Object_tags::gui_cam);
-    buttons[1].hot_material  = hot_about_button;
-    buttons[1].cold_material = cold_about_button;
-
-    buttons[2].entity = Core::Entity(world);
-    buttons[2].entity.set_tags(Object_tags::gui_cam);
-    buttons[2].hot_material  = hot_quit_button;
-    buttons[2].cold_material = cold_quit_button;
-
-    buttons[3].entity = Core::Entity(world);
-    buttons[3].entity.set_tags(Object_tags::gui_cam);
-    buttons[3].hot_material  = hot_settings_button;
-    buttons[3].cold_material = cold_settings_button;
-
+    assert(buttons_count == buttons_size);
     
-    Core::Lib::Menu_list::inititalize(buttons, 4, model, camera);
+    buttons[button_title_pos].entity = Core::Entity(world);
+    buttons[button_title_pos].entity.set_tags(Object_tags::gui_cam);
+    buttons[button_title_pos].cold_material = title_mat;
+
+    buttons[button_start_pos].entity = Core::Entity(world);
+    buttons[button_start_pos].entity.set_tags(Object_tags::gui_cam);
+    buttons[button_start_pos].hot_material  = hot_start_button;
+    buttons[button_start_pos].cold_material = cold_start_button;
+
+    buttons[button_settings_pos].entity = Core::Entity(world);
+    buttons[button_settings_pos].entity.set_tags(Object_tags::gui_cam);
+    buttons[button_settings_pos].hot_material  = hot_settings_button;
+    buttons[button_settings_pos].cold_material = cold_settings_button;
+
+    buttons[button_about_pos].entity = Core::Entity(world);
+    buttons[button_about_pos].entity.set_tags(Object_tags::gui_cam);
+    buttons[button_about_pos].hot_material  = hot_about_button;
+    buttons[button_about_pos].cold_material = cold_about_button;
+
+    buttons[button_quit_pos].entity = Core::Entity(world);
+    buttons[button_quit_pos].entity.set_tags(Object_tags::gui_cam);
+    buttons[button_quit_pos].hot_material  = hot_quit_button;
+    buttons[button_quit_pos].cold_material = cold_quit_button;
+    
+    Core::Lib::Menu_list::inititalize(buttons, buttons_count, model, camera);
   }
 }
 
@@ -177,8 +195,8 @@ title_screen_update(Core::Context &ctx,
     Core::Controller(ctx, 3),
   };
   
-  Core::Lib::Menu_list::navigate(controllers[0], buttons, 4);
-  Core::Lib::Menu_list::mouse_over(camera, world, Core::Input::mouse_get_coordinates(ctx), buttons, 4);
+  Core::Lib::Menu_list::navigate(controllers[0], buttons, buttons_count);
+  Core::Lib::Menu_list::mouse_over(camera, world, Core::Input::mouse_get_coordinates(ctx), buttons, buttons_count);
   
   menu.think(ctx, world, camera);
 

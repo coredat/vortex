@@ -25,7 +25,7 @@ struct Image_button
   Core::Entity    entity;
   Core::Material  hot_material;
   Core::Material  cold_material;
-
+  
   Image_button()                                = default;
   Image_button(Image_button &&)                 = default;
   Image_button(const Image_button &)            = default;
@@ -37,9 +37,11 @@ struct Image_button
 /*
   Helper method to generate the material renderers for the buttons.
   It will apply the cold material to all the buttons.
+  
+  If a button has no hot material it will not be selectable.
 */
 void
-inititalize(Image_button *buttons_arr,
+inititalize(Image_button buttons_arr[],
             const uint32_t button_count,
             const Core::Model &model,
             const Core::Camera &camera);
@@ -50,8 +52,17 @@ inititalize(Image_button *buttons_arr,
   This will also shuffle the array with the current selected item at the front.
 */
 Core::Entity_ref
+navigate(const uint32_t dir,
+         Image_button button_arr[],
+         const uint32_t button_count);
+
+/*
+  Will return a valid entity if menu item was confirmed on.
+  This will also shuffle the array with the current selected item at the front.
+*/
+Core::Entity_ref
 navigate(const Core::Controller &controller,
-         Image_button *button_arr,
+         Image_button button_arr[],
          const uint32_t button_count);
 
 
@@ -62,7 +73,7 @@ Core::Entity_ref
 mouse_over(const Core::Camera &camera,
            const Core::World &world,
            const Core::Axis mouse_coords,
-           Image_button *button_arr,
+           Image_button button_arr[],
            const uint32_t button_count);
 
 
