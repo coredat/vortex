@@ -48,6 +48,13 @@ inititalize(Image_button buttons_arr[],
 
 
 /*
+  Clear the entities.
+*/
+void
+clear(Image_button buttons_arr[],
+      const uint32_t button_count);
+
+/*
   Will return a valid entity if menu item was confirmed on.
   This will also shuffle the array with the current selected item at the front.
 */

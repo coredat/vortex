@@ -28,9 +28,11 @@ inititalize(Image_button buttons_arr[],
             const Core::Model &model,
             const Core::Camera &camera)
 {
-  int32_t margin_x = 10;
-  int32_t margin_y = 100;
-
+  const math::vec3 pos = Core::Camera_utils::get_world_position_on_nearplane(camera, Core::Axis{40, 40});
+  
+  float margin_x = math::get_x(pos);
+  float margin_y = math::get_y(pos);
+  
   for(uint32_t i = 0; i < button_count; ++i)
   {
     Image_button &button = buttons_arr[i];
@@ -41,7 +43,7 @@ inititalize(Image_button buttons_arr[],
     const int32_t height        = texture.get_height() >> 2;
     
     margin_y -= (height * 0.5f);
-    
+
     // Transform
     {
       const math::vec3 position = math::vec3_init(margin_x + (width * 0.5f), margin_y, 0);
@@ -82,6 +84,17 @@ inititalize(Image_button buttons_arr[],
   else
   {
     navigate(1, buttons_arr, button_count);
+  }
+}
+
+
+void
+clear(Image_button buttons_arr[],
+      const uint32_t button_count)
+{
+  for(uint32_t i = 0; i < button_count; ++i)
+  {
+    buttons_arr[i].entity = Core::Entity();
   }
 }
 
