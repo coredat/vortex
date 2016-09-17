@@ -74,6 +74,7 @@ inititalize(Image_button buttons_arr[],
     }
     
     margin_y -= (height * 0.5f);
+    margin_y -= (10.f); // padding.
   }
   
   // If the first item can be made hot, do so, otherwise we call navigate to find it.

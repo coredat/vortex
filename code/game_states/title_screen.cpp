@@ -126,16 +126,6 @@ title_screen_init(Core::Context &ctx,
     hot_quit_button.set_shader(shader);
     hot_quit_button.set_map_01(quit_hot);
     
-//    menu.set_home(math::vec2_init(50, 50), world, camera, title_mat);
-//    menu.add_button("button_start_game", world, hot_start_button, cold_start_button);
-//    menu.add_button("button_settings", world, hot_settings_button, cold_settings_button);
-//    menu.add_button("button_about", world, hot_about_button, cold_about_button);
-//    menu.add_button("button_quit", world, hot_quit_button, cold_quit_button);
-    
-    // New button thing
-    const char *path = Core::Directory::volatile_resource_path("assets/models/unit_cube.obj");
-    Core::Model model(path);
-    
     enum ENUM_POS {
 
       button_title_pos,
@@ -178,6 +168,7 @@ title_screen_init(Core::Context &ctx,
     buttons[button_quit_pos].hot_material  = hot_quit_button;
     buttons[button_quit_pos].cold_material = cold_quit_button;
     
+    const Core::Model model(Core::Directory::volatile_resource_path("assets/models/unit_cube.obj"));
     Core::Lib::Menu_list::inititalize(buttons, buttons_count, model, camera);
   }
 }
