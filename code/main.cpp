@@ -48,7 +48,6 @@
 #include <common/object_tags.hpp>
 
 
-
 int
 main()
 {
