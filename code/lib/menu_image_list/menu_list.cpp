@@ -39,24 +39,17 @@ inititalize(Image_button buttons_arr[],
     Core::Entity_ref ent_ref = button.entity;
     
     const Core::Texture texture = button.cold_material.get_map_01();
-    const int32_t width         = texture.get_width() >> 2;
-    const int32_t height        = texture.get_height() >> 2;
+    const float width           = math::to_float(texture.get_width() >> 2);
+    const float height          = math::to_float(texture.get_height() >> 2);
     
     margin_y -= (height * 0.5f);
 
     // Transform
-    {
-      const math::vec3 position = math::vec3_init(margin_x + (width * 0.5f), margin_y, 0);
-      const math::vec3 scale = math::vec3_init(math::to_float(width),
-                                               math::to_float(height),
-                                               0.f);
-      
-      ent_ref.set_transform(Core::Transform(
-        position,
-        scale,
-        math::quat_init()
-      ));
-    }
+    ent_ref.set_transform(Core::Transform(
+      math::vec3_init(margin_x + (width * 0.5f), margin_y, 0),
+      math::vec3_init(width, height, 0.f),
+      math::quat_init()
+    ));
     
     // Create renderer
     ent_ref.set_renderer(Core::Material_renderer(button.cold_material, model));
