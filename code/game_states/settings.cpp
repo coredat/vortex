@@ -112,17 +112,9 @@ settings_update(Core::Context &ctx,
                 Core::Camera &camera,
                 Game_object::World_objects &objs)
 {
-  constexpr uint32_t number_of_controllers = 4;
-  
-  const Core::Controller controllers[number_of_controllers]
-  {
-    Core::Controller(ctx, 0),
-    Core::Controller(ctx, 1),
-    Core::Controller(ctx, 2),
-    Core::Controller(ctx, 3),
-  };
-  
-  Core::Lib::Menu_list::navigate(controllers[0], buttons, buttons_count);
+  const Core::Controller controller = Core::Controller(ctx, 0);
+ 
+  Core::Lib::Menu_list::navigate(controller, buttons, buttons_count);
   Core::Lib::Menu_list::mouse_over(camera, world, Core::Input::mouse_get_coordinates(ctx), buttons, buttons_count);
   
   const Core::Entity_ref selected_button = buttons[0].entity;
@@ -131,11 +123,18 @@ settings_update(Core::Context &ctx,
 
   if(selected_button && strcmp(selected_button.get_name(), "button_back") == 0)
   {
-    if(controllers[0].is_button_up_on_frame(button_start))
+    if(controller.is_button_up_on_frame(button_start))
     {
       Core::Lib::Menu_list::clear(buttons, buttons_count);
       return Game_state::title_screen;
     }
+  }
+  
+  // Generic if back then go back
+  if(controller.is_button_up_on_frame(Core::Gamepad_button::button_back))
+  {
+    Core::Lib::Menu_list::clear(buttons, buttons_count);
+    return Game_state::title_screen;
   }
 
   return Game_state::settings;
