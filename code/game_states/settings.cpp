@@ -32,13 +32,15 @@
 #include <math/quat/quat.hpp>
 #include <utilities/logging.hpp>
 #include <renderer/debug_line.hpp>
-#include <lib/menu/menu.hpp>
+#include <lib/menu_image_list/menu_list.hpp>
 #include <assert.h>
 
 
-namespace
-{
-  Core::Lib::Menu   menu;
+namespace {
+
+constexpr uint32_t buttons_count = 2;
+Core::Lib::Menu_list::Image_button buttons[buttons_count];
+
 }
 
 
@@ -52,31 +54,8 @@ settings_init(Core::Context &context,
     Core::Shader shader(Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl"));
     assert(shader);
     
-    Core::Texture title_texture(Core::Directory::volatile_resource_path("assets/textures/button_options_cold.png"));
-    assert(title_texture);
-    
-    Core::Material title_mat("[menu]title");
-    title_mat.set_shader(shader);
-    title_mat.set_map_01(title_texture);
-    
-    // Start Button
-    
-    Core::Texture start_game_cold(Core::Directory::volatile_resource_path("assets/textures/button_start_game_cold.png"));
-    assert(start_game_cold);
-    
-    Core::Texture start_game_hot(Core::Directory::volatile_resource_path("assets/textures/button_start_game_hot.png"));
-    assert(start_game_hot);
-    
-    Core::Material cold_start_button("[button]start_cold");
-    cold_start_button.set_shader(shader);
-    cold_start_button.set_map_01(start_game_cold);
-
-    Core::Material hot_start_button("[button]start_hot");
-    hot_start_button.set_shader(shader);
-    hot_start_button.set_map_01(start_game_hot);
-    
     // Settings Button
-
+    
     Core::Texture settings_cold(Core::Directory::volatile_resource_path("assets/textures/button_options_cold.png"));
     assert(settings_cold);
     
@@ -90,22 +69,6 @@ settings_init(Core::Context &context,
     Core::Material hot_settings_button("[button]settings_hot");
     hot_settings_button.set_shader(shader);
     hot_settings_button.set_map_01(settings_hot);
-
-    // About Button
-
-    Core::Texture about_cold(Core::Directory::volatile_resource_path("assets/textures/button_about_cold.png"));
-    assert(about_cold);
-    
-    Core::Texture about_hot(Core::Directory::volatile_resource_path("assets/textures/button_about_hot.png"));
-    assert(about_hot);
-    
-    Core::Material cold_about_button("[button]about_cold");
-    cold_about_button.set_shader(shader);
-    cold_about_button.set_map_01(about_cold);
-
-    Core::Material hot_about_button("[button]about_hot");
-    hot_about_button.set_shader(shader);
-    hot_about_button.set_map_01(about_hot);
 
     // Quit Button
 
@@ -123,11 +86,21 @@ settings_init(Core::Context &context,
     hot_quit_button.set_shader(shader);
     hot_quit_button.set_map_01(quit_hot);
     
-    menu.set_home(math::vec2_init(50, 50), world, camera, title_mat);
-//    menu.add_button("button_start_game", world, hot_start_button, cold_start_button);
-//    menu.add_button("button_settings", world, hot_settings_button, cold_settings_button);
-//    menu.add_button("button_about", world, hot_about_button, cold_about_button);
-    menu.add_button("button_back", world, hot_quit_button, cold_quit_button);
+    buttons[0].entity         = Core::Entity(world);
+    buttons[0].entity.set_name("button_title");
+    buttons[0].entity.set_tags(Object_tags::gui_cam);
+    buttons[0].cold_material  = cold_settings_button;
+    buttons[0].hot_material   = Core::Material();
+    
+    buttons[1].entity         = Core::Entity(world);
+    buttons[1].entity.set_name("button_back");
+    buttons[1].entity.set_tags(Object_tags::gui_cam);
+    buttons[1].cold_material  = cold_quit_button;
+    buttons[1].hot_material   = hot_quit_button;
+    
+    const Core::Model model(Core::Directory::volatile_resource_path("assets/models/unit_cube.obj"));
+  
+    Core::Lib::Menu_list::inititalize(buttons, buttons_count, model, camera);
   }
 
 }
@@ -149,41 +122,18 @@ settings_update(Core::Context &ctx,
     Core::Controller(ctx, 3),
   };
   
+  Core::Lib::Menu_list::navigate(controllers[0], buttons, buttons_count);
+  Core::Lib::Menu_list::mouse_over(camera, world, Core::Input::mouse_get_coordinates(ctx), buttons, buttons_count);
   
-  menu.think(ctx, world, camera);
+  const Core::Entity_ref selected_button = buttons[0].entity;
+  
+  constexpr uint32_t button_start = Core::Gamepad_button::button_a | Core::Gamepad_button::button_start;
 
-  if(menu.current_button_selected() && strcmp(menu.current_button_selected().get_name(), "button_start_game") == 0)
+  if(selected_button && strcmp(selected_button.get_name(), "button_back") == 0)
   {
-    if(controllers[0].is_button_up_on_frame(Core::Gamepad_button::button_a))
+    if(controllers[0].is_button_up_on_frame(button_start))
     {
-      menu.clear();
-      return Game_state::selection;
-    }
-  }
-
-  if(menu.current_button_selected() && strcmp(menu.current_button_selected().get_name(), "button_settings") == 0)
-  {
-    if(controllers[0].is_button_up_on_frame(Core::Gamepad_button::button_a))
-    {
-      menu.clear();
-      return Game_state::settings;
-    }
-  }
-  
-  if(menu.current_button_selected() && strcmp(menu.current_button_selected().get_name(), "button_about") == 0)
-  {
-    if(controllers[0].is_button_up_on_frame(Core::Gamepad_button::button_a))
-    {
-      menu.clear();
-      return Game_state::about;
-    }
-  }
-  
-  if(menu.current_button_selected() && strcmp(menu.current_button_selected().get_name(), "button_back") == 0)
-  {
-    if(controllers[0].is_button_up_on_frame(Core::Gamepad_button::button_a))
-    {
-      menu.clear();
+      Core::Lib::Menu_list::clear(buttons, buttons_count);
       return Game_state::title_screen;
     }
   }

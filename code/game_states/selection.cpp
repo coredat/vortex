@@ -60,13 +60,11 @@ selection_init(Core::Context &ctx,
   // Load materials
   if(!no_selection_material || !selection_material || !start_game_material)
   {
-    const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl");
-    Core::Shader shader(shader_path);
+    const Core::Shader shader(Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl"));
     
     // --
     
-    const char *no_ship_tex = Core::Directory::volatile_resource_path("assets/textures/no_ship.png");
-    Core::Texture no_selection_texture(no_ship_tex);
+    const Core::Texture no_selection_texture(Core::Directory::volatile_resource_path("assets/textures/to_join.png"));
     
     no_selection_material = Core::Material("selection-none");
     no_selection_material.set_shader(shader);
@@ -76,8 +74,7 @@ selection_init(Core::Context &ctx,
     
     // --
     
-    const char *choose_ship = Core::Directory::volatile_resource_path("assets/textures/choose_ship.png");
-    Core::Texture choose_ship_texture(choose_ship);
+    const Core::Texture choose_ship_texture(Core::Directory::volatile_resource_path("assets/textures/select_ship.png"));
     
     selection_material = Core::Material("selection");
     selection_material.set_shader(shader);
@@ -85,8 +82,7 @@ selection_init(Core::Context &ctx,
     
     // --
 
-    const char *press_start = Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png");
-    Core::Texture press_start_texture(press_start);
+    const Core::Texture press_start_texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png"));
     
     start_game_material = Core::Material("press-start");
     start_game_material.set_shader(shader);

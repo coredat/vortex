@@ -36,11 +36,9 @@
 
 
 namespace {
-
-//  Core::Lib::Menu   menu;
   
-  constexpr uint32_t buttons_count = 5;
-  Core::Lib::Menu_list::Image_button buttons[buttons_count];
+constexpr uint32_t buttons_count = 5;
+Core::Lib::Menu_list::Image_button buttons[buttons_count];
   
 } // anon ns
 
@@ -197,7 +195,7 @@ title_screen_update(Core::Context &ctx,
 //  menu.think(ctx, world, camera);
 
   const Core::Entity_ref selected_button = buttons[0].entity;
-  const uint32_t button_start = Core::Gamepad_button::button_a | Core::Gamepad_button::button_start;
+  constexpr uint32_t button_start = Core::Gamepad_button::button_a | Core::Gamepad_button::button_start;
 
   if(selected_button && strcmp(selected_button.get_name(), "button_start_game") == 0)
   {
