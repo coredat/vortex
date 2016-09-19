@@ -47,6 +47,10 @@
 #include <core/font/font.hpp>
 #include <common/object_tags.hpp>
 
+#include <fstream>
+#include <core/common/directory.hpp>
+#include <utilities/directory.hpp>
+
 
 int
 main()
@@ -59,13 +63,66 @@ main()
   util::logging::set_output(util::logging::out::file);
   #endif
 
+  uint32_t  settings_width          = 1024;
+  uint32_t  settings_height         = 576;
+  bool      settings_is_fullscreen  = false;
+  uint32_t  settings_last_monitor   = 0;
+  {
+    char file_path[2048];
+    memset(file_path, 0, sizeof(file_path));
+    strcat(file_path, util::dir::resource_path());
+    strcat(file_path, "settings.txt");
+  
+    std::ifstream myfile(file_path);
+    if (myfile.is_open())
+    {
+      std::string width;
+      getline (myfile,width);
+      if(!width.empty())
+      {
+        settings_width = std::stoi(width);
+      }
+
+      std::string height;
+      getline (myfile,height);
+      if(!height.empty())
+      {
+        settings_height = std::stoi(height);
+      }
+      
+      std::string fullscreen;
+      getline (myfile,fullscreen);
+      if(!fullscreen.empty())
+      {
+        settings_is_fullscreen = !!std::stoi(fullscreen);
+      }
+      
+      std::string monitor_pref;
+      getline (myfile,monitor_pref);
+      if(!monitor_pref.empty())
+      {
+        settings_last_monitor = std::stoi(monitor_pref);
+      }
+
+      myfile.close();
+    }
+  
+//    char file_path[2048];
+//    memset(file_path, 0, sizeof(file_path));
+//    strcat(file_path, util::dir::resource_path());
+//    strcat(file_path, "settings.txt");
+//    
+//    std::ofstream settings_file (file_path, std::ios::out | std::ios::app | std::ios::binary);
+//    settings_file << "Settings\n";
+  }
 
   // ** Setup Core ** //
   Core::Context_setup context_setup;
   context_setup.vsync = true;
   context_setup.high_dpi_support = false;
+  context_setup.monitor_preference = settings_last_monitor;
 
-  Core::Context context(1024, 576, false, "Vortex Defender", context_setup);
+  Core::Context context(settings_width, settings_height, settings_is_fullscreen, "Vortex Defender", context_setup);
   Core::World   world(context, Core::World_setup{});
   
   // ** Start Game ** //
