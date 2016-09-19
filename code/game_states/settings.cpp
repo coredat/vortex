@@ -38,7 +38,7 @@
 
 namespace {
 
-constexpr uint32_t buttons_count = 2;
+constexpr uint32_t buttons_count = 3;
 Core::Lib::Menu_list::Image_button buttons[buttons_count];
 
 }
@@ -70,6 +70,22 @@ settings_init(Core::Context &context,
     hot_settings_button.set_shader(shader);
     hot_settings_button.set_map_01(settings_hot);
 
+    // Fullscreen
+
+    Core::Texture fullscreen_cold(Core::Directory::volatile_resource_path("assets/textures/button_fullscreen_cold.png"));
+    assert(fullscreen_cold);
+    
+    Core::Texture fullscreen_hot(Core::Directory::volatile_resource_path("assets/textures/button_fullscreen_hot.png"));
+    assert(fullscreen_hot);
+    
+    Core::Material cold_fullscreen_button("[button]fullscreen_cold");
+    cold_fullscreen_button.set_shader(shader);
+    cold_fullscreen_button.set_map_01(fullscreen_cold);
+
+    Core::Material hot_fullscreen_button("[button]fullscreen_hot");
+    hot_fullscreen_button.set_shader(shader);
+    hot_fullscreen_button.set_map_01(fullscreen_hot);
+
     // Quit Button
 
     Core::Texture quit_cold(Core::Directory::volatile_resource_path("assets/textures/button_back_cold.png"));
@@ -93,10 +109,17 @@ settings_init(Core::Context &context,
     buttons[0].hot_material   = Core::Material();
     
     buttons[1].entity         = Core::Entity(world);
-    buttons[1].entity.set_name("button_back");
+    buttons[1].entity.set_name("button_fullscreen");
     buttons[1].entity.set_tags(Object_tags::gui_cam);
-    buttons[1].cold_material  = cold_quit_button;
-    buttons[1].hot_material   = hot_quit_button;
+    buttons[1].cold_material  = cold_fullscreen_button;
+    buttons[1].hot_material   = hot_fullscreen_button;
+
+    buttons[2].entity         = Core::Entity(world);
+    buttons[2].entity.set_name("button_back");
+    buttons[2].entity.set_tags(Object_tags::gui_cam);
+    buttons[2].cold_material  = cold_quit_button;
+    buttons[2].hot_material   = hot_quit_button;
+
     
     const Core::Model model(Core::Directory::volatile_resource_path("assets/models/unit_cube.obj"));
   
@@ -127,6 +150,14 @@ settings_update(Core::Context &ctx,
     {
       Core::Lib::Menu_list::clear(buttons, buttons_count);
       return Game_state::title_screen;
+    }
+  }
+
+  else if(selected_button && strcmp(selected_button.get_name(), "button_fullscreen") == 0)
+  {
+    if(controller.is_button_up_on_frame(button_start))
+    {
+      ctx.set_fullscreen(!ctx.is_fullscreen());
     }
   }
   
