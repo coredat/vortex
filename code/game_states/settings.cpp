@@ -162,8 +162,7 @@ settings_update(Core::Context &ctx,
       
       if(!ctx.is_fullscreen())
       {
-        ctx.set_width(1024);
-        ctx.set_height(576);
+        ctx.set_resolution(1024, 576);
         ctx.set_title("Vertex Defender");
       }
       

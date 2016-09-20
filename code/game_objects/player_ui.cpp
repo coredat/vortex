@@ -136,7 +136,7 @@ Player_ui::Player_ui(Core::World &world,
   m_screen_pos = get_position(ctx, controller_id - 1, ui_type);
   
 //  const math::vec3 position = Screen_cast::intersect_screen_plane(gui_cam, math::get_x(screen_pos), math::get_y(screen_pos));
-  const math::vec3 position = Core::Camera_utils::get_world_position_on_nearplane(gui_cam, Core::Axis{math::get_x(m_screen_pos), math::get_y(m_screen_pos)});
+  const math::vec3 position = Core::Camera_utils::get_world_position_on_nearplane(gui_cam, Core::Axis{math::get_x(m_screen_pos), math::get_y(m_screen_pos) + 30.f});
   const float texture_width = math::to_float(numbers[0].get_map_01().get_width()) * 0.5f;
   
   // Set inital placement of the counters
@@ -148,13 +148,13 @@ Player_ui::Player_ui(Core::World &world,
       constexpr float scale = 3.f;
       constexpr float inv_scale = 1.f / scale;
     
-      const Core::Transform trans_tens {
+      const Core::Transform trans {
         math::vec3_add(position, math::vec3_init(offset_x, 0.f, 0.f)),
         math::vec3_init(texture_width * inv_scale),
         math::quat_init()
       };
       
-      m_counters[i].set_transform(trans_tens);
+      m_counters[i].set_transform(trans);
       
       offset_x -= (texture_width * inv_scale);
     }
