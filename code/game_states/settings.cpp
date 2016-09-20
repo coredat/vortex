@@ -3,6 +3,7 @@
 #include <game_states/title_screen.hpp>
 #include <common/game_state.hpp>
 #include <common/object_tags.hpp>
+#include <game_objects/main_camera.hpp>
 #include <core/context/context.hpp>
 #include <core/world/world.hpp>
 #include <core/resources/material.hpp>
@@ -158,6 +159,40 @@ settings_update(Core::Context &ctx,
     if(controller.is_button_up_on_frame(button_start))
     {
       ctx.set_fullscreen(!ctx.is_fullscreen());
+      
+      if(!ctx.is_fullscreen())
+      {
+        ctx.set_width(1024);
+        ctx.set_height(576);
+        ctx.set_title("Vertex Defender");
+        
+        // Get cameras
+        Core::Entity_ref camera_entity = world.find_entity_by_name("Main Camera");
+        
+        if(camera_entity)
+        {
+          Game_object::Main_camera *cam_obj = reinterpret_cast<Game_object::Main_camera*>(camera_entity.get_user_data());
+          assert(cam_obj);
+          
+          if(cam_obj)
+          {
+            cam_obj->m_world_camera.set_height(ctx.get_height());
+            cam_obj->m_world_camera.set_width(ctx.get_width());
+            
+            cam_obj->m_gui_camera.set_height(ctx.get_height());
+            cam_obj->m_gui_camera.set_width(ctx.get_width());
+            
+            cam_obj->m_final_post_camera.set_width(ctx.get_width());
+            cam_obj->m_final_post_camera.set_height(ctx.get_height());
+            
+            cam_obj->m_level_camera.set_width(ctx.get_width());
+            cam_obj->m_level_camera.set_height(ctx.get_height());
+          }
+          
+          settings_init(ctx, world, camera);
+        }
+        
+      }
     }
   }
   

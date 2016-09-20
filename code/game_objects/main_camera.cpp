@@ -26,7 +26,7 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
 , m_world_camera(world)
 , m_level_camera(world)
 , m_gui_camera(world)
-, m_final_post_camera(world)
+//, m_final_post_camera(world)
 , m_gui_camera_entity(world)
 {
   Core::Entity_ref ref = get_entity();
@@ -37,18 +37,18 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   curr_trans.set_position(math::vec3_init(0.f, 0.f, 12.f));
   ref.set_transform(curr_trans);
   
-  Core::Render_target render_target(ctx.get_width(), ctx.get_height(), Graphics_api::Pixel_format::rgb8);
-  Core::Render_target blur_target(ctx.get_width(), ctx.get_height(), Graphics_api::Pixel_format::rgb8);
+//  Core::Render_target render_target(ctx.get_width(), ctx.get_height(), Graphics_api::Pixel_format::rgb8);
+//  Core::Render_target blur_target(ctx.get_width(), ctx.get_height(), Graphics_api::Pixel_format::rgb8);
   
-  const char *shader_file = Core::Directory::volatile_resource_path("assets/shaders/vortex_level_post.ogl");
-  Core::Shader post_shader(shader_file);
+//  const char *shader_file = Core::Directory::volatile_resource_path("assets/shaders/vortex_level_post.ogl");
+//  Core::Shader post_shader(shader_file);
   
-  const char *b_mat = Core::Directory::volatile_resource_path("assets/textures/bayer_mat.png");
-  Core::Texture bayer(b_mat);
+//  const char *b_mat = Core::Directory::volatile_resource_path("assets/textures/bayer_mat.png");
+//  Core::Texture bayer(b_mat);
   
-  Core::Post_process post("post-process");
-  post.set_shader(post_shader);
-  post.set_input_01(render_target.get_texture());
+//  Core::Post_process post("post-process");
+//  post.set_shader(post_shader);
+//  post.set_input_01(render_target.get_texture());
   
   m_world_camera.set_attached_entity(ref);
   m_world_camera.set_width(ctx.get_width());
@@ -57,8 +57,8 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   m_world_camera.set_clear_flags(Core::Camera_clear::color | Core::Camera_clear::depth);
   m_world_camera.set_clear_color(0x222222FF);
   m_world_camera.set_tags_to_render(Object_tags::world_cam);
-  m_world_camera.set_render_target(render_target);
-  m_world_camera.set_priority(4);
+//  m_world_camera.set_render_target(render_target);
+  m_world_camera.set_priority(3);
  
   m_level_camera.set_attached_entity(ref);
   m_level_camera.set_width(m_world_camera.get_width());
@@ -67,10 +67,10 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   m_level_camera.set_near_plane(m_world_camera.get_near_plane());
   m_level_camera.set_far_plane(m_world_camera.get_far_plane());
   m_level_camera.set_type(m_world_camera.get_type());
-  m_level_camera.set_render_target(render_target);
+//  m_level_camera.set_render_target(render_target);
   m_level_camera.set_clear_flags(0);
   m_level_camera.set_tags_to_render(Object_tags::level_cam);
-  m_level_camera.set_priority(3);
+  m_level_camera.set_priority(2);
   
   m_gui_camera.set_attached_entity(m_gui_camera_entity);
   m_gui_camera.set_type(Core::Camera_type::orthographic);
@@ -79,20 +79,20 @@ Main_camera::Main_camera(Core::World &world, Core::Context &ctx)
   m_gui_camera.set_near_plane(m_world_camera.get_near_plane());
   m_gui_camera.set_far_plane(m_world_camera.get_far_plane());
   m_gui_camera.set_clear_flags(Core::Camera_clear::depth);
-  m_gui_camera.set_render_target(render_target);
+//  m_gui_camera.set_render_target(render_target);
   m_gui_camera.set_tags_to_render(Object_tags::gui_cam);
-  m_gui_camera.set_priority(2);
+  m_gui_camera.set_priority(1);
   
-  // Set post process.
-  m_final_post_camera.set_attached_entity(ref);
-  m_final_post_camera.set_width(m_world_camera.get_width());
-  m_final_post_camera.set_height(m_world_camera.get_height());
-  m_final_post_camera.set_feild_of_view(m_world_camera.get_field_of_view());
-  m_final_post_camera.set_near_plane(m_world_camera.get_near_plane());
-  m_final_post_camera.set_far_plane(m_world_camera.get_far_plane());
-  m_final_post_camera.set_clear_flags(Core::Camera_clear::depth | Core::Camera_clear::color);
-  m_final_post_camera.set_post_process(post);
-  m_final_post_camera.set_priority(1);
+//  // Set post process.
+//  m_final_post_camera.set_attached_entity(ref);
+//  m_final_post_camera.set_width(m_world_camera.get_width());
+//  m_final_post_camera.set_height(m_world_camera.get_height());
+//  m_final_post_camera.set_feild_of_view(m_world_camera.get_field_of_view());
+//  m_final_post_camera.set_near_plane(m_world_camera.get_near_plane());
+//  m_final_post_camera.set_far_plane(m_world_camera.get_far_plane());
+//  m_final_post_camera.set_clear_flags(Core::Camera_clear::depth | Core::Camera_clear::color);
+//  m_final_post_camera.set_post_process(post);
+//  m_final_post_camera.set_priority(1);
 }
 
 

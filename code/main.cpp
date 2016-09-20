@@ -207,11 +207,6 @@ main()
           break;
           
         case(Game_state::quit):
-          saved_settings.width = context.get_width();
-          saved_settings.height = context.get_height();
-          saved_settings.is_fullscreen = context.is_fullscreen() ? 1 : 0;
-          saved_settings.monitor = context.get_display();
-          context.close();
           break;
           
         default:
@@ -339,7 +334,6 @@ main()
       
                 
       case(Game_state::quit):
-        context.close();
         break;
       
       default:
@@ -356,6 +350,13 @@ main()
       objs.on_destroy();
     }
   }
+  
+  saved_settings.width = context.get_width();
+  saved_settings.height = context.get_height();
+  saved_settings.is_fullscreen = context.is_fullscreen() ? 1 : 0;
+  saved_settings.monitor = context.get_display();
+  
+  context.close();
   
   // Write out display settings.
   Common::write_settings(saved_settings);
