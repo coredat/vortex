@@ -13,12 +13,12 @@
 
 namespace {
 
-Core::Model         model;
-Core::Texture       texture;
-constexpr float     boomerang_horz_speed = 4.f;
-constexpr float     boomerang_vert_speed = 30.f;
+Core::Model     model;
+Core::Texture   texture;
+constexpr float boomerang_horz_speed = 4.f;
+constexpr float boomerang_vert_speed = 30.f;
   
-}
+} // anon ns
 
 
 namespace Enemy_logic {
