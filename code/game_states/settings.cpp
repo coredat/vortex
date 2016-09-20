@@ -165,33 +165,32 @@ settings_update(Core::Context &ctx,
         ctx.set_width(1024);
         ctx.set_height(576);
         ctx.set_title("Vertex Defender");
+      }
+      
+      // Get cameras
+      Core::Entity_ref camera_entity = world.find_entity_by_name("Main Camera");
+      
+      if(camera_entity)
+      {
+        Game_object::Main_camera *cam_obj = reinterpret_cast<Game_object::Main_camera*>(camera_entity.get_user_data());
+        assert(cam_obj);
         
-        // Get cameras
-        Core::Entity_ref camera_entity = world.find_entity_by_name("Main Camera");
-        
-        if(camera_entity)
+        if(cam_obj)
         {
-          Game_object::Main_camera *cam_obj = reinterpret_cast<Game_object::Main_camera*>(camera_entity.get_user_data());
-          assert(cam_obj);
+          cam_obj->m_world_camera.set_height(ctx.get_height());
+          cam_obj->m_world_camera.set_width(ctx.get_width());
           
-          if(cam_obj)
-          {
-            cam_obj->m_world_camera.set_height(ctx.get_height());
-            cam_obj->m_world_camera.set_width(ctx.get_width());
-            
-            cam_obj->m_gui_camera.set_height(ctx.get_height());
-            cam_obj->m_gui_camera.set_width(ctx.get_width());
-            
-            cam_obj->m_final_post_camera.set_width(ctx.get_width());
-            cam_obj->m_final_post_camera.set_height(ctx.get_height());
-            
-            cam_obj->m_level_camera.set_width(ctx.get_width());
-            cam_obj->m_level_camera.set_height(ctx.get_height());
-          }
+          cam_obj->m_gui_camera.set_height(ctx.get_height());
+          cam_obj->m_gui_camera.set_width(ctx.get_width());
           
-          settings_init(ctx, world, camera);
+          cam_obj->m_final_post_camera.set_width(ctx.get_width());
+          cam_obj->m_final_post_camera.set_height(ctx.get_height());
+          
+          cam_obj->m_level_camera.set_width(ctx.get_width());
+          cam_obj->m_level_camera.set_height(ctx.get_height());
         }
         
+        settings_init(ctx, world, camera);
       }
     }
   }
