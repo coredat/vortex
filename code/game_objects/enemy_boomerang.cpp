@@ -15,8 +15,8 @@ namespace {
 
 Core::Model         model;
 Core::Texture       texture;
-constexpr float     boomerang_horz_speed      = 6.f;
-constexpr float     boomerang_vert_speed      = 20.f;
+constexpr float     boomerang_horz_speed = 4.f;
+constexpr float     boomerang_vert_speed = 30.f;
   
 }
 
@@ -74,7 +74,7 @@ boomerang_update(Game_object::Enemy &enemy,
     if(!math::is_between(enemy.m_depth, Level_funcs::get_bottom_of_level(), Level_funcs::get_top_of_level()))
     {
       enemy.m_depth = math::clamp(enemy.m_depth, Level_funcs::get_bottom_of_level(), Level_funcs::get_top_of_level());
-      enemy.m_direction *= -1;
+//      enemy.m_direction *= -1;
     }
     
     const math::vec3 pos = trans.get_position();
