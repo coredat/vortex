@@ -18,10 +18,13 @@ public:
 
   enum class Type
   {
-    shooter,  // Stays at the bottom and shoots up.
-    climber,  // Climbs up and down.
-    breeder,  // Climbs to the top and drops eggs.
-    egg,      // Spaned by the breader.
+    climber,    // Climbs up and down.
+    shooter,    // Stays at the bottom and shoots up.
+    breeder,    // Climbs to the top and drops eggs.
+    boomerang,  // Spins all the way to the top.
+    
+    
+    egg,      // Spaned by the breader. // Keep this the last type, we use size - 1 not to spawn eggs.
     
     size // nothing under here.
   };

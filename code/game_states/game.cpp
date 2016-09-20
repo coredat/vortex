@@ -17,18 +17,26 @@
 #include <assert.h>
 
 
+namespace {
+
+float spawn_timer = 0.f;
+float game_timer = 0.f;
+
+} // ns
+
+
 void
 game_init(Core::Context &ctx,
           Core::World &world)
 {
+  spawn_timer = 0.f;
+  game_timer = 0.f;
 }
 
 
-namespace
-{
+namespace {
 
 constexpr float spawn_rate = 0.2f;
-float spawn_timer = 0.f;
 
 void
 spawn_enemies(Core::World &world,
@@ -36,6 +44,7 @@ spawn_enemies(Core::World &world,
               Game_object::World_objects &objs)
 {
   spawn_timer += dt;
+  game_timer += dt;
   
   // Max out spawns.
   if(world.get_entity_count_in_world() > Global::g_max_spawn_entities)
@@ -48,13 +57,17 @@ spawn_enemies(Core::World &world,
     spawn_timer = 0;
     
     using Enemy_type = Game_object::Enemy::Type;
-    Enemy_type what_to_spawn = (Enemy_type)(rand() % (uint32_t)Enemy_type::size);
+    
+    const uint32_t level = math::min(math::to_uint(game_timer) + 1, (uint32_t)Enemy_type::size - 1);
+    
+    Enemy_type what_to_spawn = (Enemy_type)(rand() % level);
     
     switch(what_to_spawn)
     {
       case(Enemy_type::climber):
       case(Enemy_type::breeder):
       case(Enemy_type::shooter):
+      case(Enemy_type::boomerang):
         objs.push_object(new Game_object::Enemy(world, what_to_spawn));
         break;
         

@@ -6,6 +6,7 @@
 #include <game_objects/bullet.hpp>
 #include <game_objects/enemy_breeder.hpp>
 #include <game_objects/enemy_climber.hpp>
+#include <game_objects/enemy_boomerang.hpp>
 #include <game_objects/enemy_shooter.hpp>
 #include <common/level_functions.hpp>
 #include <common/event_ids.hpp>
@@ -33,7 +34,7 @@ namespace
   Core::Model   model;
   Core::Material generic_material;
   
-  constexpr uint32_t  chances_of_powerup = 10; // to 1
+  constexpr uint32_t  chances_of_powerup = 20; // to 1
 }
 
 
@@ -58,6 +59,10 @@ update(Game_object::Enemy &enemy, const float dt, Game_object::World_objects &ob
       
     case(Game_object::Enemy::Type::egg):
       Enemy_logic::egg_update(enemy, dt, objs);
+      break;
+
+    case(Game_object::Enemy::Type::boomerang):
+      Enemy_logic::boomerang_update(enemy, dt, objs);
       break;
       
     case(Game_object::Enemy::Type::shooter):
@@ -134,6 +139,10 @@ Enemy::on_start()
   
     case(Enemy::Type::climber):
       Enemy_logic::climber_setup(*this);
+      break;
+
+    case(Enemy::Type::boomerang):
+      Enemy_logic::boomerang_setup(*this);
       break;
       
     case(Enemy::Type::breeder):
