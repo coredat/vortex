@@ -12,11 +12,11 @@
 
 
 namespace Game {
-
-
 namespace Title_screen_utils {
   
+  
 constexpr uint32_t get_button_count() { return 5; }
+  
   
 } // ns
 

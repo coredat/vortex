@@ -50,6 +50,8 @@
 
 
 std::unique_ptr<Game::Title_screen> title_state = nullptr;
+std::unique_ptr<Game::Settings_screen> settings_screen = nullptr;
+std::unique_ptr<Game::Selection_screen> selection_screen = nullptr;
 
 
 int
@@ -148,9 +150,7 @@ main()
         
         case(Game_state::settings):
         {
-          settings_init(context,
-                        world,
-                        go_cam->m_gui_camera);
+          settings_screen.reset(new Game::Settings_screen(objs, world, context));
           break;
         }
         
@@ -164,17 +164,13 @@ main()
 
         case(Game_state::selection):
         {
-          Core::Input::mouse_set_capture(context, false);
-        
           if(first_load_selection)
           {
             first_load_selection = false;
 
           }
         
-          selection_init(context,
-                         world,
-                         go_cam->m_gui_camera);
+          selection_screen.reset(new Game::Selection_screen(objs, world, context));
           break;
         }
         
@@ -260,10 +256,7 @@ main()
       */
       case(Game_state::settings):
       {
-        next_state = settings_update(context,
-                                     world,
-                                     go_cam->m_gui_camera,
-                                     objs);
+        next_state = settings_screen->on_update();
       
         break;
       }
@@ -274,14 +267,7 @@ main()
       */
       case(Game_state::selection):
       {
-        next_state = selection_update(context,
-                                      world,
-                                      go_cam->m_world_camera,
-                                      go_cam->m_gui_camera,
-                                      players,
-                                      player_count,
-                                      objs,
-                                      dt);
+        next_state = selection_screen->on_update();
         
         if(next_state == Game_state::game_mode)
         {

@@ -2,26 +2,50 @@
 #define SELECTION_INCLUDED_6FFC83A8_6568_4EEE_993A_E7FEF3C177E9
 
 
+#include <game_states/game_state.hpp>
 #include <game_objects/game_objects_fwd.hpp>
 #include <common/common_fwd.hpp>
 #include <core/common/core_fwd.hpp>
+#include <core/entity/entity_ref.hpp>
+#include <core/input/controller.hpp>
+#include <lib/menu/button.hpp>
 
 
-void
-selection_init(Core::Context &ctx,
-               Core::World &world,
-               Core::Camera &camera);
+namespace Game {
+namespace Selection_screen_utils {
 
 
-Game_state
-selection_update(Core::Context &ctx,
-                 Core::World &world,
-                 Core::Camera &camera,
-                 Core::Camera &gui_camera,
-                 Game_object::Player *players[],
-                 const uint32_t player_count,
-                 Game_object::World_objects &objects,
-                 const float dt);
+constexpr uint32_t get_max_players() { return 4; }
+constexpr uint32_t get_max_models() { return 4; }
+
+
+} // ns
+
+
+
+class Selection_screen : public Game::State
+{
+public:
+
+  explicit       Selection_screen(Game_object::World_objects &objs,
+                                  Core::World &world,
+                                  Core::Context &ctx);
+  
+  Game_state     on_update() override;
+
+private:
+
+  const Core::Entity_ref    m_camera;
+  const Core::Controller    m_controllers[4];
+  Core::Lib::Button         m_continue_button;
+  Core::Entity              m_selection_screens[Selection_screen_utils::get_max_players()];
+  Core::Entity              m_signed_in_selections[Selection_screen_utils::get_max_players()];
+
+
+};
+
+
+} // ns
 
 
 #endif // inc guard

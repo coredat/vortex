@@ -36,118 +36,133 @@
 #include <assert.h>
 
 
-namespace {
-
-constexpr uint32_t buttons_count = 3;
-Core::Lib::Menu_list::Image_button buttons[buttons_count];
-
-} // anon ns
+namespace Game {
 
 
-void
-settings_init(Core::Context &context,
-              Core::World &world,
-              Core::Camera &camera)
+Settings_screen::Settings_screen(Game_object::World_objects &objs,
+                                 Core::World &world,
+                                 Core::Context &ctx)
+: State(objs, world, ctx)
+, m_camera(get_world().find_entity_by_name("Main Camera"))
+, m_controllers{
+    Core::Controller(get_ctx(), 0),
+    Core::Controller(get_ctx(), 1),
+    Core::Controller(get_ctx(), 2),
+    Core::Controller(get_ctx(), 3),
+  }
 {
-  // Button
+  // We use mouse for screen menu.
+  Core::Input::mouse_set_capture(get_ctx(), false);
+  assert(m_camera);
+  
+  Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
+  assert(main_camera);
+ 
+  // Buttons
   {
-    buttons[0].entity         = Core::Entity(world);
-    buttons[0].entity.set_name("button_title");
-    buttons[0].entity.set_tags(Object_tags::gui_cam);
-    buttons[0].cold_material  = Factory::Material::get_settings_menu_title();
-    buttons[0].hot_material   = Core::Material();
+    m_buttons[0].entity         = Core::Entity(world);
+    m_buttons[0].entity.set_name("button_title");
+    m_buttons[0].entity.set_tags(Object_tags::gui_cam);
+    m_buttons[0].cold_material  = Factory::Material::get_settings_menu_title();
+    m_buttons[0].hot_material   = Core::Material();
     
-    buttons[1].entity         = Core::Entity(world);
-    buttons[1].entity.set_name("button_fullscreen");
-    buttons[1].entity.set_tags(Object_tags::gui_cam);
-    buttons[1].cold_material  = Factory::Material::get_settings_menu_fullscreen_cold();
-    buttons[1].hot_material   = Factory::Material::get_settings_menu_fullscreen_hot();
+    m_buttons[1].entity         = Core::Entity(world);
+    m_buttons[1].entity.set_name("button_fullscreen");
+    m_buttons[1].entity.set_tags(Object_tags::gui_cam);
+    m_buttons[1].cold_material  = Factory::Material::get_settings_menu_fullscreen_cold();
+    m_buttons[1].hot_material   = Factory::Material::get_settings_menu_fullscreen_hot();
 
-    buttons[2].entity         = Core::Entity(world);
-    buttons[2].entity.set_name("button_back");
-    buttons[2].entity.set_tags(Object_tags::gui_cam);
-    buttons[2].cold_material  = Factory::Material::get_menu_back_cold();
-    buttons[2].hot_material   = Factory::Material::get_menu_back_hot();
+    m_buttons[2].entity         = Core::Entity(world);
+    m_buttons[2].entity.set_name("button_back");
+    m_buttons[2].entity.set_tags(Object_tags::gui_cam);
+    m_buttons[2].cold_material  = Factory::Material::get_menu_back_cold();
+    m_buttons[2].hot_material   = Factory::Material::get_menu_back_hot();
 
     
     const Core::Model model(Core::Directory::volatile_resource_path("assets/models/unit_cube.obj"));
   
-    Core::Lib::Menu_list::inititalize(buttons, buttons_count, model, camera);
+    Core::Lib::Menu_list::inititalize(m_buttons,
+                                      Settings_screen_utils::get_button_count(),
+                                      model,
+                                      main_camera->m_gui_camera);
   }
-
 }
 
 
 Game_state
-settings_update(Core::Context &ctx,
-                Core::World &world,
-                Core::Camera &camera,
-                Game_object::World_objects &objs)
+Settings_screen::on_update()
 {
-  const Core::Controller controller = Core::Controller(ctx, 0);
- 
-  Core::Lib::Menu_list::navigate(controller, buttons, buttons_count);
-  Core::Lib::Menu_list::mouse_over(camera, world, Core::Input::mouse_get_coordinates(ctx), buttons, buttons_count);
+  Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
+  assert(main_camera);
+
+
+  Core::Lib::Menu_list::navigate(m_controllers[0],
+                                 m_buttons,
+                                 Settings_screen_utils::get_button_count());
   
-  const Core::Entity_ref selected_button = buttons[0].entity;
+  Core::Lib::Menu_list::mouse_over(main_camera->m_gui_camera,
+                                   get_world(),
+                                   Core::Input::mouse_get_coordinates(get_ctx()),
+                                   m_buttons,
+                                   Settings_screen_utils::get_button_count());
+  
+  const Core::Entity_ref selected_button = m_buttons[0].entity;
   
   constexpr uint32_t button_start = Core::Gamepad_button::button_a | Core::Gamepad_button::button_start;
 
   if(selected_button && strcmp(selected_button.get_name(), "button_back") == 0)
   {
-    if(controller.is_button_up_on_frame(button_start))
+    if(m_controllers[0].is_button_up_on_frame(button_start))
     {
-      Core::Lib::Menu_list::clear(buttons, buttons_count);
+      Core::Lib::Menu_list::clear(m_buttons, Settings_screen_utils::get_button_count());
       return Game_state::title_screen;
     }
   }
 
   else if(selected_button && strcmp(selected_button.get_name(), "button_fullscreen") == 0)
   {
-    if(controller.is_button_up_on_frame(button_start))
+    if(m_controllers[0].is_button_up_on_frame(button_start))
     {
-      ctx.set_fullscreen(!ctx.is_fullscreen());
+      get_ctx().set_fullscreen(!get_ctx().is_fullscreen());
       
-      if(!ctx.is_fullscreen())
+      if(!get_ctx().is_fullscreen())
       {
-        ctx.set_resolution(1024, 576);
-        ctx.set_title("Vertex Defender");
+        get_ctx().set_resolution(1024, 576);
+        get_ctx().set_title("Vertex Defender");
       }
       
       // Get cameras
-      Core::Entity_ref camera_entity = world.find_entity_by_name("Main Camera");
       
-      if(camera_entity)
+      if(main_camera)
       {
-        Game_object::Main_camera *cam_obj = reinterpret_cast<Game_object::Main_camera*>(camera_entity.get_user_data());
-        assert(cam_obj);
+        main_camera->m_world_camera.set_height(get_ctx().get_height());
+        main_camera->m_world_camera.set_width(get_ctx().get_width());
         
-        if(cam_obj)
-        {
-          cam_obj->m_world_camera.set_height(ctx.get_height());
-          cam_obj->m_world_camera.set_width(ctx.get_width());
-          
-          cam_obj->m_gui_camera.set_height(ctx.get_height());
-          cam_obj->m_gui_camera.set_width(ctx.get_width());
-          
-          cam_obj->m_final_post_camera.set_width(ctx.get_width());
-          cam_obj->m_final_post_camera.set_height(ctx.get_height());
-          
-          cam_obj->m_level_camera.set_width(ctx.get_width());
-          cam_obj->m_level_camera.set_height(ctx.get_height());
-        }
+        main_camera->m_gui_camera.set_height(get_ctx().get_height());
+        main_camera->m_gui_camera.set_width(get_ctx().get_width());
         
-        settings_init(ctx, world, camera);
+        main_camera->m_final_post_camera.set_width(get_ctx().get_width());
+        main_camera->m_final_post_camera.set_height(get_ctx().get_height());
+        
+        main_camera->m_level_camera.set_width(get_ctx().get_width());
+        main_camera->m_level_camera.set_height(get_ctx().get_height());
+      
+//        settings_init(get_ctx(), get_world(), camera);
+        assert(false); // Need to recall state or something?
+        // make send a new state back?
       }
     }
   }
   
   // Generic if back then go back
-  if(controller.is_button_up_on_frame(Core::Gamepad_button::button_back))
+  if(m_controllers[0].is_button_up_on_frame(Core::Gamepad_button::button_back))
   {
-    Core::Lib::Menu_list::clear(buttons, buttons_count);
+    Core::Lib::Menu_list::clear(m_buttons, Settings_screen_utils::get_button_count());
     return Game_state::title_screen;
   }
 
   return Game_state::settings;
 }
+
+
+} // ns

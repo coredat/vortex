@@ -1,4 +1,6 @@
 #include <game_states/selection.hpp>
+#include <game_objects/main_camera.hpp>
+#include <core/world/world.hpp>
 #include <factories/material.hpp>
 #include <game_objects/world_objects.hpp>
 #include <game_objects/player.hpp>
@@ -33,32 +35,50 @@ namespace
   constexpr uint32_t  number_of_materials = 4;
   
   Core::Material      materials[number_of_materials];
-  Core::Material      no_selection_material;
-  Core::Material      selection_material;
 
   constexpr uint32_t  number_of_models = 4;
   Core::Model         models[number_of_models];
-  Core::Model         plane;
   
   constexpr uint32_t  max_number_of_players = 4;
   uint32_t            players_signed_in = 0;
   uint32_t            current_player_selection[max_number_of_players];
   
-  Core::Entity        selection_screens[max_number_of_players];
-  Core::Entity        signed_in_selections[max_number_of_players];
+//  Core::Entity        selection_screens[max_number_of_players];
+//  Core::Entity        signed_in_selections[max_number_of_players];
   
-  Core::Lib::Button   continue_button;
+//  Core::Lib::Button   continue_button;
 }
 
 
-void
-selection_init(Core::Context &ctx,
-               Core::World &world,
-               Core::Camera &cam)
+namespace Game {
+
+
+Selection_screen::Selection_screen(Game_object::World_objects &objs,
+                                   Core::World &world,
+                                   Core::Context &ctx)
+: State(objs, world, ctx)
+, m_camera(get_world().find_entity_by_name("Main Camera"))
+, m_controllers{
+    Core::Controller(get_ctx(), 0),
+    Core::Controller(get_ctx(), 1),
+    Core::Controller(get_ctx(), 2),
+    Core::Controller(get_ctx(), 3),
+  }
+, m_selection_screens{
+    Core::Entity(get_world()),
+    Core::Entity(get_world()),
+    Core::Entity(get_world()),
+    Core::Entity(get_world()),
+  }
+, m_signed_in_selections{
+    Core::Entity(),
+    Core::Entity(),
+    Core::Entity(),
+    Core::Entity(),
+  }
 {
-  // Load materials
-  no_selection_material = Factory::Material::get_selection_none_controller();
-  selection_material    = Factory::Material::get_selection_choose_ship_controller();
+  Core::Input::mouse_set_capture(get_ctx(), false);
+  assert(m_camera);
   
   uint32_t curr_mat = 0;
   materials[curr_mat++] = Factory::Material::get_ship_01_material();
@@ -91,49 +111,37 @@ selection_init(Core::Context &ctx,
   
   // Selection Screens
   {
-    plane = Core::Model(Core::Directory::volatile_resource_path("assets/models/unit_plane.obj"));
-    
-    for(auto &sel : selection_screens)
+    for(auto &sel : m_selection_screens)
     {
-      sel = Core::Entity(world);
       sel.set_name("Selection[choose]");
       sel.set_tags(Object_tags::gui_cam);
       
-      const Core::Material_renderer mat_renderer(no_selection_material, plane);
+      const Core::Material_renderer mat_renderer(
+        Factory::Material::get_selection_none_controller(),
+        Core::Model(Core::Directory::volatile_resource_path("assets/models/unit_plane.obj")
+      ));
+        
       sel.set_renderer(mat_renderer);
     }
   }
+
 }
 
-
+  
 Game_state
-selection_update(Core::Context &ctx,
-                 Core::World &world,
-                 Core::Camera &cam,
-                 Core::Camera &gui_cam,
-                 Game_object::Player *players[],
-                 const uint32_t player_count,
-                 Game_object::World_objects &objects,
-                 const float dt)
+Selection_screen::on_update()
 {
-  constexpr uint32_t number_of_controllers = 4;
-  
-  const Core::Controller controllers[number_of_controllers]
-  {
-    Core::Controller(ctx, 0),
-    Core::Controller(ctx, 1),
-    Core::Controller(ctx, 2),
-    Core::Controller(ctx, 3),
-  };
-  
+  Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
+  assert(main_camera);
+
   bool button_pushed = false;
   bool button_hovered = false;
   
-  if(continue_button.is_over(gui_cam, world, ctx))
+  if(m_continue_button.is_over(main_camera->m_gui_camera, get_world(), get_ctx()))
   {
     button_hovered = true;
     
-    if(continue_button.was_touched(gui_cam, world, ctx))
+    if(m_continue_button.was_touched(main_camera->m_gui_camera, get_world(), get_ctx()))
     {
       button_pushed = true;
     }
@@ -142,13 +150,13 @@ selection_update(Core::Context &ctx,
   /*
     If p1 hits start we start.
   */
-  for(const auto &ctrl : controllers)
+  for(const auto &ctrl : m_controllers)
   {
     if((button_pushed || ctrl.is_button_up_on_frame(Core::Gamepad_button::button_start)) && players_signed_in > 0)
     {
       // Reset selection screen
       {
-        for(auto &sel : selection_screens)
+        for(auto &sel : m_selection_screens)
         {
           // Currently the best way to hide an entity is just
           // to create a new one :D
@@ -156,12 +164,24 @@ selection_update(Core::Context &ctx,
         }
       }
       
+      Core::Entity_ref *refs_arr;
+      size_t refs_count = 0;
+      get_world().find_entities_by_name("Player", &refs_arr, &refs_count);
+      assert(refs_count == 4);
+      
+      Game_object::Player *players[4];
+      
+      for(uint32_t i = 0 ; i < 4; ++i)
+      {
+        players[i] = reinterpret_cast<Game_object::Player*>(refs_arr[i].get_user_data());
+      }
+      
       // Remove player selection screens
       // And spawn the player.
       {
         for(uint32_t i = 0; i < 4; ++i)
         {
-          auto &sel = signed_in_selections[i];
+          auto &sel = m_signed_in_selections[i];
           
           if(sel)
           {
@@ -169,8 +189,8 @@ selection_update(Core::Context &ctx,
             players[i]->set_material(static_cast<Core::Material_renderer>(sel.get_renderer()).get_material());
             players[i]->set_controller(i);
             
-            objects.push_object(players[i]->spawn_ship(ctx));
-            objects.push_object(players[i]->spawn_ui(ctx, gui_cam, cam));
+            get_world_objs().push_object(players[i]->spawn_ship(get_ctx()));
+            get_world_objs().push_object(players[i]->spawn_ui(get_ctx(), main_camera->m_gui_camera, main_camera->m_world_camera));
             
             sel.destroy();
           }
@@ -178,7 +198,7 @@ selection_update(Core::Context &ctx,
       }
       
       // Reset button
-      continue_button = Core::Lib::Button();
+      m_continue_button = Core::Lib::Button();
       
       return Game_state::game_mode;
     }
@@ -187,39 +207,39 @@ selection_update(Core::Context &ctx,
   /*
     Selection
   */
-  for(uint32_t i = 0; i < number_of_controllers; ++i)
+  for(uint32_t i = 0; i < 4; ++i)
   {
-    if(!signed_in_selections[i])
+    if(!m_signed_in_selections[i])
     {
-      if(controllers[i].is_button_down_on_frame(Core::Gamepad_button::button_a))
+      if(m_controllers[i].is_button_down_on_frame(Core::Gamepad_button::button_a))
       {
         const Core::Material_renderer mat_renderer(materials[0], models[0]);
         
-        signed_in_selections[i] = Core::Entity(world);
-        signed_in_selections[i].set_name("selection[ship-entity]");
-        signed_in_selections[i].set_tags(Object_tags::world_cam);
-        signed_in_selections[i].set_renderer(mat_renderer);
-        signed_in_selections[i].set_transform(selection_screens[i].get_transform());
+        m_signed_in_selections[i] = Core::Entity(get_world());
+        m_signed_in_selections[i].set_name("selection[ship-entity]");
+        m_signed_in_selections[i].set_tags(Object_tags::world_cam);
+        m_signed_in_selections[i].set_renderer(mat_renderer);
+        m_signed_in_selections[i].set_transform(m_selection_screens[i].get_transform());
         
         ++players_signed_in;
       }
     }
     
-    if(controllers[i].is_button_down_on_frame(Core::Gamepad_button::button_a))
+    if(m_controllers[i].is_button_down_on_frame(Core::Gamepad_button::button_a))
     {
       // Start screen
-      if(!continue_button)
+      if(!m_continue_button)
       {
         // Continue button
         {
           const Core::Texture hot_texture(Core::Directory::volatile_resource_path("assets/textures/button_continue_hot.png"));
           const Core::Texture cold_texture(Core::Directory::volatile_resource_path("assets/textures/button_continue_cold.png"));
           
-          continue_button = Core::Lib::Button(world,
-                                              ctx,
+          m_continue_button = Core::Lib::Button(get_world(),
+                                              get_ctx(),
                                               "continue",
-                                              math::vec2_init(ctx.get_width() / 2, (ctx.get_height() / 6) * 5),
-                                              gui_cam,
+                                              math::vec2_init(get_ctx().get_width() / 2, (get_ctx().get_height() / 6) * 5),
+                                              main_camera->m_gui_camera,
                                               hot_texture,
                                               cold_texture);
         }
@@ -234,10 +254,13 @@ selection_update(Core::Context &ctx,
       const uint32_t selection = current_player_selection[i];
      
       const Core::Material_renderer player_renderer(materials[selection], models[selection]);
-      signed_in_selections[i].set_renderer(player_renderer);
+      m_signed_in_selections[i].set_renderer(player_renderer);
       
-      const Core::Material_renderer sel_renderer(selection_material, plane);
-      selection_screens[i].set_renderer(sel_renderer);
+      const Core::Material_renderer sel_renderer(
+        Factory::Material::get_selection_choose_ship_controller(),
+        Core::Model(Core::Directory::volatile_resource_path("assets/models/unit_plane.obj"))
+      );
+      m_selection_screens[i].set_renderer(sel_renderer);
     }
   }
   
@@ -246,11 +269,11 @@ selection_update(Core::Context &ctx,
   */
   for(uint32_t i = 0; i < 4; ++i)
   {
-    auto &sel = selection_screens[i];
+    auto &sel = m_selection_screens[i];
     
-    const float screen_div = math::to_float(ctx.get_width()) / 5.f;
-    const float x_offset   = (screen_div + (screen_div * i)) - (ctx.get_width() / 2.f);
-    const float y_offset   = math::to_float(ctx.get_height() >> 1);
+    const float screen_div = math::to_float(get_ctx().get_width()) / 5.f;
+    const float x_offset   = (screen_div + (screen_div * i)) - (get_ctx().get_width() / 2.f);
+    const float y_offset   = math::to_float(get_ctx().get_height() >> 1);
 
     sel.set_transform(Core::Transform(
       math::vec3_init(x_offset, 0, 0),
@@ -258,17 +281,17 @@ selection_update(Core::Context &ctx,
       math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau())
     ));
 
-    if(signed_in_selections[i])
+    if(m_signed_in_selections[i])
     {
-      const float screen_div = math::to_float(ctx.get_width()) / 5.f;
+      const float screen_div = math::to_float(get_ctx().get_width()) / 5.f;
       const float x_offset   = screen_div + (screen_div * i);
-      const float y_offset   = math::to_float(ctx.get_height() >> 1);
+      const float y_offset   = math::to_float(get_ctx().get_height() >> 1);
 
-      auto sel_trans = selection_screens[i].get_transform();
+      auto sel_trans = m_selection_screens[i].get_transform();
       sel_trans.set_scale(math::vec3_init(1.f));
-      sel_trans.set_position(Screen_cast::intersect_screen_plane(cam, x_offset, y_offset));
+      sel_trans.set_position(Screen_cast::intersect_screen_plane(main_camera->m_world_camera, x_offset, y_offset));
       
-      signed_in_selections[i].set_transform(sel_trans);
+      m_signed_in_selections[i].set_transform(sel_trans);
     }
   }
   
@@ -277,11 +300,11 @@ selection_update(Core::Context &ctx,
   */
   {
     static float time = 0;
-    time += dt;
+    time += get_world().get_delta_time();
   
-    for(uint32_t i = 0; i < number_of_controllers; ++i)
+    for(uint32_t i = 0; i < 4; ++i)
     {
-      Core::Entity *sel = &signed_in_selections[i];
+      Core::Entity *sel = &m_signed_in_selections[i];
     
       if(sel && sel->is_valid())
       {
@@ -302,13 +325,13 @@ selection_update(Core::Context &ctx,
   /*
     Go back a screen!
   */
-  for(uint32_t i = 0; i < number_of_controllers; ++i)
+  for(uint32_t i = 0; i < 4; ++i)
   {
-    if(controllers[i].is_button_up_on_frame(Core::Gamepad_button::button_back | Core::Gamepad_button::button_b))
+    if(m_controllers[i].is_button_up_on_frame(Core::Gamepad_button::button_back | Core::Gamepad_button::button_b))
     {
       for(uint32_t i = 0; i < 4; ++i)
       {
-        auto &sel = signed_in_selections[i];
+        auto &sel = m_signed_in_selections[i];
         
         if(sel)
         {
@@ -316,14 +339,14 @@ selection_update(Core::Context &ctx,
         }
       }
       
-      for(auto &sel : selection_screens)
+      for(auto &sel : m_selection_screens)
       {
         // Currently the best way to hide an entity is just
         // to create a new one :D
         sel.destroy();
       }
       
-      continue_button = Core::Lib::Button();
+      m_continue_button = Core::Lib::Button();
       
       return Game_state::title_screen;
     }
@@ -331,3 +354,6 @@ selection_update(Core::Context &ctx,
   
   return Game_state::selection;
 }
+
+
+} // ns

@@ -21,6 +21,7 @@ Player::Player(Core::World &world)
 : Game_object(world)
 , m_counter(world)
 {
+  get_entity().set_name("Player");
 }
 
 
