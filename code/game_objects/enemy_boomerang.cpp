@@ -68,7 +68,7 @@ boomerang_update(Game_object::Enemy &enemy,
   
   // Depth
   {
-    enemy.m_depth += (boomerang_vert_speed * dt * static_cast<float>(enemy.m_direction));
+    enemy.m_depth           += (boomerang_vert_speed * dt * static_cast<float>(enemy.m_direction));
     enemy.m_point_on_circle += (boomerang_horz_speed * dt);
     
     if(!math::is_between(enemy.m_depth, Level_funcs::get_bottom_of_level(), Level_funcs::get_top_of_level()))
