@@ -6,11 +6,9 @@
 #include <core/context/context.hpp>
 #include <core/world/world.hpp>
 #include <core/resources/material.hpp>
-#include <core/resources/texture.hpp>
 #include <core/model/model.hpp>
 #include <core/entity/entity.hpp>
 #include <core/entity/entity_ref.hpp>
-#include <core/resources/shader.hpp>
 #include <core/transform/transform.hpp>
 #include <core/transform/transform_utils.hpp>
 #include <core/common/directory.hpp>
@@ -68,7 +66,6 @@ about_init(Core::Context &context,
     Core::Lib::Menu_list::inititalize(buttons, buttons_count, model, camera);
   }
 }
-
 
 
 Game_state

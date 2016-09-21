@@ -49,6 +49,7 @@
 #include <common/object_tags.hpp>
 
 
+std::unique_ptr<Game::Title_screen> title_state = nullptr;
 
 
 int
@@ -134,17 +135,14 @@ main()
           
         case(Game_state::title_screen):
         {
-          Core::Input::mouse_set_capture(context, false);
-
           if(first_load_title)
           {
             first_load_title = false;
             objs.push_object(new Game_object::Horizon(world));
           }
-        
-          title_screen_init(context,
-                            world,
-                            go_cam->m_gui_camera);
+          
+          title_state.reset(new Game::Title_screen(objs, world, context));
+          
           break;
         }
         
@@ -239,11 +237,7 @@ main()
       */
       case(Game_state::title_screen):
       {
-        next_state = title_screen_update(context,
-                                         world,
-                                         go_cam->m_gui_camera,
-                                         objs,
-                                         dt);
+        next_state = title_state->on_update();
         
         break;
       }
