@@ -40,6 +40,8 @@ private:
   Core::Lib::Button         m_continue_button;
   Core::Entity              m_selection_screens[Selection_screen_utils::get_max_players()];
   Core::Entity              m_signed_in_selections[Selection_screen_utils::get_max_players()];
+  uint32_t                  m_current_player_selection[Selection_screen_utils::get_max_players()];
+  uint32_t                  m_players_signed_in = 0;
 
 
 };

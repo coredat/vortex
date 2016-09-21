@@ -38,15 +38,6 @@ namespace
 
   constexpr uint32_t  number_of_models = 4;
   Core::Model         models[number_of_models];
-  
-  constexpr uint32_t  max_number_of_players = 4;
-  uint32_t            players_signed_in = 0;
-  uint32_t            current_player_selection[max_number_of_players];
-  
-//  Core::Entity        selection_screens[max_number_of_players];
-//  Core::Entity        signed_in_selections[max_number_of_players];
-  
-//  Core::Lib::Button   continue_button;
 }
 
 
@@ -76,6 +67,13 @@ Selection_screen::Selection_screen(Game_object::World_objects &objs,
     Core::Entity(),
     Core::Entity(),
   }
+, m_current_player_selection{
+    0,
+    0,
+    0,
+    0,
+  }
+, m_players_signed_in(0)
 {
   Core::Input::mouse_set_capture(get_ctx(), false);
   assert(m_camera);
@@ -101,11 +99,11 @@ Selection_screen::Selection_screen(Game_object::World_objects &objs,
   
   // Set player selections
   {
-    players_signed_in = 0;
+    m_players_signed_in = 0;
     
-    for(uint32_t p = 0; p < max_number_of_players; ++p)
+    for(uint32_t p = 0; p < Selection_screen_utils::get_max_models(); ++p)
     {
-      current_player_selection[p] = p;
+      m_current_player_selection[p] = p;
     }
   }
   
@@ -152,7 +150,7 @@ Selection_screen::on_update()
   */
   for(const auto &ctrl : m_controllers)
   {
-    if((button_pushed || ctrl.is_button_up_on_frame(Core::Gamepad_button::button_start)) && players_signed_in > 0)
+    if((button_pushed || ctrl.is_button_up_on_frame(Core::Gamepad_button::button_start)) && m_players_signed_in > 0)
     {
       // Reset selection screen
       {
@@ -221,7 +219,7 @@ Selection_screen::on_update()
         m_signed_in_selections[i].set_renderer(mat_renderer);
         m_signed_in_selections[i].set_transform(m_selection_screens[i].get_transform());
         
-        ++players_signed_in;
+        ++m_players_signed_in;
       }
     }
     
@@ -250,8 +248,8 @@ Selection_screen::on_update()
         continue;
       }
     
-      current_player_selection[i] = (current_player_selection[i] + 1) % number_of_materials;
-      const uint32_t selection = current_player_selection[i];
+      m_current_player_selection[i] = (m_current_player_selection[i] + 1) % number_of_materials;
+      const uint32_t selection = m_current_player_selection[i];
      
       const Core::Material_renderer player_renderer(materials[selection], models[selection]);
       m_signed_in_selections[i].set_renderer(player_renderer);
