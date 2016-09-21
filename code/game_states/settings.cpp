@@ -1,4 +1,5 @@
 #include <game_states/settings.hpp>
+#include <factories/material.hpp>
 #include <game_states/about.hpp>
 #include <game_states/title_screen.hpp>
 #include <common/game_state.hpp>
@@ -7,11 +8,9 @@
 #include <core/context/context.hpp>
 #include <core/world/world.hpp>
 #include <core/resources/material.hpp>
-#include <core/resources/texture.hpp>
 #include <core/model/model.hpp>
 #include <core/entity/entity.hpp>
 #include <core/entity/entity_ref.hpp>
-#include <core/resources/shader.hpp>
 #include <core/transform/transform.hpp>
 #include <core/transform/transform_utils.hpp>
 #include <core/common/directory.hpp>
@@ -42,7 +41,7 @@ namespace {
 constexpr uint32_t buttons_count = 3;
 Core::Lib::Menu_list::Image_button buttons[buttons_count];
 
-}
+} // anon ns
 
 
 void
@@ -52,74 +51,23 @@ settings_init(Core::Context &context,
 {
   // Button
   {
-    Core::Shader shader(Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl"));
-    assert(shader);
-    
-    // Settings Button
-    
-    Core::Texture settings_cold(Core::Directory::volatile_resource_path("assets/textures/button_options_cold.png"));
-    assert(settings_cold);
-    
-    Core::Texture settings_hot(Core::Directory::volatile_resource_path("assets/textures/button_options_hot.png"));
-    assert(settings_hot);
-    
-    Core::Material cold_settings_button("[button]settings_cold");
-    cold_settings_button.set_shader(shader);
-    cold_settings_button.set_map_01(settings_cold);
-
-    Core::Material hot_settings_button("[button]settings_hot");
-    hot_settings_button.set_shader(shader);
-    hot_settings_button.set_map_01(settings_hot);
-
-    // Fullscreen
-
-    Core::Texture fullscreen_cold(Core::Directory::volatile_resource_path("assets/textures/button_fullscreen_cold.png"));
-    assert(fullscreen_cold);
-    
-    Core::Texture fullscreen_hot(Core::Directory::volatile_resource_path("assets/textures/button_fullscreen_hot.png"));
-    assert(fullscreen_hot);
-    
-    Core::Material cold_fullscreen_button("[button]fullscreen_cold");
-    cold_fullscreen_button.set_shader(shader);
-    cold_fullscreen_button.set_map_01(fullscreen_cold);
-
-    Core::Material hot_fullscreen_button("[button]fullscreen_hot");
-    hot_fullscreen_button.set_shader(shader);
-    hot_fullscreen_button.set_map_01(fullscreen_hot);
-
-    // Quit Button
-
-    Core::Texture quit_cold(Core::Directory::volatile_resource_path("assets/textures/button_back_cold.png"));
-    assert(quit_cold);
-    
-    Core::Texture quit_hot(Core::Directory::volatile_resource_path("assets/textures/button_back_hot.png"));
-    assert(quit_hot);
-    
-    Core::Material cold_quit_button("[button]quit_cold");
-    cold_quit_button.set_shader(shader);
-    cold_quit_button.set_map_01(quit_cold);
-
-    Core::Material hot_quit_button("[button]quit_hot");
-    hot_quit_button.set_shader(shader);
-    hot_quit_button.set_map_01(quit_hot);
-    
     buttons[0].entity         = Core::Entity(world);
     buttons[0].entity.set_name("button_title");
     buttons[0].entity.set_tags(Object_tags::gui_cam);
-    buttons[0].cold_material  = cold_settings_button;
+    buttons[0].cold_material  = Factory::Material::get_settings_menu_title();
     buttons[0].hot_material   = Core::Material();
     
     buttons[1].entity         = Core::Entity(world);
     buttons[1].entity.set_name("button_fullscreen");
     buttons[1].entity.set_tags(Object_tags::gui_cam);
-    buttons[1].cold_material  = cold_fullscreen_button;
-    buttons[1].hot_material   = hot_fullscreen_button;
+    buttons[1].cold_material  = Factory::Material::get_settings_menu_fullscreen_cold();
+    buttons[1].hot_material   = Factory::Material::get_settings_menu_fullscreen_hot();
 
     buttons[2].entity         = Core::Entity(world);
     buttons[2].entity.set_name("button_back");
     buttons[2].entity.set_tags(Object_tags::gui_cam);
-    buttons[2].cold_material  = cold_quit_button;
-    buttons[2].hot_material   = hot_quit_button;
+    buttons[2].cold_material  = Factory::Material::get_menu_back_cold();
+    buttons[2].hot_material   = Factory::Material::get_menu_back_hot();
 
     
     const Core::Model model(Core::Directory::volatile_resource_path("assets/models/unit_cube.obj"));

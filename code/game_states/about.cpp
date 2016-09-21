@@ -1,5 +1,6 @@
 #include <game_states/about.hpp>
 #include <game_states/title_screen.hpp>
+#include <factories/material.hpp>
 #include <common/game_state.hpp>
 #include <common/object_tags.hpp>
 #include <core/context/context.hpp>
@@ -42,6 +43,7 @@ Core::Lib::Menu_list::Image_button buttons[buttons_count];
 
 } // anon ns
 
+
 void
 about_init(Core::Context &context,
            Core::World &world,
@@ -49,58 +51,22 @@ about_init(Core::Context &context,
 {
   // Button
   {
-    Core::Shader shader(Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl"));
-    assert(shader);
-    
-    // About Button
-
-    Core::Texture about_cold(Core::Directory::volatile_resource_path("assets/textures/button_about_cold.png"));
-    assert(about_cold);
-    
-    Core::Texture about_hot(Core::Directory::volatile_resource_path("assets/textures/button_about_hot.png"));
-    assert(about_hot);
-    
-    Core::Material cold_about_button("[button]about_cold");
-    cold_about_button.set_shader(shader);
-    cold_about_button.set_map_01(about_cold);
-
-    Core::Material hot_about_button("[button]about_hot");
-    hot_about_button.set_shader(shader);
-    hot_about_button.set_map_01(about_hot);
-
-    // Quit Button
-
-    Core::Texture quit_cold(Core::Directory::volatile_resource_path("assets/textures/button_back_cold.png"));
-    assert(quit_cold);
-    
-    Core::Texture quit_hot(Core::Directory::volatile_resource_path("assets/textures/button_back_hot.png"));
-    assert(quit_hot);
-    
-    Core::Material cold_quit_button("[button]quit_cold");
-    cold_quit_button.set_shader(shader);
-    cold_quit_button.set_map_01(quit_cold);
-
-    Core::Material hot_quit_button("[button]quit_hot");
-    hot_quit_button.set_shader(shader);
-    hot_quit_button.set_map_01(quit_hot);
-    
     buttons[0].entity         = Core::Entity(world);
     buttons[0].entity.set_name("button_title");
     buttons[0].entity.set_tags(Object_tags::gui_cam);
-    buttons[0].cold_material  = cold_about_button;
+    buttons[0].cold_material  = Factory::Material::get_about_menu_title();
     buttons[0].hot_material   = Core::Material();
     
     buttons[1].entity         = Core::Entity(world);
     buttons[1].entity.set_name("button_back");
     buttons[1].entity.set_tags(Object_tags::gui_cam);
-    buttons[1].cold_material  = cold_quit_button;
-    buttons[1].hot_material   = hot_quit_button;
+    buttons[1].cold_material  = Factory::Material::get_menu_back_cold();
+    buttons[1].hot_material   = Factory::Material::get_menu_back_hot();
     
     const Core::Model model(Core::Directory::volatile_resource_path("assets/models/unit_cube.obj"));
   
     Core::Lib::Menu_list::inititalize(buttons, buttons_count, model, camera);
   }
-
 }
 
 

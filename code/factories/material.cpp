@@ -8,8 +8,13 @@
 namespace {
 
 
+/*
+  Most textures in this game are just shader and texture
+*/
 inline Core::Material
-generate_material(const char *mat_name, const char *shader_path, const char *texture_path)
+generate_material(const char *mat_name,
+                  const char *shader_path,
+                  const char *texture_path)
 {
   Core::Material material = Core::Material(mat_name);
   assert(material);
@@ -40,11 +45,76 @@ get_logo()
   
   if(!material)
   {
-    material = generate_material("logo",
+    material = generate_material("[loading]logo",
+                                 "assets/shaders/basic_fullbright.ogl",
+                                 "assets/textures/repofa.png");
+  }
+  
+  return material;
+}
+
+
+// Generic Menu
+Core::Material
+get_menu_back_cold()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[menu]back_cold",
+                                 "assets/shaders/basic_fullbright.ogl",
+                                 "assets/textures/button_back_cold.png");
+  }
+
+  return material;
+}
+
+
+Core::Material
+get_menu_back_hot()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[menu]back_hot",
+                                 "assets/shaders/basic_fullbright.ogl",
+                                 "assets/textures/button_back_hot.png");
+  }
+
+  return material;
+}
+
+
+Core::Material
+get_menu_continue_cold()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[menu]continue_cold",
                                  "assets/shaders/basic_fullbright.ogl",
                                  "assets/textures/title.png");
   }
-  
+
+  return material;
+}
+
+
+Core::Material
+get_menu_continue_hot()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[menu]continue_hot",
+                                 "assets/shaders/basic_fullbright.ogl",
+                                 "assets/textures/title.png");
+  }
+
   return material;
 }
 
@@ -188,6 +258,171 @@ get_title_menu_quit_hot()
     material = generate_material("[title_menu]quit_hot",
                                  "assets/shaders/basic_fullbright.ogl",
                                  "assets/textures/button_quit_hot.png");
+  }
+
+  return material;
+}
+
+
+// Settings Screen
+Core::Material
+get_settings_menu_title()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[settings_menu]settings_title",
+                                 "assets/shaders/basic_fullbright.ogl",
+                                 "assets/textures/button_options_cold.png");
+  }
+
+  return material;
+}
+
+
+Core::Material
+get_settings_menu_fullscreen_cold()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[settings_menu]fullscreen_cold",
+                                 "assets/shaders/basic_fullbright.ogl",
+                                 "assets/textures/button_fullscreen_cold.png");
+  }
+
+  return material;
+}
+
+
+Core::Material
+get_settings_menu_fullscreen_hot()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[settings_menu]fullscreen_hot",
+                                 "assets/shaders/basic_fullbright.ogl",
+                                 "assets/textures/button_fullscreen_hot.png");
+  }
+
+  return material;
+}
+
+
+// About Screen
+Core::Material
+get_about_menu_title()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[about_menu]about_title",
+                                 "assets/shaders/basic_fullbright.ogl",
+                                 "assets/textures/button_about_cold.png");
+  }
+
+  return material;
+}
+
+
+
+// Selection
+Core::Material
+get_selection_none_controller()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[selection]none",
+                                 "assets/shaders/basic_fullbright.ogl",
+                                 "assets/textures/to_join.png");
+  }
+
+  return material;
+}
+
+
+Core::Material
+get_selection_choose_ship_controller()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[selection]choose",
+                                 "assets/shaders/basic_fullbright.ogl",
+                                 "assets/textures/select_ship.png");
+  }
+
+  return material;
+}
+
+
+// Players
+Core::Material
+get_ship_01_material()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[player]01",
+                                 "assets/shaders/vortex_dir_light.ogl",
+                                 "assets/textures/ship_01.png");
+  }
+
+  return material;
+}
+
+
+Core::Material
+get_ship_02_material()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[player]02",
+                                 "assets/shaders/vortex_dir_light.ogl",
+                                 "assets/textures/ship_02.png");
+  }
+
+  return material;
+}
+
+
+Core::Material
+get_ship_03_material()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[player]03",
+                                 "assets/shaders/vortex_dir_light.ogl",
+                                 "assets/textures/ship_03.png");
+  }
+
+  return material;
+}
+
+
+Core::Material
+get_ship_04_material()
+{
+  static Core::Material material;
+
+  if(!material)
+  {
+    material = generate_material("[player]04",
+                                 "assets/shaders/vortex_dir_light.ogl",
+                                 "assets/textures/ship_04.png");
   }
 
   return material;

@@ -1,4 +1,5 @@
 #include <game_states/selection.hpp>
+#include <factories/material.hpp>
 #include <game_objects/world_objects.hpp>
 #include <game_objects/player.hpp>
 #include <game_objects/player_ship.hpp>
@@ -11,7 +12,6 @@
 #include <core/input/controller.hpp>
 #include <core/input/buttons.hpp>
 #include <core/resources/texture.hpp>
-#include <core/resources/shader.hpp>
 #include <core/resources/material.hpp>
 #include <core/transform/transform.hpp>
 #include <core/camera/camera.hpp>
@@ -35,7 +35,6 @@ namespace
   Core::Material      materials[number_of_materials];
   Core::Material      no_selection_material;
   Core::Material      selection_material;
-  Core::Material      start_game_material;
 
   constexpr uint32_t  number_of_models = 4;
   Core::Model         models[number_of_models];
@@ -58,58 +57,16 @@ selection_init(Core::Context &ctx,
                Core::Camera &cam)
 {
   // Load materials
-  if(!no_selection_material || !selection_material || !start_game_material)
-  {
-    const Core::Shader shader(Core::Directory::volatile_resource_path("assets/shaders/basic_fullbright.ogl"));
-    
-    // --
-    
-    const Core::Texture no_selection_texture(Core::Directory::volatile_resource_path("assets/textures/to_join.png"));
-    
-    no_selection_material = Core::Material("selection-none");
-    no_selection_material.set_shader(shader);
-    no_selection_material.set_map_01(no_selection_texture);
-    
-    no_selection_material.set_color(0x33333399);
-    
-    // --
-    
-    const Core::Texture choose_ship_texture(Core::Directory::volatile_resource_path("assets/textures/select_ship.png"));
-    
-    selection_material = Core::Material("selection");
-    selection_material.set_shader(shader);
-    selection_material.set_map_01(choose_ship_texture);
-    
-    // --
-
-    const Core::Texture press_start_texture(Core::Directory::volatile_resource_path("assets/textures/dev_grid_orange_512.png"));
-    
-    start_game_material = Core::Material("press-start");
-    start_game_material.set_shader(shader);
-    start_game_material.set_map_01(press_start_texture);
-  }
-
-  // Load materials
-  if(!materials[0])
-  {
-    const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/vortex_dir_light.ogl");
-    Core::Shader shader(shader_path);
-    assert(shader);
+  no_selection_material = Factory::Material::get_selection_none_controller();
+  selection_material    = Factory::Material::get_selection_choose_ship_controller();
   
-    for(uint32_t i = 0; i < number_of_materials; ++i)
-    {
-      char buffer[MAX_FILE_PATH_SIZE];
-      sprintf(buffer, "player-mat-%02d", i + 1);
-      materials[i] = Core::Material(buffer);
-      materials[i].set_shader(shader);
-      
-      memset(buffer, 0, sizeof(buffer));
-      sprintf(buffer, "%sassets/textures/ship_%02d.png", Core::Directory::volatile_resource_path(""), i + 1);
-      
-      materials[i].set_map_01(Core::Texture(buffer));
-    }
-  }
-
+  uint32_t curr_mat = 0;
+  materials[curr_mat++] = Factory::Material::get_ship_01_material();
+  materials[curr_mat++] = Factory::Material::get_ship_02_material();
+  materials[curr_mat++] = Factory::Material::get_ship_03_material();
+  materials[curr_mat++] = Factory::Material::get_ship_04_material();
+  assert(curr_mat == number_of_materials);
+  
   // Load models
   if(!models[0])
   {
