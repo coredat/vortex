@@ -4,34 +4,13 @@
 #include <factories/material.hpp>
 #include <common/game_state.hpp>
 #include <common/object_tags.hpp>
+#include <lib/menu_image_list/menu_list.hpp>
 #include <core/context/context.hpp>
 #include <core/world/world.hpp>
-#include <core/resources/material.hpp>
 #include <core/model/model.hpp>
-#include <core/entity/entity.hpp>
-#include <core/entity/entity_ref.hpp>
-#include <core/transform/transform.hpp>
-#include <core/transform/transform_utils.hpp>
-#include <core/common/directory.hpp>
-#include <core/camera/camera_properties.hpp>
-#include <core/input/controller.hpp>
 #include <core/input/buttons.hpp>
-#include <core/common/ray.hpp>
-#include <core/physics/rigidbody.hpp>
-#include <core/physics/collider.hpp>
-#include <core/physics/box_collider.hpp>
-#include <core/renderer/renderer.hpp>
-#include <core/entity/entity_ref.hpp>
-#include <core/renderer/material_renderer.hpp>
-#include <core/renderer/text_renderer.hpp>
-#include <core/font/font.hpp>
-#include <core/camera/camera.hpp>
-#include <core/camera/camera_utils.hpp>
+#include <core/common/directory.hpp>
 #include <utilities/directory.hpp>
-#include <math/quat/quat.hpp>
-#include <utilities/logging.hpp>
-#include <renderer/debug_line.hpp>
-#include <lib/menu_image_list/menu_list.hpp>
 #include <assert.h>
 
 

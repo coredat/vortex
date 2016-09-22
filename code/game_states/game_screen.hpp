@@ -4,8 +4,6 @@
 
 #include <game_states/game_state.hpp>
 #include <game_objects/game_objects_fwd.hpp>
-#include <common/common_fwd.hpp>
-#include <core/common/core_fwd.hpp>
 #include <core/entity/entity_ref.hpp>
 
 

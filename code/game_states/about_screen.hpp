@@ -3,10 +3,8 @@
 
 
 #include <game_states/game_state.hpp>
-#include <common/game_state.hpp>
-#include <core/common/core_fwd.hpp>
-#include <game_objects/world_objects.hpp>
 #include <core/entity/entity_ref.hpp>
+#include <core/input/controller.hpp>
 
 
 namespace Game {
