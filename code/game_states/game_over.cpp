@@ -7,10 +7,12 @@
 #include <game_objects/explosion.hpp>
 #include <game_objects/enemy.hpp>
 #include <game_objects/player.hpp>
+#include <game_objects/main_camera.hpp>
 #include <game_objects/player_ui.hpp>
 #include <core/context/context.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/renderer/renderer.hpp>
+#include <core/world/world.hpp>
 #include <core/input/controller.hpp>
 #include <core/input/buttons.hpp>
 #include <core/transform/transform.hpp>
@@ -31,45 +33,58 @@ namespace
 }
 
 
-void
-game_over_init(Core::Context &ctx,
-               Core::World &world)
+namespace Game {
+
+
+Game_over_screen::Game_over_screen(Game_object::World_objects &objs,
+                                   Core::World &world,
+                                   Core::Context &ctx)
+: State(objs, world, ctx)
+, m_camera(get_world().find_entity_by_name("Main Camera"))
+, m_controllers{
+    Core::Controller(get_ctx(), 0),
+    Core::Controller(get_ctx(), 1),
+    Core::Controller(get_ctx(), 2),
+    Core::Controller(get_ctx(), 3),
+  }
+
 {
+  // We use mouse for screen menu.
+  Core::Input::mouse_set_capture(get_ctx(), false);
+  assert(m_camera);
 }
 
 
 Game_state
-game_over_update(Core::Context &ctx,
-                 Core::World &world,
-                 Core::Camera &cam,
-                 Core::Camera &gui_cam,
-                 Game_object::Player *players[],
-                 const uint32_t player_count,
-                 Game_object::World_objects &objs,
-                 const float dt)
+Game_over_screen::on_update()
 {
+  Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
+  assert(main_camera);
+
+
   if(!created_screen)
   {
     created_screen = true;
     
-    for(uint32_t i = 0; i < player_count; ++i)
+    Core::Entity_ref *refs_arr;
+    size_t refs_count = 0;
+    get_world().find_entities_by_name("Player", &refs_arr, &refs_count);
+    assert(refs_count == 4);
+    
+    Game_object::Player *players[4];
+    
+    for(uint32_t i = 0 ; i < 4; ++i)
+    {
+      players[i] = reinterpret_cast<Game_object::Player*>(refs_arr[i].get_user_data());
+    }
+    
+    for(uint32_t i = 0; i < 4; ++i)
     {
       if(players[i]->is_valid())
       {
-//        players[i]->clear_ui_and_ship();
-//        players[i]->reset();
-//      
-//        player_entities[i] = Core::Entity(world);
-//        
-//        player_entities[i].set_name("screen_game_over[scoreboard]");
-//        player_entities[i].set_tags(Object_tags::world_cam);
-// 
-//        const Core::Material_renderer mat_renderer(players[i]->get_material(), players[i]->get_model());
-//        player_entities[i].set_renderer(mat_renderer);
-
-        ui_refs[i] = new Game_object::Player_ui(world, ctx, gui_cam, cam, i + 1, Game_object::Player_ui::Ui_type::game_over_ui);
+        ui_refs[i] = new Game_object::Player_ui(get_world(), get_ctx(), main_camera->m_gui_camera, main_camera->m_world_camera, i + 1, Game_object::Player_ui::Ui_type::game_over_ui);
         
-        objs.push_object(ui_refs[i]);
+        get_world_objs().push_object(ui_refs[i]);
         
         assert(ui_refs[i]->m_avatar);
         
@@ -104,11 +119,11 @@ game_over_update(Core::Context &ctx,
         const Core::Texture hot_texture(Core::Directory::volatile_resource_path("assets/textures/button_continue_hot.png"));
         const Core::Texture cold_texture(Core::Directory::volatile_resource_path("assets/textures/button_continue_cold.png"));
         
-        continue_button = Core::Lib::Button(world,
-                                            ctx,
+        continue_button = Core::Lib::Button(get_world(),
+                                            get_ctx(),
                                             "continue2",
-                                            math::vec2_init(ctx.get_width() / 2, (ctx.get_height() / 6) * 5),
-                                            gui_cam,
+                                            math::vec2_init(get_ctx().get_width() / 2, (get_ctx().get_height() / 6) * 5),
+                                            main_camera->m_gui_camera,
                                             hot_texture,
                                             cold_texture);
       }
@@ -118,11 +133,11 @@ game_over_update(Core::Context &ctx,
   bool button_pushed = false;
   bool button_hovered = false;
   
-  if(continue_button.is_over(gui_cam, world, ctx))
+  if(continue_button.is_over(main_camera->m_gui_camera, get_world(), get_ctx()))
   {
     button_hovered = true;
     
-    if(continue_button.was_touched(gui_cam, world, ctx))
+    if(continue_button.was_touched(main_camera->m_gui_camera, get_world(), get_ctx()))
     {
       button_pushed = true;
     }
@@ -133,6 +148,7 @@ game_over_update(Core::Context &ctx,
   */
   {
     static float time = 0;
+    const float dt = get_world().get_delta_time();
     time += dt;
 
     for(uint32_t i = 0; i < 4; ++i)
@@ -141,11 +157,11 @@ game_over_update(Core::Context &ctx,
       
       if(pl)
       {
-        const float quart_screen = math::to_float(ctx.get_width() >> 2);
+        const float quart_screen = math::to_float(get_ctx().get_width() >> 2);
         const float x_offset     = quart_screen + (quart_screen * i);
-        const float y_offset     = math::to_float(ctx.get_height() >> 3) * 3.f;
+        const float y_offset     = math::to_float(get_ctx().get_height() >> 3) * 3.f;
         
-        const math::vec3 pos = Screen_cast::intersect_screen_plane(cam, x_offset, y_offset);
+        const math::vec3 pos = Screen_cast::intersect_screen_plane(main_camera->m_world_camera, x_offset, y_offset);
         Core::Transform trans;
         trans.set_position(pos);
         trans.set_scale(math::vec3_init(1.f));
@@ -159,19 +175,14 @@ game_over_update(Core::Context &ctx,
       }
     }
   }
-
-  Core::Controller controller_1(ctx, 0);
-  Core::Controller controller_2(ctx, 1);
-  Core::Controller controller_3(ctx, 2);
-  Core::Controller controller_4(ctx, 3);
-
+  
   /*
     If any gamepad presses start we go back to the game selection screen.
   */
-  if(controller_1.is_button_down_on_frame(Core::Gamepad_button::button_start) ||
-     controller_2.is_button_down_on_frame(Core::Gamepad_button::button_start) ||
-     controller_3.is_button_down_on_frame(Core::Gamepad_button::button_start) ||
-     controller_4.is_button_down_on_frame(Core::Gamepad_button::button_start) ||
+  if(m_controllers[0].is_button_down_on_frame(Core::Gamepad_button::button_start) ||
+     m_controllers[1].is_button_down_on_frame(Core::Gamepad_button::button_start) ||
+     m_controllers[2].is_button_down_on_frame(Core::Gamepad_button::button_start) ||
+     m_controllers[3].is_button_down_on_frame(Core::Gamepad_button::button_start) ||
      button_pushed)
   {
     created_screen = false;
@@ -197,10 +208,10 @@ game_over_update(Core::Context &ctx,
     return Game_state::selection;
   }
   
-  if(controller_1.is_button_down_on_frame(Core::Gamepad_button::button_back) ||
-     controller_2.is_button_down_on_frame(Core::Gamepad_button::button_back) ||
-     controller_3.is_button_down_on_frame(Core::Gamepad_button::button_back) ||
-     controller_4.is_button_down_on_frame(Core::Gamepad_button::button_back))
+  if(m_controllers[0].is_button_down_on_frame(Core::Gamepad_button::button_back) ||
+     m_controllers[1].is_button_down_on_frame(Core::Gamepad_button::button_back) ||
+     m_controllers[2].is_button_down_on_frame(Core::Gamepad_button::button_back) ||
+     m_controllers[3].is_button_down_on_frame(Core::Gamepad_button::button_back))
   {
     created_screen = false;
     continue_button = Core::Lib::Button();
@@ -227,3 +238,6 @@ game_over_update(Core::Context &ctx,
 
   return Game_state::game_over;
 }
+
+
+} // ns

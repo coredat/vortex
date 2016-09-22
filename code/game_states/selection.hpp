@@ -24,7 +24,6 @@ constexpr uint32_t get_max_models() { return 4; }
 } // ns
 
 
-
 class Selection_screen : public Game::State
 {
 public:

@@ -1,33 +1,22 @@
 #include <game_states/selection.hpp>
 #include <game_objects/main_camera.hpp>
-#include <core/world/world.hpp>
-#include <factories/material.hpp>
 #include <game_objects/world_objects.hpp>
 #include <game_objects/player.hpp>
 #include <game_objects/player_ship.hpp>
 #include <game_objects/player_ui.hpp>
-#include <lib/menu/button.hpp>
 #include <common/object_tags.hpp>
 #include <common/screen_cast.hpp>
 #include <common/game_state.hpp>
+#include <factories/material.hpp>
+#include <core/world/world.hpp>
 #include <core/context/context.hpp>
 #include <core/input/controller.hpp>
 #include <core/input/buttons.hpp>
 #include <core/resources/texture.hpp>
-#include <core/resources/material.hpp>
 #include <core/transform/transform.hpp>
-#include <core/camera/camera.hpp>
-#include <core/camera/camera_utils.hpp>
-#include <core/model/model.hpp>
-#include <core/entity/entity_ref.hpp>
-#include <core/color/color.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/common/directory.hpp>
-#include <utilities/file.hpp>
-#include <math/vec/vec3.hpp>
-#include <math/quat/quat.hpp>
-#include <utilities/assert.hpp>
 
 
 namespace Game {

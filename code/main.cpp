@@ -49,9 +49,12 @@
 #include <common/object_tags.hpp>
 
 
-std::unique_ptr<Game::Title_screen> title_state = nullptr;
-std::unique_ptr<Game::Settings_screen> settings_screen = nullptr;
-std::unique_ptr<Game::Selection_screen> selection_screen = nullptr;
+std::unique_ptr<Game::Title_screen>       title_state = nullptr;
+std::unique_ptr<Game::Settings_screen>    settings_screen = nullptr;
+std::unique_ptr<Game::Selection_screen>   selection_screen = nullptr;
+std::unique_ptr<Game::Loading_screen>     loading_screen = nullptr;
+std::unique_ptr<Game::Game_screen>        game_screen = nullptr;
+std::unique_ptr<Game::Game_over_screen>   game_over_screen = nullptr;
 
 
 int
@@ -130,9 +133,7 @@ main()
           break;
       
         case(Game_state::loading):
-          Core::Input::mouse_set_capture(context, false);
-
-          loading_init(context, world);
+          loading_screen.reset(new Game::Loading_screen(objs, world, context));
           break;
           
         case(Game_state::title_screen):
@@ -187,7 +188,7 @@ main()
             objs.push_object(new Game_object::Level(world));
           }
           
-          game_init(context, world);
+          game_screen.reset(new Game::Game_screen(objs, world, context));
           break;
           
         case(Game_state::game_over):
@@ -196,7 +197,7 @@ main()
           go_cam->set_target_height(50.f);
           go_cam->set_target_speed(2.f);
         
-          game_over_init(context, world);
+          game_over_screen.reset(new Game::Game_over_screen(objs, world, context));
           objs.send_event(Event_id::destroy_all_enemies);
           break;
           
@@ -221,9 +222,7 @@ main()
       
       case(Game_state::loading):
       {
-        next_state = loading_update(context,
-                                    world,
-                                    go_cam->m_world_camera);
+        next_state = loading_screen->on_update();
         
         break;
       }
@@ -286,11 +285,7 @@ main()
       */
       case(Game_state::game_mode):
       {
-        next_state = game_update(context,
-                                 world,
-                                 objs,
-                                 dt);
-        
+        next_state = game_screen->on_update();
         
         break;
       }
@@ -301,14 +296,7 @@ main()
       */
       case(Game_state::game_over):
       {
-        next_state = game_over_update(context,
-                                      world,
-                                      go_cam->m_world_camera,
-                                      go_cam->m_gui_camera,
-                                      players,
-                                      player_count,
-                                      objs,
-                                      dt);
+        next_state = game_over_screen->on_update();
         break;
       }
       
