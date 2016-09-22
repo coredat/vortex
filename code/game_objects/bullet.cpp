@@ -58,9 +58,11 @@ Bullet::Bullet(Core::World &world,
     
       const char *texture_path = Core::Directory::volatile_resource_path("assets/textures/dev_grid_red_512.png");
       Core::Texture texture(texture_path);
+      assert(texture);
       
       const char *shader_path = Core::Directory::volatile_resource_path("assets/shaders/vortex_dir_light.ogl");
       Core::Shader shader(shader_path);
+      assert(shader);
       
       bullet_material.set_map_01(texture);
       bullet_material.set_shader(shader);

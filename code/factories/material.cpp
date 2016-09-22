@@ -38,6 +38,49 @@ namespace Factory {
 namespace Material {
 
 
+void
+load_all()
+{
+  // Other
+  get_logo();
+
+  // Generic Menu
+  get_menu_back_cold();
+  get_menu_back_hot();
+  get_menu_continue_cold();
+  get_menu_continue_hot();
+
+  // Title Screen
+  get_title_menu_title();
+  get_title_menu_start_cold();
+  get_title_menu_start_hot();
+  get_title_menu_options_cold();
+  get_title_menu_options_hot();
+  get_title_menu_about_cold();
+  get_title_menu_about_hot();
+  get_title_menu_quit_cold();
+  get_title_menu_quit_hot();
+
+  // Settings Screen
+  get_settings_menu_title();
+  get_settings_menu_fullscreen_cold();
+  get_settings_menu_fullscreen_hot();
+
+  // About Screen
+  get_about_menu_title();
+
+  // Selection
+  get_selection_none_controller();
+  get_selection_choose_ship_controller();
+
+  // Players
+  get_ship_01_material();
+//  get_ship_02_material();
+//  get_ship_03_material();
+//  get_ship_04_material();
+}
+
+
 Core::Material
 get_logo()
 {

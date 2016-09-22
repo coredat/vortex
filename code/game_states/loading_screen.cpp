@@ -19,7 +19,7 @@
 namespace
 {
   #ifndef NDEBUG
-  constexpr float   loading_max_timer = 0.f; // Min time loading screen stays up
+  constexpr float   loading_max_timer = 0.5f; // Min time loading screen stays up
   #else
   constexpr float   loading_max_timer = 2.f;
   #endif
@@ -73,9 +73,17 @@ Loading_screen::on_update()
   if(m_timer > loading_max_timer)
   {
     m_loading_entity.destroy();
+    
     get_world_objs().push_object(new Game_object::Horizon(get_world()));
     get_world_objs().push_object(new Game_object::Level(get_world()));
 
+    static bool once = true;
+    if(once)
+    {
+      Factory::Material::load_all();
+      once = false;
+    }
+    
     return std::unique_ptr<State>(new Game::Title_screen(get_world_objs(), get_world(), get_ctx()));
   }
   

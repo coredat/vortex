@@ -12,6 +12,10 @@ namespace Factory {
 namespace Material {
 
 
+// Loads everything so its ready.
+void                load_all();
+
+// Other
 Core::Material      get_logo();
 
 // Generic Menu

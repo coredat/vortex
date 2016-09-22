@@ -98,7 +98,7 @@ Selection_screen::Selection_screen(Game_object::World_objects &objs,
 
 }
 
-  
+
 std::unique_ptr<State>
 Selection_screen::on_update()
 {
