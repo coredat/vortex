@@ -30,17 +30,6 @@
 #include <utilities/assert.hpp>
 
 
-namespace
-{
-  constexpr uint32_t  number_of_materials = 4;
-  
-  Core::Material      materials[number_of_materials];
-
-  constexpr uint32_t  number_of_models = 4;
-  Core::Model         models[number_of_models];
-}
-
-
 namespace Game {
 
 
@@ -54,6 +43,18 @@ Selection_screen::Selection_screen(Game_object::World_objects &objs,
     Core::Controller(get_ctx(), 1),
     Core::Controller(get_ctx(), 2),
     Core::Controller(get_ctx(), 3),
+  }
+, m_materials{
+    Core::Material(Factory::Material::get_ship_01_material()),
+    Core::Material(Factory::Material::get_ship_02_material()),
+    Core::Material(Factory::Material::get_ship_03_material()),
+    Core::Material(Factory::Material::get_ship_04_material()),
+  }
+, m_models{
+    Core::Model(Core::Directory::volatile_resource_path("assets/models/ship_01.obj")),
+    Core::Model(Core::Directory::volatile_resource_path("assets/models/ship_02.obj")),
+    Core::Model(Core::Directory::volatile_resource_path("assets/models/ship_03.obj")),
+    Core::Model(Core::Directory::volatile_resource_path("assets/models/ship_04.obj")),
   }
 , m_selection_screens{
     Core::Entity(get_world()),
@@ -77,25 +78,6 @@ Selection_screen::Selection_screen(Game_object::World_objects &objs,
 {
   Core::Input::mouse_set_capture(get_ctx(), false);
   assert(m_camera);
-  
-  uint32_t curr_mat = 0;
-  materials[curr_mat++] = Factory::Material::get_ship_01_material();
-  materials[curr_mat++] = Factory::Material::get_ship_02_material();
-  materials[curr_mat++] = Factory::Material::get_ship_03_material();
-  materials[curr_mat++] = Factory::Material::get_ship_04_material();
-  assert(curr_mat == number_of_materials);
-  
-  // Load models
-  if(!models[0])
-  {
-    for(uint32_t i = 0; i < number_of_models; ++i)
-    {
-      char buffer[MAX_FILE_PATH_SIZE];
-      sprintf(buffer, "%sassets/models/ship_%02d.obj", Core::Directory::volatile_resource_path(""), i + 1);
-      
-      models[i] = Core::Model(buffer);
-    }
-  }
   
   // Set player selections
   {
@@ -211,7 +193,7 @@ Selection_screen::on_update()
     {
       if(m_controllers[i].is_button_down_on_frame(Core::Gamepad_button::button_a))
       {
-        const Core::Material_renderer mat_renderer(materials[0], models[0]);
+        const Core::Material_renderer mat_renderer(m_materials[0], m_models[0]);
         
         m_signed_in_selections[i] = Core::Entity(get_world());
         m_signed_in_selections[i].set_name("selection[ship-entity]");
@@ -248,10 +230,10 @@ Selection_screen::on_update()
         continue;
       }
     
-      m_current_player_selection[i] = (m_current_player_selection[i] + 1) % number_of_materials;
+      m_current_player_selection[i] = (m_current_player_selection[i] + 1) % Selection_screen_utils::get_max_models();
       const uint32_t selection = m_current_player_selection[i];
      
-      const Core::Material_renderer player_renderer(materials[selection], models[selection]);
+      const Core::Material_renderer player_renderer(m_materials[selection], m_models[selection]);
       m_signed_in_selections[i].set_renderer(player_renderer);
       
       const Core::Material_renderer sel_renderer(

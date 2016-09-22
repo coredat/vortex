@@ -7,7 +7,9 @@
 #include <common/common_fwd.hpp>
 #include <core/common/core_fwd.hpp>
 #include <core/entity/entity_ref.hpp>
+#include <core/resources/material.hpp>
 #include <core/input/controller.hpp>
+#include <core/model/model.hpp>
 #include <lib/menu/button.hpp>
 
 
@@ -37,6 +39,9 @@ private:
 
   const Core::Entity_ref    m_camera;
   const Core::Controller    m_controllers[4];
+  const Core::Material      m_materials[Selection_screen_utils::get_max_models()];
+  const Core::Model         m_models[Selection_screen_utils::get_max_models()];
+  
   Core::Lib::Button         m_continue_button;
   Core::Entity              m_selection_screens[Selection_screen_utils::get_max_players()];
   Core::Entity              m_signed_in_selections[Selection_screen_utils::get_max_players()];

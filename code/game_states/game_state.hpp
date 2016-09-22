@@ -29,6 +29,7 @@ protected:
 
 private:
 
+
   Core::World                     &m_world;
   Core::Context                   &m_ctx;
   Game_object::World_objects      &m_world_objects;
