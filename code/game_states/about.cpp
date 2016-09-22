@@ -1,5 +1,6 @@
 #include <game_states/about.hpp>
 #include <game_states/title_screen.hpp>
+#include <game_objects/main_camera.hpp>
 #include <factories/material.hpp>
 #include <common/game_state.hpp>
 #include <common/object_tags.hpp>
@@ -42,11 +43,21 @@ Core::Lib::Menu_list::Image_button buttons[buttons_count];
 } // anon ns
 
 
-void
-about_init(Core::Context &context,
-           Core::World &world,
-           Core::Camera &camera)
+namespace Game {
+
+
+About_screen::About_screen(Game_object::World_objects &objs,
+                           Core::World &world,
+                           Core::Context &ctx)
+: State(objs, world, ctx)
+, m_camera(get_world().find_entity_by_name("Main Camera"))
 {
+  assert(m_camera);
+  
+  Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
+  assert(main_camera);
+  
+
   // Button
   {
     buttons[0].entity         = Core::Entity(world);
@@ -63,21 +74,23 @@ about_init(Core::Context &context,
     
     const Core::Model model(Core::Directory::volatile_resource_path("assets/models/unit_cube.obj"));
   
-    Core::Lib::Menu_list::inititalize(buttons, buttons_count, model, camera);
+    Core::Lib::Menu_list::inititalize(buttons, buttons_count, model, main_camera->m_gui_camera);
   }
+
 }
 
 
 Game_state
-about_update(Core::Context &ctx,
-             Core::World &world,
-             Core::Camera &camera,
-             Game_object::World_objects &objs)
+About_screen::on_update()
 {
-  const Core::Controller controller = Core::Controller(ctx, 0);
+  Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
+  assert(main_camera);
+
+
+  const Core::Controller controller = Core::Controller(get_ctx(), 0);
  
   Core::Lib::Menu_list::navigate(controller, buttons, buttons_count);
-  Core::Lib::Menu_list::mouse_over(camera, world, Core::Input::mouse_get_coordinates(ctx), buttons, buttons_count);
+  Core::Lib::Menu_list::mouse_over(main_camera->m_gui_camera, get_world(), Core::Input::mouse_get_coordinates(get_ctx()), buttons, buttons_count);
   
   const Core::Entity_ref selected_button = buttons[0].entity;
   
@@ -101,3 +114,6 @@ about_update(Core::Context &ctx,
 
   return Game_state::about;
 }
+
+
+} // ns

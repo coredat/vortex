@@ -55,6 +55,7 @@ std::unique_ptr<Game::Selection_screen>   selection_screen = nullptr;
 std::unique_ptr<Game::Loading_screen>     loading_screen = nullptr;
 std::unique_ptr<Game::Game_screen>        game_screen = nullptr;
 std::unique_ptr<Game::Game_over_screen>   game_over_screen = nullptr;
+std::unique_ptr<Game::About_screen>       about_screen = nullptr;
 
 
 int
@@ -157,9 +158,7 @@ main()
         
         case(Game_state::about):
         {
-          about_init(context,
-                     world,
-                     go_cam->m_gui_camera);
+          about_screen.reset(new Game::About_screen(objs, world, context));
           break;
         }
 
@@ -242,10 +241,7 @@ main()
       */
       case(Game_state::about):
       {
-        next_state = about_update(context,
-                                  world,
-                                  go_cam->m_gui_camera,
-                                  objs);
+        next_state = about_screen->on_update();
       
         break;
       }
