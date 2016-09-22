@@ -1,4 +1,5 @@
 #include <game_states/game.hpp>
+#include <game_states/game_over.hpp>
 #include <common/global_vars.hpp>
 #include <common/level_functions.hpp>
 #include <game_objects/world_objects.hpp>
@@ -50,7 +51,7 @@ Game_screen::Game_screen(Game_object::World_objects &objs,
 }
 
 
-Game_state
+std::unique_ptr<State>
 Game_screen::on_update()
 {
   get_world().set_collision_callback([](const Core::Collision_type type, const Core::Collision &collision)
@@ -163,11 +164,11 @@ Game_screen::on_update()
     
     if(found_players == 0)
     {
-      return Game_state::game_over;
+      return std::unique_ptr<State>(new Game::Game_over_screen(get_world_objs(), get_world(), get_ctx()));
     }
   }
   
-  return Game_state::game_mode;
+  return nullptr;
 }
 
 

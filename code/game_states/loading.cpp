@@ -1,4 +1,5 @@
 #include <game_states/loading.hpp>
+#include <game_states/title_screen.hpp>
 #include <game_objects/world_objects.hpp>
 #include <game_objects/level.hpp>
 #include <game_objects/horizon.hpp>
@@ -64,7 +65,7 @@ Loading_screen::Loading_screen(Game_object::World_objects &objs,
 }
 
 
-Game_state
+std::unique_ptr<State>
 Loading_screen::on_update()
 {
   m_timer += get_world().get_delta_time();
@@ -75,10 +76,10 @@ Loading_screen::on_update()
     get_world_objs().push_object(new Game_object::Horizon(get_world()));
     get_world_objs().push_object(new Game_object::Level(get_world()));
 
-    return Game_state::title_screen;
+    return std::unique_ptr<State>(new Game::Title_screen(get_world_objs(), get_world(), get_ctx()));
   }
   
-  return Game_state::loading;
+  return nullptr;
 }
 
 

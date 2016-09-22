@@ -1,4 +1,8 @@
 #include <game_states/title_screen.hpp>
+#include <game_states/selection.hpp>
+#include <game_states/quit.hpp>
+#include <game_states/about.hpp>
+#include <game_states/settings.hpp>
 #include <factories/material.hpp>
 #include <game_objects/main_camera.hpp>
 #include <common/game_state.hpp>
@@ -109,7 +113,7 @@ Title_screen::Title_screen(Game_object::World_objects &objs,
 }
 
 
-Game_state
+std::unique_ptr<State>
 Title_screen::on_update()
 {
   Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
@@ -128,7 +132,8 @@ Title_screen::on_update()
     if(m_controllers[0].is_button_up_on_frame(button_start))
     {
       Core::Lib::Menu_list::clear(m_buttons, Title_screen_utils::get_button_count());
-      return Game_state::selection;
+//      return Game_state::selection;
+      return std::unique_ptr<State>(new Game::Selection_screen(get_world_objs(), get_world(), get_ctx()));
     }
   }
 
@@ -137,7 +142,7 @@ Title_screen::on_update()
     if(m_controllers[0].is_button_up_on_frame(button_start))
     {
       Core::Lib::Menu_list::clear(m_buttons, Title_screen_utils::get_button_count());
-      return Game_state::settings;
+      return std::unique_ptr<State>(new Game::Settings_screen(get_world_objs(), get_world(), get_ctx()));
     }
   }
   
@@ -146,7 +151,7 @@ Title_screen::on_update()
     if(m_controllers[0].is_button_up_on_frame(button_start))
     {
       Core::Lib::Menu_list::clear(m_buttons, Title_screen_utils::get_button_count());
-      return Game_state::about;
+      return std::unique_ptr<State>(new Game::About_screen(get_world_objs(), get_world(), get_ctx()));
     }
   }
   
@@ -155,7 +160,7 @@ Title_screen::on_update()
     if(m_controllers[0].is_button_up_on_frame(button_start))
     {
       Core::Lib::Menu_list::clear(m_buttons, Title_screen_utils::get_button_count());
-      return Game_state::quit;
+      return std::unique_ptr<State>(new Game::Quit(get_world_objs(), get_world(), get_ctx()));
     }
   }
   
@@ -164,11 +169,11 @@ Title_screen::on_update()
     if(ctrl.is_button_up_on_frame(button_start))
     {
       Core::Lib::Menu_list::clear(m_buttons, Title_screen_utils::get_button_count());
-      return Game_state::selection;
+      return std::unique_ptr<State>(new Game::Selection_screen(get_world_objs(), get_world(), get_ctx()));
     }
   }
 
-  return Game_state::title_screen;
+return nullptr;
 }
 
 

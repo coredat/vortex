@@ -14,10 +14,10 @@ State::State(Game_object::World_objects &world_objs,
 }
 
 
-Game_state
+std::unique_ptr<State>
 State::on_update()
 {
-  return Game_state::quit;
+  return nullptr;
 }
 
 

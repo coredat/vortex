@@ -20,7 +20,7 @@ public:
                                  Core::World &world,
                                  Core::Context &ctx);
   
-  Game_state        on_update() override;
+  std::unique_ptr<State>        on_update() override;
 
 private:
 

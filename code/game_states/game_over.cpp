@@ -1,4 +1,6 @@
 #include <game_states/game_over.hpp>
+#include <game_states/title_screen.hpp>
+#include <game_states/selection.hpp>
 #include <game_objects/world_objects.hpp>
 #include <common/object_tags.hpp>
 #include <common/game_state.hpp>
@@ -9,6 +11,7 @@
 #include <game_objects/player.hpp>
 #include <game_objects/main_camera.hpp>
 #include <game_objects/player_ui.hpp>
+#include <common/event_ids.hpp>
 #include <core/context/context.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/renderer/renderer.hpp>
@@ -47,15 +50,22 @@ Game_over_screen::Game_over_screen(Game_object::World_objects &objs,
     Core::Controller(get_ctx(), 2),
     Core::Controller(get_ctx(), 3),
   }
-
 {
   // We use mouse for screen menu.
   Core::Input::mouse_set_capture(get_ctx(), false);
   assert(m_camera);
+
+  Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
+  assert(main_camera);
+  
+  main_camera->set_target_height(50.f);
+  main_camera->set_target_speed(2.f);
+  
+  get_world_objs().send_event(Event_id::destroy_all_enemies);
 }
 
 
-Game_state
+std::unique_ptr<State>
 Game_over_screen::on_update()
 {
   Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
@@ -204,7 +214,7 @@ Game_over_screen::on_update()
       }
     }
     
-    return Game_state::selection;
+    return std::unique_ptr<State>(new Game::Selection_screen(get_world_objs(), get_world(), get_ctx()));
   }
   
   if(m_controllers[0].is_button_down_on_frame(Core::Gamepad_button::button_back) ||
@@ -232,10 +242,10 @@ Game_over_screen::on_update()
       }
     }
     
-    return Game_state::title_screen;
+    return std::unique_ptr<State>(new Game::Title_screen(get_world_objs(), get_world(), get_ctx()));
   }
 
-  return Game_state::game_over;
+  return nullptr;
 }
 
 

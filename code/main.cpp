@@ -49,16 +49,9 @@
 #include <common/object_tags.hpp>
 
 
-std::unique_ptr<Game::Title_screen>       title_state = nullptr;
-std::unique_ptr<Game::Settings_screen>    settings_screen = nullptr;
-std::unique_ptr<Game::Selection_screen>   selection_screen = nullptr;
-std::unique_ptr<Game::Loading_screen>     loading_screen = nullptr;
-std::unique_ptr<Game::Game_screen>        game_screen = nullptr;
-std::unique_ptr<Game::Game_over_screen>   game_over_screen = nullptr;
-std::unique_ptr<Game::About_screen>       about_screen = nullptr;
 
-std::unique_ptr<Game::State> curr_state;
-std::unique_ptr<Game::State> next_state;
+std::unique_ptr<Game::State> curr_state(nullptr);
+std::unique_ptr<Game::State> next_state(nullptr);
 
 
 int
@@ -82,12 +75,8 @@ main()
 
   Core::Context context(saved_settings.width, saved_settings.height, saved_settings.is_fullscreen, "Vortex Defender", context_setup);
   Core::World   world(context, Core::World_setup{});
-  
-  // ** Start Game ** //
-  Game_state curr_state = Game_state::null;
-  Game_state next_state = Game_state::null;
-  
   Game_object::World_objects objs;
+  
   Game_object::Main_camera *go_cam = new Game_object::Main_camera(world, context);;
   go_cam->set_target_height(100.f);
   
@@ -103,13 +92,12 @@ main()
   
   objs.push_object(go_cam);
   
-  bool first_load_selection = true;
-  bool first_load_title = true;
-  bool first_load_level = true;
   
+  curr_state.reset(new Game::Loading_screen(objs, world, context));
+
   // Game state
-  while(context.is_open() && curr_state != Game_state::quit)
-  {  
+  while(context.is_open())// && curr_state != Game_state::quit)
+  {
     #ifdef CORE_DEBUG_MENU
     if (ImGui::BeginMainMenuBar())
     {
@@ -124,168 +112,24 @@ main()
     }
     #endif
   
-    const float dt = world.get_delta_time();
+    objs.on_update(world.get_delta_time());
     
-    objs.on_update(dt);
+    next_state = curr_state->on_update();
     
-    // ** Game State ** //
-    if(curr_state != next_state)
+    // Run state
+    if(next_state)
     {
-      switch(next_state)
-      {
-        case(Game_state::null):
-          break;
-      
-        case(Game_state::loading):
-          loading_screen.reset(new Game::Loading_screen(objs, world, context));
-          break;
-          
-        case(Game_state::title_screen):
-        {
-          title_state.reset(new Game::Title_screen(objs, world, context));
-          break;
-        }
-        
-        case(Game_state::settings):
-        {
-          settings_screen.reset(new Game::Settings_screen(objs, world, context));
-          break;
-        }
-        
-        case(Game_state::about):
-        {
-          about_screen.reset(new Game::About_screen(objs, world, context));
-          break;
-        }
-
-        case(Game_state::selection):
-        {
-          selection_screen.reset(new Game::Selection_screen(objs, world, context));
-          break;
-        }
-        
-        case(Game_state::game_mode):
-          game_screen.reset(new Game::Game_screen(objs, world, context));
-          break;
-          
-        case(Game_state::game_over):
-          Core::Input::mouse_set_capture(context, false);
-          
-          go_cam->set_target_height(50.f);
-          go_cam->set_target_speed(2.f);
-        
-          game_over_screen.reset(new Game::Game_over_screen(objs, world, context));
-          objs.send_event(Event_id::destroy_all_enemies);
-          break;
-          
-        case(Game_state::quit):
-          break;
-          
-        default:
-          UNREACHABLE;
-      }
-      
-      curr_state = next_state;
+      curr_state = std::move(next_state);
     }
     
-    switch(curr_state)
+    // Quit?
+    if(strcmp(curr_state->get_name(), "Quit") == 0)
     {
-      /*
-        Loading
-      */
-      case(Game_state::null):
-        next_state = Game_state::loading;
-        break;
-      
-      case(Game_state::loading):
-      {
-        next_state = loading_screen->on_update();
-        
-        break;
-      }
-
-      /*
-        Title screen
-      */
-      case(Game_state::title_screen):
-      {
-        next_state = title_state->on_update();
-        
-        break;
-      }
-      
-      /*
-        Settings
-      */
-      case(Game_state::about):
-      {
-        next_state = about_screen->on_update();
-      
-        break;
-      }
-      
-      /*
-        About
-      */
-      case(Game_state::settings):
-      {
-        next_state = settings_screen->on_update();
-      
-        break;
-      }
-
-      /*
-        Player selection screen.
-        Displays the screen where players can join a game.
-      */
-      case(Game_state::selection):
-      {
-        next_state = selection_screen->on_update();
-        
-        if(next_state == Game_state::game_mode)
-        {
-//          go_cam->get_entity().set_transform(Core::Transform(
-//            math::vec3_init(0, 0, 500.f),
-//            math::vec3_one(),
-//            math::quat_init()
-//          ));
-        }
-        break;
-      }
-      
-      /*
-        Main game screen.
-        This is the active game that is being played.
-      */
-      case(Game_state::game_mode):
-      {
-        next_state = game_screen->on_update();
-        
-        break;
-      }
-    
-      /*
-        The game over screen.
-        Shows the winner of the round.
-      */
-      case(Game_state::game_over):
-      {
-        next_state = game_over_screen->on_update();
-        break;
-      }
-      
-                
-      case(Game_state::quit):
-        break;
-      
-      default:
-        UNREACHABLE;
+      break;
     }
-    
     
     // Needs to give chance to objects to get into the
     // right position before they are rendererd.
-    if(curr_state != Game_state::quit)
     {
       objs.on_start();
       world.think();

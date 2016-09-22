@@ -1,4 +1,6 @@
 #include <game_states/selection.hpp>
+#include <game_states/title_screen.hpp>
+#include <game_states/game.hpp>
 #include <game_objects/main_camera.hpp>
 #include <game_objects/world_objects.hpp>
 #include <game_objects/player.hpp>
@@ -97,7 +99,7 @@ Selection_screen::Selection_screen(Game_object::World_objects &objs,
 }
 
   
-Game_state
+std::unique_ptr<State>
 Selection_screen::on_update()
 {
   Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
@@ -169,7 +171,8 @@ Selection_screen::on_update()
       // Reset button
       m_continue_button = Core::Lib::Button();
       
-      return Game_state::game_mode;
+      return std::unique_ptr<State>(new Game::Game_screen(get_world_objs(), get_world(), get_ctx()));
+
     }
   }
   
@@ -317,11 +320,11 @@ Selection_screen::on_update()
       
       m_continue_button = Core::Lib::Button();
       
-      return Game_state::title_screen;
+      return std::unique_ptr<State>(new Game::Title_screen(get_world_objs(), get_world(), get_ctx()));
     }
   }
   
-  return Game_state::selection;
+  return nullptr;
 }
 
 
