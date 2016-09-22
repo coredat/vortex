@@ -25,15 +25,15 @@ public:
 
 protected:
 
-  Core::World&                    get_world();
-  Core::Context&                  get_ctx();
-  Game_object::World_objects&     get_world_objs();
+  Core::World&                          get_world();
+  Core::Context&                        get_ctx();
+  Game_object::World_objects&           get_world_objs();
 
 private:
 
-  Core::World                     &m_world;
-  Core::Context                   &m_ctx;
-  Game_object::World_objects      &m_world_objects;
+  Core::World                           &m_world;
+  Core::Context                         &m_ctx;
+  Game_object::World_objects            &m_world_objects;
 
 };
 

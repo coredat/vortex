@@ -13,13 +13,13 @@
 #include <game_objects/player.hpp>
 
 // Game States
-#include <game_states/loading.hpp>
-#include <game_states/game.hpp>
-#include <game_states/selection.hpp>
-#include <game_states/game_over.hpp>
+#include <game_states/loading_screen.hpp>
+#include <game_states/game_screen.hpp>
+#include <game_states/selection_screen.hpp>
+#include <game_states/game_over_screen.hpp>
 #include <game_states/title_screen.hpp>
-#include <game_states/about.hpp>
-#include <game_states/settings.hpp>
+#include <game_states/about_screen.hpp>
+#include <game_states/settings_screen.hpp>
 
 // Common
 #include <common/event_ids.hpp>

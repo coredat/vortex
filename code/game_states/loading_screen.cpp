@@ -1,4 +1,4 @@
-#include <game_states/loading.hpp>
+#include <game_states/loading_screen.hpp>
 #include <game_states/title_screen.hpp>
 #include <game_objects/world_objects.hpp>
 #include <game_objects/level.hpp>

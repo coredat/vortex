@@ -1,6 +1,6 @@
-#include <game_states/game_over.hpp>
+#include <game_states/game_over_screen.hpp>
 #include <game_states/title_screen.hpp>
-#include <game_states/selection.hpp>
+#include <game_states/selection_screen.hpp>
 #include <game_objects/world_objects.hpp>
 #include <common/object_tags.hpp>
 #include <common/game_state.hpp>

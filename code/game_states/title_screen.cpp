@@ -1,8 +1,8 @@
 #include <game_states/title_screen.hpp>
-#include <game_states/selection.hpp>
+#include <game_states/selection_screen.hpp>
 #include <game_states/quit.hpp>
-#include <game_states/about.hpp>
-#include <game_states/settings.hpp>
+#include <game_states/about_screen.hpp>
+#include <game_states/settings_screen.hpp>
 #include <factories/material.hpp>
 #include <game_objects/main_camera.hpp>
 #include <common/game_state.hpp>

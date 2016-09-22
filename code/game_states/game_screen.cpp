@@ -1,5 +1,5 @@
-#include <game_states/game.hpp>
-#include <game_states/game_over.hpp>
+#include <game_states/game_screen.hpp>
+#include <game_states/game_over_screen.hpp>
 #include <common/global_vars.hpp>
 #include <common/level_functions.hpp>
 #include <game_objects/world_objects.hpp>

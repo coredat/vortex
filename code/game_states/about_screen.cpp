@@ -1,4 +1,4 @@
-#include <game_states/about.hpp>
+#include <game_states/about_screen.hpp>
 #include <game_states/title_screen.hpp>
 #include <game_objects/main_camera.hpp>
 #include <factories/material.hpp>
