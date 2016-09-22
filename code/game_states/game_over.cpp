@@ -61,7 +61,6 @@ Game_over_screen::on_update()
   Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
   assert(main_camera);
 
-
   if(!created_screen)
   {
     created_screen = true;

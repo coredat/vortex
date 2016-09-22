@@ -1,4 +1,7 @@
 #include <game_states/loading.hpp>
+#include <game_objects/world_objects.hpp>
+#include <game_objects/level.hpp>
+#include <game_objects/horizon.hpp>
 #include <factories/material.hpp>
 #include <common/object_tags.hpp>
 #include <core/world/world.hpp>
@@ -69,6 +72,9 @@ Loading_screen::on_update()
   if(m_timer > loading_max_timer)
   {
     m_loading_entity.destroy();
+    get_world_objs().push_object(new Game_object::Horizon(get_world()));
+    get_world_objs().push_object(new Game_object::Level(get_world()));
+
     return Game_state::title_screen;
   }
   

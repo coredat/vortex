@@ -5,6 +5,7 @@
 #include <game_objects/player_ship.hpp>
 #include <game_objects/powerup_pickup.hpp>
 #include <game_objects/enemy.hpp>
+#include <game_objects/main_camera.hpp>
 #include <game_objects/explosion.hpp>
 #include <game_objects/bullet.hpp>
 #include <common/game_state.hpp>
@@ -33,9 +34,19 @@ Game_screen::Game_screen(Game_object::World_objects &objs,
                          Core::World &world,
                          Core::Context &ctx)
 : State(objs, world, ctx)
+, m_camera(get_world().find_entity_by_name("Main Camera"))
 , m_spawn_timer(0.f)
 , m_game_timer(0.f)
 {
+  assert(m_camera);
+
+  Core::Input::mouse_set_capture(get_ctx(), true);
+
+  Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
+  assert(main_camera);
+
+  main_camera->set_target_height(20.f);
+  main_camera->set_target_speed(10.f);
 }
 
 

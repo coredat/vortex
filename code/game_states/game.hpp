@@ -6,6 +6,7 @@
 #include <game_objects/game_objects_fwd.hpp>
 #include <common/common_fwd.hpp>
 #include <core/common/core_fwd.hpp>
+#include <core/entity/entity_ref.hpp>
 
 
 namespace Game {
@@ -23,6 +24,7 @@ public:
   
 private:
 
+  const Core::Entity_ref  m_camera;
   float             m_spawn_timer = 0.f;
   float             m_game_timer  = 0.f;
 

@@ -57,6 +57,9 @@ std::unique_ptr<Game::Game_screen>        game_screen = nullptr;
 std::unique_ptr<Game::Game_over_screen>   game_over_screen = nullptr;
 std::unique_ptr<Game::About_screen>       about_screen = nullptr;
 
+std::unique_ptr<Game::State> curr_state;
+std::unique_ptr<Game::State> next_state;
+
 
 int
 main()
@@ -139,14 +142,7 @@ main()
           
         case(Game_state::title_screen):
         {
-          if(first_load_title)
-          {
-            first_load_title = false;
-            objs.push_object(new Game_object::Horizon(world));
-          }
-          
           title_state.reset(new Game::Title_screen(objs, world, context));
-          
           break;
         }
         
@@ -164,29 +160,11 @@ main()
 
         case(Game_state::selection):
         {
-          if(first_load_selection)
-          {
-            first_load_selection = false;
-
-          }
-        
           selection_screen.reset(new Game::Selection_screen(objs, world, context));
           break;
         }
         
         case(Game_state::game_mode):
-          Core::Input::mouse_set_capture(context, true);
-          
-          go_cam->set_target_height(20.f);
-          go_cam->set_target_speed(10.f);
-          
-          if(first_load_level)
-          {
-            first_load_level = false;
-            
-            objs.push_object(new Game_object::Level(world));
-          }
-          
           game_screen.reset(new Game::Game_screen(objs, world, context));
           break;
           
