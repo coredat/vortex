@@ -14,6 +14,13 @@ State::State(Game_object::World_objects &world_objs,
 }
 
 
+const char *
+State::get_name() const
+{
+  return "State";
+}
+
+
 std::unique_ptr<State>
 State::on_update()
 {

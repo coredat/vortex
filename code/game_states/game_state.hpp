@@ -19,10 +19,8 @@ public:
                                               Core::World &world,
                                               Core::Context &ctx);
   
-  virtual const char *                  get_name() const { return "Unknown State"; }
-  
+  virtual const char *                  get_name() const;
   virtual std::unique_ptr<State>        on_update();
-
   
 
 protected:
@@ -32,7 +30,6 @@ protected:
   Game_object::World_objects&     get_world_objs();
 
 private:
-
 
   Core::World                     &m_world;
   Core::Context                   &m_ctx;

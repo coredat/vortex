@@ -11,4 +11,11 @@ Quit::Quit(Game_object::World_objects &objs,
 }
 
 
+const char*
+Quit::get_name() const
+{
+  return "Quit";
+}
+
+
 } // ns

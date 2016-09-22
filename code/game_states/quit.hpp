@@ -1,5 +1,5 @@
-#ifndef QUIT_INCLUDED_
-#define QUIT_INCLUDED_
+#ifndef QUIT_INCLUDED_71EC62E2_A589_4EDA_8196_AED9FD345A5C
+#define QUIT_INCLUDED_71EC62E2_A589_4EDA_8196_AED9FD345A5C
 
 
 #include <game_states/game_state.hpp>
@@ -16,7 +16,7 @@ public:
                          Core::World &world,
                          Core::Context &ctx);
   
-  const char *      get_name() const override { return "Quit"; }
+  const char *      get_name() const override;
 
 };
 
