@@ -38,4 +38,9 @@ vortex_project_data = {
     make.get_proj_root() .. "../../core/code/external/utilities",
     make.get_proj_root() .. "../../core/code/3rdparty/glew/include",
   },
+
+  asset_dirs = {
+    make.get_proj_root() .. "../assets/",
+    make.get_proj_root() .. "../../core/assets/",
+  },
 }
