@@ -19,9 +19,9 @@
 namespace
 {
   #ifndef NDEBUG
-  constexpr float   loading_max_timer = 0.5f; // Min time loading screen stays up
+  constexpr float loading_max_timer = 0.1f;
   #else
-  constexpr float   loading_max_timer = 2.f;
+  constexpr float loading_max_timer = 2.f;
   #endif
 }
 

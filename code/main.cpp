@@ -119,6 +119,7 @@ main()
     // Run state
     if(next_state)
     {
+      curr_state.release();
       curr_state = std::move(next_state);
     }
     

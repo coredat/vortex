@@ -147,9 +147,8 @@ Settings_screen::on_update()
         main_camera->m_level_camera.set_width(get_ctx().get_width());
         main_camera->m_level_camera.set_height(get_ctx().get_height());
       
-//        settings_init(get_ctx(), get_world(), camera);
-        assert(false); // Need to recall state or something?
-        // make send a new state back?
+        Core::Lib::Menu_list::clear(m_buttons, Settings_screen_utils::get_button_count());
+        return std::unique_ptr<State>(new Game::Settings_screen(get_world_objs(), get_world(), get_ctx()));
       }
     }
   }

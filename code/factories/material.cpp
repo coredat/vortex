@@ -75,9 +75,9 @@ load_all()
 
   // Players
   get_ship_01_material();
-//  get_ship_02_material();
-//  get_ship_03_material();
-//  get_ship_04_material();
+  get_ship_02_material();
+  get_ship_03_material();
+  get_ship_04_material();
 }
 
 
