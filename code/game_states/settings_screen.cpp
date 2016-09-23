@@ -7,32 +7,9 @@
 #include <game_objects/main_camera.hpp>
 #include <core/context/context.hpp>
 #include <core/world/world.hpp>
-#include <core/resources/material.hpp>
 #include <core/model/model.hpp>
-#include <core/entity/entity.hpp>
-#include <core/entity/entity_ref.hpp>
-#include <core/transform/transform.hpp>
-#include <core/transform/transform_utils.hpp>
 #include <core/common/directory.hpp>
-#include <core/camera/camera_properties.hpp>
-#include <core/input/controller.hpp>
 #include <core/input/buttons.hpp>
-#include <core/common/ray.hpp>
-#include <core/physics/rigidbody.hpp>
-#include <core/physics/collider.hpp>
-#include <core/physics/box_collider.hpp>
-#include <core/renderer/renderer.hpp>
-#include <core/entity/entity_ref.hpp>
-#include <core/renderer/material_renderer.hpp>
-#include <core/renderer/text_renderer.hpp>
-#include <core/font/font.hpp>
-#include <core/camera/camera.hpp>
-#include <core/camera/camera_utils.hpp>
-#include <utilities/directory.hpp>
-#include <math/quat/quat.hpp>
-#include <utilities/logging.hpp>
-#include <renderer/debug_line.hpp>
-#include <lib/menu_image_list/menu_list.hpp>
 #include <assert.h>
 
 
@@ -78,7 +55,6 @@ Settings_screen::Settings_screen(Game_object::World_objects &objs,
     m_buttons[2].cold_material  = Factory::Material::get_menu_back_cold();
     m_buttons[2].hot_material   = Factory::Material::get_menu_back_hot();
 
-    
     const Core::Model model(Core::Directory::volatile_resource_path("assets/models/unit_cube.obj"));
   
     Core::Lib::Menu_list::inititalize(m_buttons,
@@ -132,7 +108,6 @@ Settings_screen::on_update()
       }
       
       // Get cameras
-      
       if(main_camera)
       {
         main_camera->m_world_camera.set_height(get_ctx().get_height());

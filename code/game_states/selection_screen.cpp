@@ -12,7 +12,6 @@
 #include <factories/material.hpp>
 #include <core/world/world.hpp>
 #include <core/context/context.hpp>
-#include <core/input/controller.hpp>
 #include <core/input/buttons.hpp>
 #include <core/resources/texture.hpp>
 #include <core/transform/transform.hpp>
