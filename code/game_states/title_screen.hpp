@@ -43,20 +43,5 @@ private:
 
 } // ns
 
-//
-//void
-//title_screen_init(Core::Context &ctx,
-//                  Core::World &world,
-//                  Core::Camera &camera);
-//
-//
-//Game_state
-//title_screen_update(Core::Context &ctx,
-//                    Core::World &world,
-//                    Core::Camera &camera,
-//                    Game_object::World_objects &objects,
-//                    const float dt);
-//
-
 
 #endif // inc guard

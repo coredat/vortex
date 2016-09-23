@@ -50,6 +50,12 @@ Game_over_screen::Game_over_screen(Game_object::World_objects &objs,
     Core::Controller(get_ctx(), 2),
     Core::Controller(get_ctx(), 3),
   }
+, m_players{
+    Core::Entity(),
+    Core::Entity(),
+    Core::Entity(),
+    Core::Entity(),
+  }
 {
   // We use mouse for screen menu.
   Core::Input::mouse_set_capture(get_ctx(), false);

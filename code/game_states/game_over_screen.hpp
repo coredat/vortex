@@ -28,7 +28,6 @@ private:
 
   const Core::Entity_ref    m_camera;
   const Core::Controller    m_controllers[4];
-  
   Core::Entity              m_players[4];
 
 };
