@@ -9,6 +9,7 @@
 #include <core/world/world.hpp>
 #include <core/model/model.hpp>
 #include <core/input/buttons.hpp>
+#include <core/input/mouse.hpp>
 #include <core/common/directory.hpp>
 #include <utilities/directory.hpp>
 #include <assert.h>
@@ -65,8 +66,8 @@ About_screen::on_update()
   Game_object::Main_camera *main_camera = reinterpret_cast<Game_object::Main_camera*>(m_camera.get_user_data());
   assert(main_camera);
 
-
-  const Core::Controller controller = Core::Controller(get_ctx(), 0);
+  const Core::Controller controller(get_ctx(), 0);
+  const Core::Mouse mouse(get_ctx());
  
   Core::Lib::Menu_list::navigate(controller, buttons, buttons_count);
   Core::Lib::Menu_list::mouse_over(main_camera->m_gui_camera, get_world(), Core::Input::mouse_get_coordinates(get_ctx()), buttons, buttons_count);

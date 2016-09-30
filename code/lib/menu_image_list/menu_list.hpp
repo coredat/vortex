@@ -72,7 +72,6 @@ navigate(const Core::Controller &controller,
          Image_button button_arr[],
          const uint32_t button_count);
 
-
 /*
   Will return a valid entity if the menu item was clicked on.
 */

@@ -234,7 +234,8 @@ mouse_over(const Core::Camera &camera,
   /*
     Didn't get an entity so bail.
   */
-  if(!ent_from_ray) {
+  if(!ent_from_ray)
+  {
     return Entity_ref();
   }
   
@@ -268,7 +269,7 @@ mouse_over(const Core::Camera &camera,
     shuffle_array(button_arr, button_count, 1);
   }
   
-  return Core::Entity_ref();
+  return ent_from_ray;
 }
 
 
