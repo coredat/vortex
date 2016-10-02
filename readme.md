@@ -16,20 +16,20 @@ You can download the game from [itch.io](https://republic.itch.io/vortex-defende
 
 ## Dependencies
 
-_Copy of the Game_
+__Copy of the Game__
 
 The assets are contained in the game download.
 https://republic.itch.io/vortex-defender
 
-_Premake 4 or 5_
+__Premake 4 or 5__
 
 Requires Premake to build the project files.
 https://premake.github.io/download.html
 
-_Core Engine - Vortex Branch_
+__Core Engine - Vortex Branch__
 
 https://github.com/republic-of-almost/core/tree/game_vortex
 
-_Premake Data - Vortex Branch_
+__Premake Data - Vortex Branch__
 
 https://github.com/republic-of-almost/premake_data/tree/game_vortex
