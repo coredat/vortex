@@ -84,7 +84,7 @@ Settings_screen::on_update()
   
   const Core::Entity_ref selected_button = m_buttons[0].entity;
   
-  constexpr uint32_t button_start = Core::Gamepad_button::button_a | Core::Gamepad_button::button_start;
+  constexpr uint32_t button_start = Core::Gamepad_button::a | Core::Gamepad_button::start;
 
   if(selected_button && strcmp(selected_button.get_name(), "button_back") == 0)
   {
@@ -129,7 +129,7 @@ Settings_screen::on_update()
   }
   
   // Generic if back then go back
-  if(m_controllers[0].is_button_up_on_frame(Core::Gamepad_button::button_back))
+  if(m_controllers[0].is_button_up_on_frame(Core::Gamepad_button::back))
   {
     Core::Lib::Menu_list::clear(m_buttons, Settings_screen_utils::get_button_count());
     return std::unique_ptr<State>(new Game::Title_screen(get_world_objs(), get_world(), get_ctx()));

@@ -125,7 +125,7 @@ Title_screen::on_update()
 //  menu.think(ctx, world, camera);
 
   const Core::Entity_ref selected_button = m_buttons[0].entity;
-  constexpr uint32_t button_start = Core::Gamepad_button::button_a | Core::Gamepad_button::button_start;
+  constexpr uint32_t button_start = Core::Gamepad_button::a | Core::Gamepad_button::start;
 
   if(selected_button && strcmp(selected_button.get_name(), "button_start_game") == 0)
   {

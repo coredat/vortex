@@ -2,6 +2,7 @@
 #include <common/object_tags.hpp>
 #include <common/screen_cast.hpp>
 #include <core/world/world.hpp>
+#include <core/common/collision.hpp>
 #include <core/physics/collider.hpp>
 #include <core/physics/box_collider.hpp>
 #include <core/physics/rigidbody.hpp>
@@ -118,7 +119,7 @@ Button::was_touched(Core::Camera &camera,
 
   Core::Controller p1_controller(ctx, 0);
   
-  const uint32_t buttons = Core::Gamepad_button::button_start | Core::Gamepad_button::button_a;
+  const uint32_t buttons = Core::Gamepad_button::start | Core::Gamepad_button::a;
   
   if(p1_controller.is_button_up_on_frame(buttons) && is_over(camera, world, ctx))
   {
@@ -140,7 +141,7 @@ Button::is_over(Core::Camera &camera,
   }
 
   const Core::Ray        viewport_ray    = Core::Camera_utils::get_ray_from_viewport(camera, Core::Input::mouse_get_coordinates(ctx));
-  const Core::Entity_ref entity_from_ray = world.find_entity_by_ray(viewport_ray);
+  const Core::Entity_ref entity_from_ray = world.find_entity_by_ray(viewport_ray).get_entity();
   
   const Core::Material_renderer renderer = m_entity.get_renderer();
   

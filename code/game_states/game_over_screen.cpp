@@ -194,10 +194,10 @@ Game_over_screen::on_update()
   /*
     If any gamepad presses start we go back to the game selection screen.
   */
-  if(m_controllers[0].is_button_down_on_frame(Core::Gamepad_button::button_start) ||
-     m_controllers[1].is_button_down_on_frame(Core::Gamepad_button::button_start) ||
-     m_controllers[2].is_button_down_on_frame(Core::Gamepad_button::button_start) ||
-     m_controllers[3].is_button_down_on_frame(Core::Gamepad_button::button_start) ||
+  if(m_controllers[0].is_button_down_on_frame(Core::Gamepad_button::start) ||
+     m_controllers[1].is_button_down_on_frame(Core::Gamepad_button::start) ||
+     m_controllers[2].is_button_down_on_frame(Core::Gamepad_button::start) ||
+     m_controllers[3].is_button_down_on_frame(Core::Gamepad_button::start) ||
      button_pushed)
   {
     created_screen = false;
@@ -223,10 +223,10 @@ Game_over_screen::on_update()
     return std::unique_ptr<State>(new Game::Selection_screen(get_world_objs(), get_world(), get_ctx()));
   }
   
-  if(m_controllers[0].is_button_down_on_frame(Core::Gamepad_button::button_back) ||
-     m_controllers[1].is_button_down_on_frame(Core::Gamepad_button::button_back) ||
-     m_controllers[2].is_button_down_on_frame(Core::Gamepad_button::button_back) ||
-     m_controllers[3].is_button_down_on_frame(Core::Gamepad_button::button_back))
+  if(m_controllers[0].is_button_down_on_frame(Core::Gamepad_button::back) ||
+     m_controllers[1].is_button_down_on_frame(Core::Gamepad_button::back) ||
+     m_controllers[2].is_button_down_on_frame(Core::Gamepad_button::back) ||
+     m_controllers[3].is_button_down_on_frame(Core::Gamepad_button::back))
   {
     created_screen = false;
     continue_button = Core::Lib::Button();

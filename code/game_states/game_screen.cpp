@@ -54,7 +54,7 @@ Game_screen::Game_screen(Game_object::World_objects &objs,
 std::unique_ptr<State>
 Game_screen::on_update()
 {
-  get_world().set_collision_callback([](const Core::Collision_type type, const Core::Collision &collision)
+  get_world().set_collision_callback([](const Core::Collision_type type, const Core::Collision_pair &collision)
   {
 //    for(uint32_t i = 0; i < number_of_pairs; ++i)
     {

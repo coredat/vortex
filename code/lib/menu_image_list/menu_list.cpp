@@ -10,6 +10,7 @@
 #include <core/input/buttons.hpp>
 #include <core/transform/transform.hpp>
 #include <core/camera/camera.hpp>
+#include <core/common/collision.hpp>
 #include <core/camera/camera_utils.hpp>
 #include <core/world/world.hpp>
 #include <core/common/ray.hpp>
@@ -192,11 +193,11 @@ navigate(const Core::Controller &controller,
   int dir = 0;
 
   // Choose direction.
-  if(controller.is_button_down_on_frame(Core::Gamepad_button::button_dpad_up))
+  if(controller.is_button_down_on_frame(Core::Gamepad_button::dpad_up))
   {
     dir = -1;
   }
-  else if(controller.is_button_down_on_frame(Core::Gamepad_button::button_dpad_down))
+  else if(controller.is_button_down_on_frame(Core::Gamepad_button::dpad_down))
   {
     dir = +1;
   }
@@ -229,7 +230,7 @@ mouse_over(const Core::Camera &camera,
   }
 
   const Core::Ray viewport_ray = Core::Camera_utils::get_ray_from_viewport(camera, mouse_coords);
-  const Core::Entity_ref ent_from_ray = world.find_entity_by_ray(viewport_ray);
+  const Core::Entity_ref ent_from_ray = world.find_entity_by_ray(viewport_ray).get_entity();
 
   /*
     Didn't get an entity so bail.

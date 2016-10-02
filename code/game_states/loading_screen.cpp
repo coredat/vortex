@@ -12,6 +12,7 @@
 #include <core/renderer/material_renderer.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/transform/transform.hpp>
+#include <core/transform/transform_utils.hpp>
 #include <core/input/input.hpp>
 #include <core/common/directory.hpp>
 
@@ -50,7 +51,7 @@ Loading_screen::Loading_screen(Game_object::World_objects &objs,
                                 math::vec3_init(math::to_float(texture.get_width()),
                                                 1,
                                                 math::to_float(texture.get_height())),
-                                math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau()));
+                                math::quat_init_with_axis_angle(Core::Transform_utils::get_world_left(), -math::quart_tau()));
     
     m_loading_entity.set_transform(trans);
   }

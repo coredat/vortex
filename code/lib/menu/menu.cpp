@@ -8,6 +8,7 @@
 #include <core/common/ray.hpp>
 #include <core/model/model.hpp>
 #include <core/world/world.hpp>
+#include <core/common/collision.hpp>
 #include <core/common/directory.hpp>
 #include <core/resources/material.hpp>
 #include <core/resources/texture.hpp>
@@ -150,7 +151,7 @@ void
 Menu::think(Core::Context &ctx, Core::World &world, const Core::Camera &camera)
 {
   const Core::Ray        viewport_ray    = Core::Camera_utils::get_ray_from_viewport(camera, Core::Input::mouse_get_coordinates(ctx));
-  const Core::Entity_ref entity_from_ray = world.find_entity_by_ray(viewport_ray);
+  const Core::Entity_ref entity_from_ray = world.find_entity_by_ray(viewport_ray).get_entity();
   
   m_curr_button_selected = Core::Entity_ref();
   

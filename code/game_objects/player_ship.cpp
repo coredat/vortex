@@ -192,7 +192,7 @@ Player_ship::on_update(const float dt, World_objects &world_objs)
       }
       
       // New Jump
-      if(controller.is_button_down(Core::Gamepad_button::button_b) && m_jump_speed == 0.f)
+      if(controller.is_button_down(Core::Gamepad_button::b) && m_jump_speed == 0.f)
       {
         m_jump_speed = 50.5f;
         m_jump_time = 0.f;

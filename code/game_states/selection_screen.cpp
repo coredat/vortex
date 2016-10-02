@@ -15,6 +15,7 @@
 #include <core/input/buttons.hpp>
 #include <core/resources/texture.hpp>
 #include <core/transform/transform.hpp>
+#include <core/transform/transform_utils.hpp>
 #include <core/renderer/renderer.hpp>
 #include <core/renderer/material_renderer.hpp>
 #include <core/common/directory.hpp>
@@ -122,7 +123,7 @@ Selection_screen::on_update()
   */
   for(const auto &ctrl : m_controllers)
   {
-    if((button_pushed || ctrl.is_button_up_on_frame(Core::Gamepad_button::button_start)) && m_players_signed_in > 0)
+    if((button_pushed || ctrl.is_button_up_on_frame(Core::Gamepad_button::start)) && m_players_signed_in > 0)
     {
       // Reset selection screen
       {
@@ -182,7 +183,7 @@ Selection_screen::on_update()
   {
     if(!m_signed_in_selections[i])
     {
-      if(m_controllers[i].is_button_down_on_frame(Core::Gamepad_button::button_a))
+      if(m_controllers[i].is_button_down_on_frame(Core::Gamepad_button::a))
       {
         const Core::Material_renderer mat_renderer(m_materials[0], m_models[0]);
         
@@ -196,7 +197,7 @@ Selection_screen::on_update()
       }
     }
     
-    if(m_controllers[i].is_button_down_on_frame(Core::Gamepad_button::button_a))
+    if(m_controllers[i].is_button_down_on_frame(Core::Gamepad_button::a))
     {
       // Start screen
       if(!m_continue_button)
@@ -249,7 +250,7 @@ Selection_screen::on_update()
     sel.set_transform(Core::Transform(
       math::vec3_init(x_offset, 0, 0),
       math::vec3_init(128.f, 1.f, 128.f),
-      math::quat_init_with_axis_angle(Core::Transform::get_world_left(), -math::quart_tau())
+      math::quat_init_with_axis_angle(Core::Transform_utils::get_world_left(), -math::quart_tau())
     ));
 
     if(m_signed_in_selections[i])
@@ -298,7 +299,7 @@ Selection_screen::on_update()
   */
   for(uint32_t i = 0; i < 4; ++i)
   {
-    if(m_controllers[i].is_button_up_on_frame(Core::Gamepad_button::button_back | Core::Gamepad_button::button_b))
+    if(m_controllers[i].is_button_up_on_frame(Core::Gamepad_button::back | Core::Gamepad_button::b))
     {
       for(uint32_t i = 0; i < 4; ++i)
       {
