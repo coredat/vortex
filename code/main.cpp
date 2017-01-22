@@ -1,4 +1,3 @@
-
 // Game Objects
 #include <game_objects/game_object.hpp>
 #include <game_objects/bullet.hpp>
@@ -47,7 +46,6 @@
 #include <core/renderer/renderer.hpp>
 #include <core/font/font.hpp>
 #include <common/object_tags.hpp>
-
 
 
 std::unique_ptr<Game::State> curr_state(nullptr);
